@@ -14,4 +14,6 @@ class SMALLPROJECT_API ASmallProjectGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
 	
+public:
+	ASmallProjectGameModeBase();
 };

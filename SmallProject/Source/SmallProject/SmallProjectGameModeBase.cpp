@@ -3,3 +3,6 @@
 
 #include "SmallProjectGameModeBase.h"
 
+ASmallProjectGameModeBase::ASmallProjectGameModeBase() {
+	//DefaultPawnClass = 
+}
