@@ -26,7 +26,7 @@ void AGameCharacter::MoveLR(float movementDelta) {
 }
 
 void AGameCharacter::WingBeat() {
-	CameraMesh->AddImpulse(FVector(0.f, 0.f, WingStrength*1000));
+	CameraMesh->AddImpulse(FVector(ForwardFlyStrength, 0.f, WingStrength*1000));
 }
 
 // Called when the game starts or when spawned

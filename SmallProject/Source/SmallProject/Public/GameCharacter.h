@@ -32,11 +32,14 @@ protected:
 	UPROPERTY(EditAnywhere)
 		UStaticMeshComponent* CameraMesh;
 
-	UPROPERTY(EditAnywhere, Category="character settings")
+	UPROPERTY(EditAnywhere, Category = "character settings")
 		float MovementSpeed = 1.f;
 
 	UPROPERTY(EditAnywhere, Category = "character settings")
 		float WingStrength = 1.f;
+
+	UPROPERTY(EditAnywhere, Category = "character settings")
+		float ForwardFlyStrength = 1.f;
 
 public:
 	// Called every frame
