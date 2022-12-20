@@ -19,6 +19,8 @@ public:
 
 	void MoveLR(float movementDelta);
 
+	void WingBeat(float wingStrength);
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -32,6 +34,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category="character settings")
 		float MovementSpeed = 1.f;
+
+	UPROPERTY(EditAnywhere, Category = "character settings")
+		float WingStrength = 1.f;
 
 public:
 	// Called every frame

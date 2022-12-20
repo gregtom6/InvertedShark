@@ -25,6 +25,10 @@ void AGameCharacter::MoveLR(float movementDelta) {
 	SetActorLocation(newLocation);
 }
 
+void AGameCharacter::WingBeat(float wingStrength) {
+
+}
+
 // Called when the game starts or when spawned
 void AGameCharacter::BeginPlay()
 {
@@ -46,5 +50,7 @@ void AGameCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 	//register for LR movement
 	PlayerInputComponent->BindAxis(TEXT("MoveLR"), this, &AGameCharacter::MoveLR);
+
+	PlayerInputComponent->BindAxis(TEXT("WingBeat"), this, &AGameCharacter::WingBeat);
 }
 
