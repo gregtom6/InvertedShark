@@ -17,9 +17,11 @@ public:
 	// Sets default values for this pawn's properties
 	AGameCharacter();
 
-	void MoveLR(float movementDelta);
+	void StrafeLR(float movementDelta);
 
 	void WingBeat();
+
+	void RotateLR(float rotateDelta);
 
 protected:
 	// Called when the game starts or when spawned
@@ -40,6 +42,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "character settings")
 		float ForwardFlyStrength = 1.f;
+
+	UPROPERTY(EditAnywhere, Category = "character settings")
+		float RotateSpeed = 1.f;
 
 public:
 	// Called every frame

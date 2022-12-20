@@ -19,14 +19,30 @@ AGameCharacter::AGameCharacter()
 	Camera->SetRelativeLocation(FVector(-100.0f, 0.0f, 50.0f));
 }
 
-void AGameCharacter::MoveLR(float movementDelta) {
+void AGameCharacter::RotateLR(float rotateDelta) {
+	FRotator actualRotation = GetActorRotation();
+	actualRotation.Yaw += rotateDelta * RotateSpeed;
+	SetActorRotation(actualRotation);
+}
+
+void AGameCharacter::StrafeLR(float movementDelta) {
+	FVector rightVector = GetActorRightVector();
+	FVector upVector = GetActorUpVector();
+	FVector forwardVector = GetActorForwardVector();
+
 	FVector newLocation = GetActorLocation();
-	newLocation.Y += movementDelta * MovementSpeed;
-	SetActorLocation(newLocation);
+	//rightVector.Y += movementDelta * MovementSpeed;
+
+	SetActorLocation(newLocation+(rightVector*movementDelta*MovementSpeed));
 }
 
 void AGameCharacter::WingBeat() {
-	CameraMesh->AddImpulse(FVector(ForwardFlyStrength, 0.f, WingStrength*1000));
+
+	FVector actorForwardVector = GetActorForwardVector() * ForwardFlyStrength;
+	FVector actorUpVector = GetActorUpVector() * WingStrength;
+	FVector impulseDirection = actorUpVector + actorForwardVector;
+
+	CameraMesh->AddImpulse(impulseDirection);
 }
 
 // Called when the game starts or when spawned
@@ -49,8 +65,10 @@ void AGameCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 	//register for LR movement
-	PlayerInputComponent->BindAxis(TEXT("MoveLR"), this, &AGameCharacter::MoveLR);
+	PlayerInputComponent->BindAxis(TEXT("StrafeLR"), this, &AGameCharacter::StrafeLR);
 
-	PlayerInputComponent->BindAction(TEXT("WingBeat"),IE_Pressed, this, &AGameCharacter::WingBeat);
+	PlayerInputComponent->BindAxis(TEXT("RotateLR"), this, &AGameCharacter::RotateLR);
+
+	PlayerInputComponent->BindAction(TEXT("WingBeat"), IE_Pressed, this, &AGameCharacter::WingBeat);
 }
 
