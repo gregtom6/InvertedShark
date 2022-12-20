@@ -46,6 +46,9 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "character settings")
 		float RotateSpeed = 1.f;
 
+	UPROPERTY(EditAnywhere, Category = "character settings")
+		float velocityLimit = 300.f;
+
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

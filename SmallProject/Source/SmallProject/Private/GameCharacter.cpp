@@ -57,6 +57,9 @@ void AGameCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	FVector currentVelocity = CameraMesh->GetPhysicsLinearVelocity();
+	FVector clampedVelocity = currentVelocity.GetClampedToMaxSize(velocityLimit);
+	CameraMesh->SetPhysicsLinearVelocity(clampedVelocity);
 }
 
 // Called to bind functionality to input
