@@ -10,7 +10,19 @@ AGameCharacter::AGameCharacter()
 	PrimaryActorTick.bCanEverTick = true;
 
 	//create components
+	CameraMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("CameraMesh"));
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
+	
+
+	Camera->FieldOfView = 120.f;
+	Camera->SetupAttachment(CameraMesh);
+	Camera->SetRelativeLocation(FVector(-100.0f, 0.0f, 50.0f));
+}
+
+void AGameCharacter::MoveLR(float movementDelta) {
+	FVector newLocation = GetActorLocation();
+	newLocation.Y += movementDelta * MovementSpeed;
+	SetActorLocation(newLocation);
 }
 
 // Called when the game starts or when spawned
@@ -32,6 +44,7 @@ void AGameCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-	
+	//register for LR movement
+	PlayerInputComponent->BindAxis(TEXT("MoveLR"), this, &AGameCharacter::MoveLR);
 }
 

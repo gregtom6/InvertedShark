@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
 #include "Camera/CameraComponent.h"
+#include "Components/StaticMeshComponent.h"
 #include "GameCharacter.generated.h"
 
 UCLASS()
@@ -16,14 +17,23 @@ public:
 	// Sets default values for this pawn's properties
 	AGameCharacter();
 
+	void MoveLR(float movementDelta);
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 	//main pawn camera
-	UCameraComponent* Camera;
+	UPROPERTY(EditAnywhere)
+		UCameraComponent* Camera;
 
-public:	
+	UPROPERTY(EditAnywhere)
+		UStaticMeshComponent* CameraMesh;
+
+	UPROPERTY(EditAnywhere, Category="character settings")
+		float MovementSpeed = 1.f;
+
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
