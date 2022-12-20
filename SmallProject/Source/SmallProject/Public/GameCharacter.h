@@ -19,7 +19,7 @@ public:
 
 	void MoveLR(float movementDelta);
 
-	void WingBeat(float wingStrength);
+	void WingBeat();
 
 protected:
 	// Called when the game starts or when spawned

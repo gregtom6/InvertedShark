@@ -6,13 +6,13 @@
 // Sets default values
 AGameCharacter::AGameCharacter()
 {
- 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	//create components
 	CameraMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("CameraMesh"));
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
-	
+
 
 	Camera->FieldOfView = 120.f;
 	Camera->SetupAttachment(CameraMesh);
@@ -25,15 +25,15 @@ void AGameCharacter::MoveLR(float movementDelta) {
 	SetActorLocation(newLocation);
 }
 
-void AGameCharacter::WingBeat(float wingStrength) {
-
+void AGameCharacter::WingBeat() {
+	CameraMesh->AddImpulse(FVector(0.f, 0.f, WingStrength*1000));
 }
 
 // Called when the game starts or when spawned
 void AGameCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 }
 
 // Called every frame
@@ -51,6 +51,6 @@ void AGameCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	//register for LR movement
 	PlayerInputComponent->BindAxis(TEXT("MoveLR"), this, &AGameCharacter::MoveLR);
 
-	PlayerInputComponent->BindAxis(TEXT("WingBeat"), this, &AGameCharacter::WingBeat);
+	PlayerInputComponent->BindAction(TEXT("WingBeat"),IE_Pressed, this, &AGameCharacter::WingBeat);
 }
 
