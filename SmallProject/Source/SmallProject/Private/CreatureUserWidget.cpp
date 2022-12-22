@@ -18,3 +18,8 @@ void UCreatureUserWidget::NativeConstruct() {
 	}
 }
 
+void UCreatureUserWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
+{
+	Super::NativeTick(MyGeometry, InDeltaTime);
+	ProgressBar->SetPercent(creature->GetHealth() / creature->GetMaxHealth());
+}

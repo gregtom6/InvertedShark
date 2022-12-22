@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Creature.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/ProgressBar.h"
 #include "CreatureUserWidget.generated.h"
@@ -18,6 +19,8 @@ class SMALLPROJECT_API UCreatureUserWidget : public UUserWidget
 public:
 	virtual void NativeConstruct() override;
 
+	ACreature* creature;
+
 	//with this, we can upload that with values
 	UPROPERTY()
 		UCreatureUserWidget* CreatureHUD;
@@ -25,6 +28,8 @@ public:
 	UPROPERTY(EditAnywhere)
 		TSubclassOf<class UUserWidget> ProgressBarWidgetRef;
 
-	UPROPERTY(EditAnywhere)
-		UProgressBar* ProgressBar;
+	UPROPERTY(meta=(BindWidget))
+		class UProgressBar* ProgressBar;
+
+	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 };

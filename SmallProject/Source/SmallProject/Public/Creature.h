@@ -24,6 +24,9 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	float GetHealth() const { return Health; }
+	float GetMaxHealth() const { return MaxHealth; }
+
 	//UPROPERTY(EditAnywhere, Category="widgets")
 		//UUserWidget* LifeBarWidget;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Classes, meta = (DisplayName = "HUD Class"))
@@ -31,4 +34,7 @@ public:
 
 	UPROPERTY()
 	UUserWidget* LifeBarWidget;
+
+	float Health;
+	float MaxHealth = 120;
 };
