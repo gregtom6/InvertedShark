@@ -7,19 +7,21 @@ void UCreatureUserWidget::NativeConstruct() {
 	Super::NativeConstruct();
 		
 
-	if (ProgressBarWidgetRef)
+	UE_LOG(LogTemp, Warning, TEXT("lefutok"));
+
+	if (HUDClass)
 	{
-
-		UUserWidget* widget = CreateWidget(this, ProgressBarWidgetRef);
-		CreatureHUD->AddToPlayerScreen();
-		CreatureHUD->AddToViewport(0);
-
-		ProgressBar->SetPercent(0.2f);
+		UE_LOG(LogTemp, Warning, TEXT("lefutok2"));
+		LifeBarWidget = CreateWidget(GetWorld(), HUDClass);
+		if (LifeBarWidget)
+		{
+			LifeBarWidget->AddToViewport();
+		}
 	}
 }
 
 void UCreatureUserWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 {
 	Super::NativeTick(MyGeometry, InDeltaTime);
-	ProgressBar->SetPercent(creature->GetHealth() / creature->GetMaxHealth());
+	HealthBar->SetPercent(creature->GetHealth() / creature->GetMaxHealth());
 }

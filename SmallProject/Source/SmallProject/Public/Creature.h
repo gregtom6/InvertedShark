@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Blueprint/UserWidget.h"
+#include "Components/WidgetComponent.h"
 #include "Creature.generated.h"
 
 UCLASS()
@@ -21,19 +22,14 @@ protected:
 	virtual void BeginPlay() override;
 
 public:	
+
+	//UPROPERTY(VisibleAnywhere)
+		//UWidgetComponent* HealthWidgetComp;
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	float GetHealth() const { return Health; }
 	float GetMaxHealth() const { return MaxHealth; }
-
-	//UPROPERTY(EditAnywhere, Category="widgets")
-		//UUserWidget* LifeBarWidget;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Classes, meta = (DisplayName = "HUD Class"))
-		TSubclassOf<class UUserWidget> HUDClass;
-
-	UPROPERTY()
-	UUserWidget* LifeBarWidget;
 
 	float Health;
 	float MaxHealth = 120;

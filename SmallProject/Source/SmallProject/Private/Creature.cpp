@@ -2,8 +2,8 @@
 
 
 #include "Creature.h"
+#include "Components/WidgetComponent.h"
 #include "CreatureUserWidget.h"
-#include "Blueprint/UserWidget.h"
 
 // Sets default values
 ACreature::ACreature()
@@ -12,6 +12,9 @@ ACreature::ACreature()
 	PrimaryActorTick.bCanEverTick = true;
 
 	Health = MaxHealth;
+
+	//HealthWidgetComp = CreateDefaultSubobject<UWidgetComponent>(TEXT("health bar"));
+	//HealthWidgetComp->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 }
 
 // Called when the game starts or when spawned
@@ -19,17 +22,8 @@ void ACreature::BeginPlay()
 {
 	Super::BeginPlay();
 
-	UE_LOG(LogTemp, Warning, TEXT("lefutok"));
-	
-	if (HUDClass)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("lefutok2"));
-		LifeBarWidget = CreateWidget(GetWorld(), HUDClass);
-		if (LifeBarWidget)
-		{
-			LifeBarWidget->AddToViewport();
-		}
-	}
+	//UCreatureUserWidget* userWidget = Cast<UCreatureUserWidget>(HealthWidgetComp->GetUserWidgetObject());
+	//userWidget->creature = this;
 	
 }
 

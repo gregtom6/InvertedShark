@@ -21,15 +21,14 @@ public:
 
 	ACreature* creature;
 
-	//with this, we can upload that with values
-	UPROPERTY()
-		UCreatureUserWidget* CreatureHUD;
-	//this spawns the HUD
-	UPROPERTY(EditAnywhere)
-		TSubclassOf<class UUserWidget> ProgressBarWidgetRef;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Classes, meta = (DisplayName = "HUD Class"))
+		TSubclassOf<class UUserWidget> HUDClass;
 
-	UPROPERTY(meta=(BindWidget))
-		class UProgressBar* ProgressBar;
+	UPROPERTY()
+		UUserWidget* LifeBarWidget;
+
+	UPROPERTY(meta = (BindWidget))
+		class UProgressBar* HealthBar;
 
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 };
