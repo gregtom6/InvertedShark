@@ -63,7 +63,7 @@ void AGameCharacter::Tick(float DeltaTime)
 	CameraMesh->SetPhysicsLinearVelocity(clampedVelocity);
 
 	FVector actorLocation = GetActorLocation();
-	//UE_LOG(LogTemp, Warning, TEXT("height %lf"), actorLocation.Z);
+	//UE_LOG(LogTemp, Log, TEXT("height %lf"), actorLocation.Z);
 
 	if (actorLocation.Z <= heightToDie) {
 		SetActorLocation(startPos);
