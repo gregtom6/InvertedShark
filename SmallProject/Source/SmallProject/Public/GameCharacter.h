@@ -49,6 +49,11 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "character settings")
 		float velocityLimit = 300.f;
 
+	UPROPERTY(EditAnywhere, Category = "character settings")
+		float heightToDie = -1000.f;
+
+	FVector startPos;
+
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

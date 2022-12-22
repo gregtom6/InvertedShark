@@ -50,6 +50,7 @@ void AGameCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
+	startPos = GetActorLocation();
 }
 
 // Called every frame
@@ -60,6 +61,13 @@ void AGameCharacter::Tick(float DeltaTime)
 	FVector currentVelocity = CameraMesh->GetPhysicsLinearVelocity();
 	FVector clampedVelocity = currentVelocity.GetClampedToMaxSize(velocityLimit);
 	CameraMesh->SetPhysicsLinearVelocity(clampedVelocity);
+
+	FVector actorLocation = GetActorLocation();
+	//UE_LOG(LogTemp, Warning, TEXT("height %lf"), actorLocation.Z);
+
+	if (actorLocation.Z <= heightToDie) {
+		SetActorLocation(startPos);
+	}
 }
 
 // Called to bind functionality to input
