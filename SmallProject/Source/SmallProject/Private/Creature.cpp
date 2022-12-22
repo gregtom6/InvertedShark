@@ -27,6 +27,10 @@ void ACreature::BeginPlay()
 		if (LifeBarWidget)
 		{
 			LifeBarWidget->AddToViewport();
+
+			
+
+			UCreatureUserWidget creature = dynamic_cast<UCreatureUserWidget*>(LifeBarWidget);
 		}
 	}
 	

@@ -24,4 +24,7 @@ public:
 	//this spawns the HUD
 	UPROPERTY(EditAnywhere)
 		TSubclassOf<class UUserWidget> ProgressBarWidgetRef;
+
+	UPROPERTY(EditAnywhere)
+		UProgressBar* ProgressBar;
 };

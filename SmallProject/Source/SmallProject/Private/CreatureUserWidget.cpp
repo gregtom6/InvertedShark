@@ -13,5 +13,8 @@ void UCreatureUserWidget::NativeConstruct() {
 		UUserWidget* widget = CreateWidget(this, ProgressBarWidgetRef);
 		CreatureHUD->AddToPlayerScreen();
 		CreatureHUD->AddToViewport(0);
+
+		ProgressBar->SetPercent(0.2f);
 	}
 }
+
