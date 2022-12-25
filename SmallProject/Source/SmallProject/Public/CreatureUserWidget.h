@@ -16,19 +16,17 @@ class SMALLPROJECT_API UCreatureUserWidget : public UUserWidget
 {
 	GENERATED_BODY()
 	
-public:
+protected:
 	virtual void NativeConstruct() override;
-
-	ACreature* creature;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Classes, meta = (DisplayName = "HUD Class"))
+	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
+	/*
+	UPROPERTY(EditAnywhere)
 		TSubclassOf<class UUserWidget> HUDClass;
 
-	UPROPERTY()
-		UUserWidget* LifeBarWidget;
-
-	UPROPERTY(meta = (BindWidget))
-		class UProgressBar* HealthBar;
-
-	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
+	UPROPERTY(EditAnywhere)
+		UProgressBar* HealthBar;
+		*/
+public:
+	ACreature* creature;
+	
 };

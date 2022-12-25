@@ -15,18 +15,19 @@ class SMALLPROJECT_API ACreature : public AActor
 	
 public:	
 	// Sets default values for this actor's properties
-	ACreature();
+	//ACreature();
+	ACreature(const FObjectInitializer& ObjectInitializer);
+
+	virtual void Tick(float DeltaTime) override;
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 public:	
-
-	//UPROPERTY(VisibleAnywhere)
-		//UWidgetComponent* HealthWidgetComp;
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+	
+	UPROPERTY(EditAnywhere)
+		UWidgetComponent* HealthWidgetComp;
 
 	float GetHealth() const { return Health; }
 	float GetMaxHealth() const { return MaxHealth; }

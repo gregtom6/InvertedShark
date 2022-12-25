@@ -6,25 +6,42 @@
 #include "CreatureUserWidget.h"
 
 // Sets default values
-ACreature::ACreature()
+ACreature::ACreature(const FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer)
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	Health = MaxHealth;
+	if (RootComponent == nullptr)
+	{
+		RootComponent = ObjectInitializer.CreateDefaultSubobject<USceneComponent>(this, TEXT("Root"));
+	}
 
-	//HealthWidgetComp = CreateDefaultSubobject<UWidgetComponent>(TEXT("health bar"));
-	//HealthWidgetComp->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+	HealthWidgetComp = ObjectInitializer.CreateDefaultSubobject<UWidgetComponent>(this, TEXT("Healthbar"));
+	HealthWidgetComp->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+
+	Health = MaxHealth;
+	/*
+	UUserWidget* wid = HealthWidgetComp->GetUserWidgetObject();
+
+	if (wid != nullptr) {
+
+
+		UCreatureUserWidget* widg = Cast<UCreatureUserWidget>(wid);
+
+		UE_LOG(LogTemp, Warning, TEXT("UUserWidget nem null"));
+
+		if (widg != nullptr) {
+			widg->creature = this;
+		}
+
+	}
+	*/
 }
 
 // Called when the game starts or when spawned
 void ACreature::BeginPlay()
 {
 	Super::BeginPlay();
-
-	//UCreatureUserWidget* userWidget = Cast<UCreatureUserWidget>(HealthWidgetComp->GetUserWidgetObject());
-	//userWidget->creature = this;
-	
 }
 
 // Called every frame
@@ -32,6 +49,29 @@ void ACreature::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	//UE_LOG(LogTemp, Warning, TEXT("Hello"));
+	UUserWidget* wid = HealthWidgetComp->GetUserWidgetObject();
+
+	if (wid != nullptr) {
+
+
+		UCreatureUserWidget* widg = Cast<UCreatureUserWidget>(wid);
+
+		UE_LOG(LogTemp, Warning, TEXT("UUserWidget nem null"));
+
+		widg->creature = this;
+
+		//UCreatureUserWidget* dynamic_cast<UCreatureUserWidget*> (widg);
+
+		if (widg != nullptr) {
+			UE_LOG(LogTemp, Warning, TEXT("creatureuserwidget nem null"));
+		}
+		else {
+			UE_LOG(LogTemp, Warning, TEXT("creatureuserwidget null"));
+		}
+	}
+	else {
+		UE_LOG(LogTemp, Warning, TEXT("UUserWidget null"));
+	}
+
 }
 
