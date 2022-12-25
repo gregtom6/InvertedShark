@@ -11,7 +11,7 @@
 /**
  * 
  */
-UCLASS()
+UCLASS(Abstract)
 class SMALLPROJECT_API UCreatureUserWidget : public UUserWidget
 {
 	GENERATED_BODY()
@@ -22,10 +22,11 @@ protected:
 	/*
 	UPROPERTY(EditAnywhere)
 		TSubclassOf<class UUserWidget> HUDClass;
-
-	UPROPERTY(EditAnywhere)
-		UProgressBar* HealthBar;
 		*/
+
+	UPROPERTY(meta = (BindWidget))
+		class UProgressBar* HealthBar;
+		
 public:
 	ACreature* creature;
 	

@@ -30,6 +30,6 @@ void UCreatureUserWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaT
 	if (creature != nullptr) {
 		UE_LOG(LogTemp, Warning, TEXT("creature nem null"));
 
-		//HealthBar->SetPercent(creature->GetHealth() / creature->GetMaxHealth());
+		HealthBar->SetPercent(creature->GetHealth() / creature->GetMaxHealth());
 	}
 }
