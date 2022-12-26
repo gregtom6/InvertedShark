@@ -19,10 +19,6 @@ class SMALLPROJECT_API UCreatureUserWidget : public UUserWidget
 protected:
 	virtual void NativeConstruct() override;
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
-	/*
-	UPROPERTY(EditAnywhere)
-		TSubclassOf<class UUserWidget> HUDClass;
-		*/
 
 	UPROPERTY(meta = (BindWidget))
 		class UProgressBar* HealthBar;

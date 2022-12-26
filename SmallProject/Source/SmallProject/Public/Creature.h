@@ -26,8 +26,11 @@ protected:
 
 public:	
 	
-	UPROPERTY(EditAnywhere)
-		UWidgetComponent* HealthWidgetComp;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="settings")
+		class UWidgetComponent* HealthWidgetComp;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "settings")
+		float deltaDamage;
 
 	float GetHealth() const { return Health; }
 	float GetMaxHealth() const { return MaxHealth; }
