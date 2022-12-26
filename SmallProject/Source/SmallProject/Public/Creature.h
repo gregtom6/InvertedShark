@@ -32,6 +32,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "settings")
 		float deltaDamage;
 
+	UPROPERTY(EditAnywhere)
+		UStaticMeshComponent* CreatureMesh;
+
 	float GetHealth() const { return Health; }
 	float GetMaxHealth() const { return MaxHealth; }
 

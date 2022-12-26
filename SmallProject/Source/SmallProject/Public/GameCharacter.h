@@ -7,6 +7,7 @@
 #include "Camera/CameraComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "PhysicsEngine/PhysicsConstraintComponent.h"
+#include "Creature.h"
 #include "GameCharacter.generated.h"
 
 UCLASS()
@@ -58,6 +59,10 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 		UPhysicsConstraintComponent* RightArmPhysicsConstraint;
+	/*
+	UPROPERTY(EditAnywhere)
+		FConstrainComponentPropName name;
+		*/
 		
 	FVector startPos;
 

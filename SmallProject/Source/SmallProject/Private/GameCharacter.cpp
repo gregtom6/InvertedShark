@@ -23,6 +23,27 @@ AGameCharacter::AGameCharacter()
 
 	LeftArmPhysicsConstraint->SetupAttachment(CameraMesh);
 	RightArmPhysicsConstraint->SetupAttachment(CameraMesh);
+
+	TArray<AActor*> FoundActors;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ACreature::StaticClass(), FoundActors);
+
+	for (int i = 0; i < FoundActors.Num(); i++) {
+		ACreature* creature = Cast<ACreature>(FoundActors[i]);
+
+		if (creature != nullptr) {
+			UE_LOG(LogTemp, Warning, TEXT("creature fizikahoz megkapva"));
+		}
+
+		RightArmPhysicsConstraint->ConstraintActor1 = creature;
+		FConstrainComponentPropName name;
+		name.ComponentName = "StaticMesh";
+		RightArmPhysicsConstraint->ComponentName1 = name;
+
+		RightArmPhysicsConstraint->ConstraintActor2 = this;
+		FConstrainComponentPropName name2;
+		name2.ComponentName = CameraMesh->GetFName();
+		RightArmPhysicsConstraint->ComponentName2 = name2;
+	}
 }
 
 void AGameCharacter::RotateLR(float rotateDelta) {
