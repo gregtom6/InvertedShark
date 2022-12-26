@@ -13,11 +13,16 @@ AGameCharacter::AGameCharacter()
 	//create components
 	CameraMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("CameraMesh"));
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
+	LeftArmPhysicsConstraint = CreateDefaultSubobject<UPhysicsConstraintComponent>(TEXT("LeftArm"));
+	RightArmPhysicsConstraint = CreateDefaultSubobject< UPhysicsConstraintComponent>(TEXT("RightArm"));
 
 
 	Camera->FieldOfView = 120.f;
 	Camera->SetupAttachment(CameraMesh);
 	Camera->SetRelativeLocation(FVector(-100.0f, 0.0f, 50.0f));
+
+	LeftArmPhysicsConstraint->SetupAttachment(CameraMesh);
+	RightArmPhysicsConstraint->SetupAttachment(CameraMesh);
 }
 
 void AGameCharacter::RotateLR(float rotateDelta) {

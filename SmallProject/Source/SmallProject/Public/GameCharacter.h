@@ -52,13 +52,13 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "character settings")
 		float heightToDie = -1000.f;
-
+	
 	UPROPERTY(EditAnywhere)
 		UPhysicsConstraintComponent* LeftArmPhysicsConstraint;
 
 	UPROPERTY(EditAnywhere)
 		UPhysicsConstraintComponent* RightArmPhysicsConstraint;
-
+		
 	FVector startPos;
 
 public:
