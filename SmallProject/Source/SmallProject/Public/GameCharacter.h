@@ -6,6 +6,7 @@
 #include "GameFramework/Pawn.h"
 #include "Camera/CameraComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "PhysicsEngine/PhysicsConstraintComponent.h"
 #include "GameCharacter.generated.h"
 
 UCLASS()
@@ -51,6 +52,12 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "character settings")
 		float heightToDie = -1000.f;
+
+	UPROPERTY(EditAnywhere)
+		UPhysicsConstraintComponent* LeftArmPhysicsConstraint;
+
+	UPROPERTY(EditAnywhere)
+		UPhysicsConstraintComponent* RightArmPhysicsConstraint;
 
 	FVector startPos;
 

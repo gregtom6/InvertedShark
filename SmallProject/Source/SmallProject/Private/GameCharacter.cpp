@@ -2,6 +2,7 @@
 
 
 #include "GameCharacter.h"
+#include <Kismet/GameplayStatics.h>
 
 // Sets default values
 AGameCharacter::AGameCharacter()
@@ -51,6 +52,8 @@ void AGameCharacter::BeginPlay()
 	Super::BeginPlay();
 
 	startPos = GetActorLocation();
+
+	//PhysicsConstraint.atta
 }
 
 // Called every frame
@@ -66,7 +69,8 @@ void AGameCharacter::Tick(float DeltaTime)
 	//UE_LOG(LogTemp, Log, TEXT("height %lf"), actorLocation.Z);
 
 	if (actorLocation.Z <= heightToDie) {
-		SetActorLocation(startPos);
+		//SetActorLocation(startPos);
+		UGameplayStatics::OpenLevel(this, FName(*GetWorld()->GetName()), false);
 	}
 }
 

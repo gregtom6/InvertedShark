@@ -4,6 +4,7 @@
 #include "Creature.h"
 #include "Components/WidgetComponent.h"
 #include "CreatureUserWidget.h"
+#include <Kismet/GameplayStatics.h>
 
 // Sets default values
 ACreature::ACreature(const FObjectInitializer& ObjectInitializer)
@@ -60,5 +61,9 @@ void ACreature::Tick(float DeltaTime)
 	
 
 	Health = Health > 0 ? Health - (deltaDamage*DeltaTime) : 0;
+
+	if (Health <= 0) {
+		UGameplayStatics::OpenLevel(this, FName(*GetWorld()->GetName()), false);
+	}
 }
 
