@@ -13,16 +13,16 @@ AGameCharacter::AGameCharacter()
 	//create components
 	CameraMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("CameraMesh"));
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
-	LeftArmPhysicsConstraint = CreateDefaultSubobject<UPhysicsConstraintComponent>(TEXT("LeftArm"));
-	RightArmPhysicsConstraint = CreateDefaultSubobject< UPhysicsConstraintComponent>(TEXT("RightArm"));
+	LeftArm = CreateDefaultSubobject<UPhysicsConstraintComponent>(TEXT("LeftArm"));
+	RightArm = CreateDefaultSubobject< UPhysicsConstraintComponent>(TEXT("RightArm"));
 
 
 	Camera->FieldOfView = 120.f;
 	Camera->SetupAttachment(CameraMesh);
 	Camera->SetRelativeLocation(FVector(-100.0f, 0.0f, 50.0f));
 
-	LeftArmPhysicsConstraint->SetupAttachment(CameraMesh);
-	RightArmPhysicsConstraint->SetupAttachment(CameraMesh);
+	//LeftArmPhysicsConstraint->SetupAttachment(CameraMesh);
+	RightArm->SetupAttachment(CameraMesh);
 }
 
 void AGameCharacter::RotateLR(float rotateDelta) {
@@ -62,15 +62,19 @@ void AGameCharacter::HugCreature() {
 			UE_LOG(LogTemp, Warning, TEXT("creature fizikahoz megkapva"));
 		}
 
-		RightArmPhysicsConstraint->ConstraintActor1 = creature;
-		FConstrainComponentPropName name;
-		name.ComponentName = "StaticMesh";
-		RightArmPhysicsConstraint->ComponentName1 = name;
+		RightArm->ConstraintActor1 = this;
+		FConstrainComponentPropName name1;
+		name1.ComponentName = CameraMesh->GetFName();
+		RightArm->ComponentName1 = name1;
 
-		RightArmPhysicsConstraint->ConstraintActor2 = this;
+		RightArm->ConstraintActor2 = creature;
 		FConstrainComponentPropName name2;
-		name2.ComponentName = CameraMesh->GetFName();
-		RightArmPhysicsConstraint->ComponentName2 = name2;
+		name2.ComponentName = "StaticMesh";
+		RightArm->ComponentName2 = name2;
+
+		CameraMesh->SetAllPhysicsLinearVelocity(FVector::ZeroVector);
+		
+		RightArm->SetWorldLocation(creature->GetLocation());
 	}
 }
 

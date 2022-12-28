@@ -10,7 +10,7 @@
 #include "Creature.h"
 #include "GameCharacter.generated.h"
 
-UCLASS()
+UCLASS(BlueprintType)
 class SMALLPROJECT_API AGameCharacter : public APawn
 {
 	GENERATED_BODY()
@@ -38,6 +38,8 @@ protected:
 	UPROPERTY(EditAnywhere)
 		UStaticMeshComponent* CameraMesh;
 
+	
+
 	UPROPERTY(EditAnywhere, Category = "character settings")
 		float MovementSpeed = 1.f;
 
@@ -56,11 +58,7 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "character settings")
 		float heightToDie = -1000.f;
 	
-	UPROPERTY(EditAnywhere)
-		UPhysicsConstraintComponent* LeftArmPhysicsConstraint;
-
-	UPROPERTY(EditAnywhere)
-		UPhysicsConstraintComponent* RightArmPhysicsConstraint;
+	
 	/*
 	UPROPERTY(EditAnywhere)
 		FConstrainComponentPropName name;
@@ -69,6 +67,13 @@ protected:
 	FVector startPos;
 
 public:
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		UPhysicsConstraintComponent* LeftArm;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		UPhysicsConstraintComponent* RightArm;
+
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 

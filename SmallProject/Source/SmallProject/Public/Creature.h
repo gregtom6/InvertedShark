@@ -37,6 +37,7 @@ public:
 
 	float GetHealth() const { return Health; }
 	float GetMaxHealth() const { return MaxHealth; }
+	FVector GetLocation() const { return GetActorLocation(); }
 
 	float Health;
 	float MaxHealth = 120;
