@@ -23,15 +23,23 @@ AGameCharacter::AGameCharacter()
 
 	//LeftArmPhysicsConstraint->SetupAttachment(CameraMesh);
 	RightArm->SetupAttachment(CameraMesh);
+
+	isHugging = false;
 }
 
 void AGameCharacter::RotateLR(float rotateDelta) {
+
+	if (isHugging) { return; }
+
 	FRotator actualRotation = GetActorRotation();
 	actualRotation.Yaw += rotateDelta * RotateSpeed;
 	SetActorRotation(actualRotation);
 }
 
 void AGameCharacter::StrafeLR(float movementDelta) {
+
+	if (isHugging) { return; }
+
 	FVector rightVector = GetActorRightVector();
 	FVector upVector = GetActorUpVector();
 	FVector forwardVector = GetActorForwardVector();
@@ -44,6 +52,8 @@ void AGameCharacter::StrafeLR(float movementDelta) {
 
 void AGameCharacter::WingBeat() {
 
+	if (isHugging) { return; }
+
 	FVector actorForwardVector = GetActorForwardVector() * ForwardFlyStrength;
 	FVector actorUpVector = GetActorUpVector() * WingStrength;
 	FVector impulseDirection = actorUpVector + actorForwardVector;
@@ -52,30 +62,45 @@ void AGameCharacter::WingBeat() {
 }
 
 void AGameCharacter::HugCreature() {
-	TArray<AActor*> FoundActors;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ACreature::StaticClass(), FoundActors);
 
-	if (FoundActors.Num() > 0) {
-		ACreature* creature = Cast<ACreature>(FoundActors[0]);
+	if (!isHugging) {
+		TArray<AActor*> FoundActors;
+		UGameplayStatics::GetAllActorsOfClass(GetWorld(), ACreature::StaticClass(), FoundActors);
 
-		if (creature != nullptr) {
-			UE_LOG(LogTemp, Warning, TEXT("creature fizikahoz megkapva"));
+		if (FoundActors.Num() > 0) {
+			ACreature* creature = Cast<ACreature>(FoundActors[0]);
+
+			if (creature != nullptr) {
+				UE_LOG(LogTemp, Warning, TEXT("creature fizikahoz megkapva"));
+			}
+
+			RightArm->ConstraintActor1 = this;
+			FConstrainComponentPropName name1;
+			name1.ComponentName = CameraMesh->GetFName();
+			RightArm->ComponentName1 = name1;
+
+			RightArm->ConstraintActor2 = creature;
+			FConstrainComponentPropName name2;
+			name2.ComponentName = "StaticMesh";
+			RightArm->ComponentName2 = name2;
+
+			CameraMesh->SetAllPhysicsLinearVelocity(FVector::ZeroVector);
+			CameraMesh->SetAllPhysicsAngularVelocityInDegrees(FVector::ZeroVector);
+
+			RightArm->SetWorldLocation(creature->GetLocation());
+
+			RightArm->InitComponentConstraint();
+
+			isHugging = true;
 		}
-
-		RightArm->ConstraintActor1 = this;
-		FConstrainComponentPropName name1;
-		name1.ComponentName = CameraMesh->GetFName();
-		RightArm->ComponentName1 = name1;
-
-		RightArm->ConstraintActor2 = creature;
-		FConstrainComponentPropName name2;
-		name2.ComponentName = "StaticMesh";
-		RightArm->ComponentName2 = name2;
-
-		CameraMesh->SetAllPhysicsLinearVelocity(FVector::ZeroVector);
-		
-		RightArm->SetWorldLocation(creature->GetLocation());
 	}
+	else {
+
+		RightArm->BreakConstraint();
+
+		isHugging = false;
+	}
+	
 }
 
 // Called when the game starts or when spawned
@@ -84,8 +109,6 @@ void AGameCharacter::BeginPlay()
 	Super::BeginPlay();
 
 	startPos = GetActorLocation();
-
-	//PhysicsConstraint.atta
 }
 
 // Called every frame

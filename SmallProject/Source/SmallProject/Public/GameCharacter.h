@@ -38,8 +38,6 @@ protected:
 	UPROPERTY(EditAnywhere)
 		UStaticMeshComponent* CameraMesh;
 
-	
-
 	UPROPERTY(EditAnywhere, Category = "character settings")
 		float MovementSpeed = 1.f;
 
@@ -57,12 +55,6 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "character settings")
 		float heightToDie = -1000.f;
-	
-	
-	/*
-	UPROPERTY(EditAnywhere)
-		FConstrainComponentPropName name;
-		*/
 		
 	FVector startPos;
 
@@ -73,6 +65,8 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		UPhysicsConstraintComponent* RightArm;
+
+	bool isHugging;
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
