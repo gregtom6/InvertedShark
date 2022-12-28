@@ -25,6 +25,8 @@ public:
 
 	void RotateLR(float rotateDelta);
 
+	void HugCreature();
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

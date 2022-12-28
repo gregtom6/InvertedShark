@@ -23,27 +23,6 @@ AGameCharacter::AGameCharacter()
 
 	LeftArmPhysicsConstraint->SetupAttachment(CameraMesh);
 	RightArmPhysicsConstraint->SetupAttachment(CameraMesh);
-
-	TArray<AActor*> FoundActors;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ACreature::StaticClass(), FoundActors);
-
-	for (int i = 0; i < FoundActors.Num(); i++) {
-		ACreature* creature = Cast<ACreature>(FoundActors[i]);
-
-		if (creature != nullptr) {
-			UE_LOG(LogTemp, Warning, TEXT("creature fizikahoz megkapva"));
-		}
-
-		RightArmPhysicsConstraint->ConstraintActor1 = creature;
-		FConstrainComponentPropName name;
-		name.ComponentName = "StaticMesh";
-		RightArmPhysicsConstraint->ComponentName1 = name;
-
-		RightArmPhysicsConstraint->ConstraintActor2 = this;
-		FConstrainComponentPropName name2;
-		name2.ComponentName = CameraMesh->GetFName();
-		RightArmPhysicsConstraint->ComponentName2 = name2;
-	}
 }
 
 void AGameCharacter::RotateLR(float rotateDelta) {
@@ -70,6 +49,29 @@ void AGameCharacter::WingBeat() {
 	FVector impulseDirection = actorUpVector + actorForwardVector;
 
 	CameraMesh->AddImpulse(impulseDirection);
+}
+
+void AGameCharacter::HugCreature() {
+	TArray<AActor*> FoundActors;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ACreature::StaticClass(), FoundActors);
+
+	if (FoundActors.Num() > 0) {
+		ACreature* creature = Cast<ACreature>(FoundActors[0]);
+
+		if (creature != nullptr) {
+			UE_LOG(LogTemp, Warning, TEXT("creature fizikahoz megkapva"));
+		}
+
+		RightArmPhysicsConstraint->ConstraintActor1 = creature;
+		FConstrainComponentPropName name;
+		name.ComponentName = "StaticMesh";
+		RightArmPhysicsConstraint->ComponentName1 = name;
+
+		RightArmPhysicsConstraint->ConstraintActor2 = this;
+		FConstrainComponentPropName name2;
+		name2.ComponentName = CameraMesh->GetFName();
+		RightArmPhysicsConstraint->ComponentName2 = name2;
+	}
 }
 
 // Called when the game starts or when spawned
@@ -111,5 +113,7 @@ void AGameCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	PlayerInputComponent->BindAxis(TEXT("RotateLR"), this, &AGameCharacter::RotateLR);
 
 	PlayerInputComponent->BindAction(TEXT("WingBeat"), IE_Pressed, this, &AGameCharacter::WingBeat);
+
+	PlayerInputComponent->BindAction(TEXT("HugCreature"), IE_Pressed, this, &AGameCharacter::HugCreature);
 }
 
