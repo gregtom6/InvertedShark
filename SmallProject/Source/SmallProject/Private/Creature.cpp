@@ -57,7 +57,7 @@ void ACreature::BeginPlay()
 
 	startTime = UGameplayStatics::GetRealTimeSeconds(GetWorld());
 
-	actualStatus = Status::Moving;
+	actualStatus = Status::Initial;
 }
 
 // Called every frame
@@ -65,7 +65,14 @@ void ACreature::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (actualStatus == Status::Moving) {
+	if (actualStatus == Status::Initial) {
+		float currentTime = UGameplayStatics::GetRealTimeSeconds(GetWorld()) - startTime;
+		if (currentTime >= waitTimeBeforeFirstMove) {
+			startTime = UGameplayStatics::GetRealTimeSeconds(GetWorld());
+			actualStatus = Status::Moving;
+		}
+	}
+	else if (actualStatus == Status::Moving) {
 		float currentTime = UGameplayStatics::GetRealTimeSeconds(GetWorld()) - startTime;
 		currentTime *= movementSpeed;
 		if (currentTime > 1.f) {

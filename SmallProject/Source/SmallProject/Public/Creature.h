@@ -42,6 +42,9 @@ public:
 		float movementSpeed;
 
 	UPROPERTY(EditAnywhere)
+		float waitTimeBeforeFirstMove;
+
+	UPROPERTY(EditAnywhere)
 		float waitingTimeToMoveForwardAfterDefeatingEnemies;
 
 	Status actualStatus;
@@ -62,6 +65,7 @@ public:
 UENUM()
 enum class Status : uint8
 {
+	Initial,
 	Stopped,
 	Moving,
 };
