@@ -51,6 +51,13 @@ void ACreature::BeginPlay()
 			UE_LOG(LogTemp, Warning, TEXT("UUserWidget null"));
 		}
 	}
+
+	actualStartPosition = GetActorLocation();
+	actualEndPosition = positionsToMove[0]->GetActorLocation();
+
+	startTime = UGameplayStatics::GetRealTimeSeconds(GetWorld());
+
+	actualStatus = Status::Moving;
 }
 
 // Called every frame
@@ -58,12 +65,25 @@ void ACreature::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	
+	if (actualStatus == Status::Moving) {
+		float currentTime = UGameplayStatics::GetRealTimeSeconds(GetWorld()) - startTime;
+		currentTime *= movementSpeed;
+		if (currentTime > 1.f) {
 
-	Health = Health > 0 ? Health - (deltaDamage*DeltaTime) : 0;
+			actualStatus = Status::Stopped;
+			currentTime = 1.f;
+		}
 
-	if (Health <= 0) {
-		UGameplayStatics::OpenLevel(this, FName(*GetWorld()->GetName()), false);
+		UE_LOG(LogTemp, Warning, TEXT("%lf"), currentTime);
+
+		SetActorLocation(FMath::Lerp(actualStartPosition, actualEndPosition, currentTime));
+	}
+	else if (actualStatus == Status::Stopped) {
+		Health = Health > 0 ? Health - (deltaDamage * DeltaTime) : 0;
+
+		if (Health <= 0) {
+			UGameplayStatics::OpenLevel(this, FName(*GetWorld()->GetName()), false);
+		}
 	}
 }
 

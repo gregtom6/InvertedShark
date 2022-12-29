@@ -35,10 +35,33 @@ public:
 	UPROPERTY(EditAnywhere)
 		UStaticMeshComponent* CreatureMesh;
 
+	UPROPERTY(EditAnywhere)
+		TArray<AActor*> positionsToMove;
+
+	UPROPERTY(EditAnywhere)
+		float movementSpeed;
+
+	UPROPERTY(EditAnywhere)
+		float waitingTimeToMoveForwardAfterDefeatingEnemies;
+
+	Status actualStatus;
+
+	FVector actualStartPosition;
+	FVector actualEndPosition;
+
+	double startTime;
+
 	float GetHealth() const { return Health; }
 	float GetMaxHealth() const { return MaxHealth; }
 	FVector GetLocation() const { return GetActorLocation(); }
 
 	float Health;
 	float MaxHealth = 120;
+};
+
+UENUM()
+enum class Status : uint8
+{
+	Stopped,
+	Moving,
 };
