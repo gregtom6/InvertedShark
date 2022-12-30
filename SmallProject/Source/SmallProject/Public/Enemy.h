@@ -30,6 +30,10 @@ public:
 
 	void SetSpline();
 
+	void MoveToCreature();
+
+	void StartEating();
+
 	UPROPERTY(EditAnywhere, Category = "Spline")
 		USplineComponent* splineComponent;
 
@@ -47,4 +51,18 @@ public:
 	float currentTime;
 
 	float startTime;
+
+	EnemyStatus actualStatus;
+
+	FVector actualStartPosition;
+
+	FVector actualEndPosition;
+};
+
+UENUM()
+enum class EnemyStatus : uint8
+{
+	Initial,
+	Moving,
+	Eating,
 };

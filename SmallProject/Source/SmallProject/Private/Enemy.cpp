@@ -12,15 +12,11 @@ AEnemy::AEnemy()
 	splineComponent = CreateDefaultSubobject<USplineComponent>(TEXT("Spline"));
 	SetRootComponent(splineComponent);
 
-
-
+	actualStatus = EnemyStatus::Initial;
 }
 
 void AEnemy::OnConstruction(const FTransform& Transform) {
 
-
-
-	SetSpline();
 }
 
 void AEnemy::SetSpline() {
@@ -53,11 +49,23 @@ void AEnemy::SetSpline() {
 	}
 }
 
+void AEnemy::MoveToCreature() {
+	startTime = UGameplayStatics::GetRealTimeSeconds(GetWorld());
+	actualStartPosition = GetActorLocation();
+	actualStatus = EnemyStatus::Moving;
+}
+
+void AEnemy::StartEating() {
+	startTime = UGameplayStatics::GetRealTimeSeconds(GetWorld());
+	actualStartPosition = GetActorLocation();
+	actualStatus = EnemyStatus::Eating;
+}
+
 // Called when the game starts or when spawned
 void AEnemy::BeginPlay()
 {
 	Super::BeginPlay();
-
+	/*
 	if (creature != nullptr) {
 		TArray<FVector> points;
 
@@ -72,6 +80,7 @@ void AEnemy::BeginPlay()
 
 		startTime = UGameplayStatics::GetRealTimeSeconds(GetWorld());
 	}
+	*/
 }
 
 // Called every frame
@@ -79,21 +88,33 @@ void AEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	currentTime = UGameplayStatics::GetRealTimeSeconds(GetWorld()) - startTime;
+	if (actualStatus == EnemyStatus::Moving && creature != nullptr) {
+		currentTime = UGameplayStatics::GetRealTimeSeconds(GetWorld()) - startTime;
 
-	if (creature != nullptr && currentTime > 0.08f) {
-		TArray<FVector> points;
+		actualEndPosition = creature->GetActorLocation();
 
-		points.Add(GetActorLocation());
-		points.Add(creature->GetActorLocation());
+		if (currentTime <= 1.f)
+			SetActorLocation(FMath::Lerp(actualStartPosition, actualEndPosition, currentTime));
+	}
 
-		splineComponent->SetSplinePoints(points, ESplineCoordinateSpace::World, true);
+	else if (actualStatus == EnemyStatus::Eating && creature != nullptr) {
 
-		UE_LOG(LogTemp, Warning, TEXT("spline feltoltve"));
+		currentTime = UGameplayStatics::GetRealTimeSeconds(GetWorld()) - startTime;
 
-		SetSpline();
+		if (currentTime > 0.08f) {
+			TArray<FVector> points;
 
-		startTime = UGameplayStatics::GetRealTimeSeconds(GetWorld());
+			points.Add(GetActorLocation());
+			points.Add(creature->GetActorLocation());
+
+			splineComponent->SetSplinePoints(points, ESplineCoordinateSpace::World, true);
+
+			UE_LOG(LogTemp, Warning, TEXT("spline feltoltve"));
+
+			SetSpline();
+
+			startTime = UGameplayStatics::GetRealTimeSeconds(GetWorld());
+		}
 	}
 }
 

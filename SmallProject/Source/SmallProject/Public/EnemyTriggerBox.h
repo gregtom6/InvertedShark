@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Engine/TriggerBox.h"
+#include <Enemy.h>
 #include "EnemyTriggerBox.generated.h"
 
 /**
@@ -25,5 +26,5 @@ public:
 		void Event(class AActor* overlappedActor, class AActor* otherActor);
 
 	UPROPERTY(EditAnywhere)
-		TArray<AActor*> enemiesToCome;
+		TArray<AEnemy*> enemiesToCome;
 };
