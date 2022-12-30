@@ -45,6 +45,8 @@ void AEnemy::SetSpline() {
 
 		splineMeshComponent->SetForwardAxis(forwardAxis);
 
+		splineMeshComponent->SetGenerateOverlapEvents(true);
+
 		prevSplineMeshComp = splineMeshComponent;
 	}
 }

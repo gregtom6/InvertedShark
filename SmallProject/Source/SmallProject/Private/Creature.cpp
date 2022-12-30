@@ -5,6 +5,7 @@
 #include "Components/WidgetComponent.h"
 #include "CreatureUserWidget.h"
 #include <Kismet/GameplayStatics.h>
+#include "Enemy.h"
 
 // Sets default values
 ACreature::ACreature(const FObjectInitializer& ObjectInitializer)
@@ -58,6 +59,9 @@ void ACreature::BeginPlay()
 	startTime = UGameplayStatics::GetRealTimeSeconds(GetWorld());
 
 	actualStatus = Status::Initial;
+
+	OnActorBeginOverlap.AddDynamic(this, &ACreature::EnterEvent);
+	OnActorEndOverlap.AddDynamic(this, &ACreature::ExitEvent);
 }
 
 // Called every frame
@@ -86,12 +90,51 @@ void ACreature::Tick(float DeltaTime)
 		SetActorLocation(FMath::Lerp(actualStartPosition, actualEndPosition, currentTime));
 	}
 
+	UE_LOG(LogTemp, Warning, TEXT("attacking enemies: %d"), enemiesActuallyAttacking.Num());
 
-	
-	Health = Health > 0 ? Health - (deltaDamage * DeltaTime) : 0;
+	Health = Health > 0 ? Health - (deltaDamage * DeltaTime * enemiesActuallyAttacking.Num()) : 0;
 
 	if (Health <= 0) {
 		UGameplayStatics::OpenLevel(this, FName(*GetWorld()->GetName()), false);
 	}
 }
 
+void ACreature::EnterEvent(class AActor* overlappedActor, class AActor* otherActor) {
+	UE_LOG(LogTemp, Warning, TEXT("enemy lefut"));
+	if (otherActor && otherActor != this) {
+		UE_LOG(LogTemp, Warning, TEXT("enemy lef2"));
+		if (otherActor->IsA(AEnemy::StaticClass())) {
+
+			AEnemy* attackingEnemy = Cast<AEnemy>(otherActor);
+			if (!enemiesActuallyAttacking.Contains(attackingEnemy))
+				enemiesActuallyAttacking.Add(attackingEnemy);
+
+		}
+	}
+}
+
+void ACreature::ExitEvent(class AActor* overlappedActor, class AActor* otherActor) {
+	UE_LOG(LogTemp, Warning, TEXT("enemy lefut"));
+	if (otherActor && otherActor != this) {
+		UE_LOG(LogTemp, Warning, TEXT("enemy lef2"));
+		if (otherActor->IsA(AEnemy::StaticClass())) {
+
+			AEnemy* attackingEnemy = Cast<AEnemy>(otherActor);
+			if (enemiesActuallyAttacking.Contains(attackingEnemy))
+				enemiesActuallyAttacking.Remove(attackingEnemy);
+
+		}
+	}
+}
+
+void ACreature::TriggerEnter(class UPrimitiveComponent* HitComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) {
+	UE_LOG(LogTemp, Warning, TEXT("enemy lefut"));
+	if (OtherActor && OtherActor != this) {
+		UE_LOG(LogTemp, Warning, TEXT("enemy lef2"));
+		if (OtherActor->IsA(AEnemy::StaticClass())) {
+			UE_LOG(LogTemp, Warning, TEXT("enemy megtamadott"));
+
+
+		}
+	}
+}

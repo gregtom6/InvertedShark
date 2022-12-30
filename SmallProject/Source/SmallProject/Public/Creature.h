@@ -26,6 +26,15 @@ protected:
 
 public:	
 	
+	UFUNCTION()
+		void EnterEvent(class AActor* overlappedActor, class AActor* otherActor);
+
+	UFUNCTION()
+		void ExitEvent(class AActor* overlappedActor, class AActor* otherActor);
+
+	UFUNCTION()
+		void TriggerEnter(class UPrimitiveComponent* HitComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="settings")
 		class UWidgetComponent* HealthWidgetComp;
 
@@ -60,6 +69,8 @@ public:
 
 	float Health;
 	float MaxHealth = 120;
+
+	TArray<AActor*> enemiesActuallyAttacking;
 };
 
 UENUM()

@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "GameCharacter.h"
 #include "EnemyTriggerBox.h"
+#include "GameCharacter.h"
 
 AEnemyTriggerBox::AEnemyTriggerBox() {
 	OnActorBeginOverlap.AddDynamic(this, &AEnemyTriggerBox::Event);
