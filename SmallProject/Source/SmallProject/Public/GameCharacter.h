@@ -27,6 +27,8 @@ public:
 
 	void HugCreature();
 
+	void Attack();
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -37,6 +39,9 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 		UStaticMeshComponent* CameraMesh;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		UStaticMeshComponent* Tongue;
 
 	UPROPERTY(EditAnywhere, Category = "character settings")
 		float MovementSpeed = 1.f;
@@ -61,7 +66,7 @@ protected:
 public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		UPhysicsConstraintComponent* LeftArm;
+		UPhysicsConstraintComponent* LeftLeft;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		UPhysicsConstraintComponent* RightArm;

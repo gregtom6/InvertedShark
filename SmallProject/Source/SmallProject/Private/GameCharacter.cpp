@@ -13,15 +13,18 @@ AGameCharacter::AGameCharacter()
 	//create components
 	CameraMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("CameraMesh"));
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
-	LeftArm = CreateDefaultSubobject<UPhysicsConstraintComponent>(TEXT("LeftArm"));
+	
+	LeftLeft = CreateDefaultSubobject<UPhysicsConstraintComponent>(TEXT("LeftLeft"));
 	RightArm = CreateDefaultSubobject< UPhysicsConstraintComponent>(TEXT("RightArm"));
 
+	Tongue = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Tongue"));
+	Tongue->SetupAttachment(CameraMesh);
 
 	Camera->FieldOfView = 120.f;
 	Camera->SetupAttachment(CameraMesh);
 	Camera->SetRelativeLocation(FVector(-100.0f, 0.0f, 50.0f));
 
-	//LeftArmPhysicsConstraint->SetupAttachment(CameraMesh);
+	LeftLeft->SetupAttachment(CameraMesh);
 	RightArm->SetupAttachment(CameraMesh);
 
 	isHugging = false;
@@ -47,7 +50,7 @@ void AGameCharacter::StrafeLR(float movementDelta) {
 	FVector newLocation = GetActorLocation();
 	//rightVector.Y += movementDelta * MovementSpeed;
 
-	SetActorLocation(newLocation+(rightVector*movementDelta*MovementSpeed));
+	SetActorLocation(newLocation + (rightVector * movementDelta * MovementSpeed));
 }
 
 void AGameCharacter::WingBeat() {
@@ -100,7 +103,13 @@ void AGameCharacter::HugCreature() {
 
 		isHugging = false;
 	}
-	
+
+}
+
+void AGameCharacter::Attack() {
+	UE_LOG(LogTemp, Warning, TEXT("attack tortent"));
+
+
 }
 
 // Called when the game starts or when spawned
@@ -142,5 +151,7 @@ void AGameCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	PlayerInputComponent->BindAction(TEXT("WingBeat"), IE_Pressed, this, &AGameCharacter::WingBeat);
 
 	PlayerInputComponent->BindAction(TEXT("HugCreature"), IE_Pressed, this, &AGameCharacter::HugCreature);
+
+	PlayerInputComponent->BindAction(TEXT("Attack"), IE_Pressed, this, &AGameCharacter::Attack);
 }
 
