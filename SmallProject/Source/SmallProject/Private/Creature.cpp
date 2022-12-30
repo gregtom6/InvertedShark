@@ -85,12 +85,13 @@ void ACreature::Tick(float DeltaTime)
 
 		SetActorLocation(FMath::Lerp(actualStartPosition, actualEndPosition, currentTime));
 	}
-	else if (actualStatus == Status::Stopped) {
-		Health = Health > 0 ? Health - (deltaDamage * DeltaTime) : 0;
 
-		if (Health <= 0) {
-			UGameplayStatics::OpenLevel(this, FName(*GetWorld()->GetName()), false);
-		}
+
+	
+	Health = Health > 0 ? Health - (deltaDamage * DeltaTime) : 0;
+
+	if (Health <= 0) {
+		UGameplayStatics::OpenLevel(this, FName(*GetWorld()->GetName()), false);
 	}
 }
 
