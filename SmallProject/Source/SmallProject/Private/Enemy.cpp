@@ -79,9 +79,13 @@ void AEnemy::Tick(float DeltaTime)
 	if (actualStatus == EnemyStatus::Moving && creature != nullptr) {
 		currentTime = UGameplayStatics::GetRealTimeSeconds(GetWorld()) - startTime;
 
+		currentTime *= movementSpeed;
+
 		actualEndPosition = creature->GetActorLocation();
 
-		if (currentTime <= 1.f)
+		if (currentTime > 1.f)
+			currentTime = 1.f;
+
 			SetActorLocation(FMath::Lerp(actualStartPosition, actualEndPosition, currentTime));
 	}
 
@@ -90,18 +94,26 @@ void AEnemy::Tick(float DeltaTime)
 		currentTime = UGameplayStatics::GetRealTimeSeconds(GetWorld()) - startTime;
 
 		if (currentTime > 0.08f) {
-			TArray<FVector> points;
 
-			points.Add(GetActorLocation());
-			points.Add(creature->GetActorLocation());
+			FTransform transform=splineComponent->GetTransformAtSplinePoint(1, ESplineCoordinateSpace::World);
+			if (transform.GetLocation() != lastCurveEndPosition) {
+				TArray<FVector> points;
 
-			splineComponent->SetSplinePoints(points, ESplineCoordinateSpace::World, true);
+				points.Add(GetActorLocation());
+				points.Add(creature->GetActorLocation());
 
-			UE_LOG(LogTemp, Warning, TEXT("spline feltoltve"));
+				splineComponent->SetSplinePoints(points, ESplineCoordinateSpace::World, true);
 
-			SetSpline();
+				UE_LOG(LogTemp, Warning, TEXT("spline feltoltve"));
 
-			startTime = UGameplayStatics::GetRealTimeSeconds(GetWorld());
+				SetSpline();
+
+				lastCurveEndPosition = creature->GetActorLocation();
+
+				startTime = UGameplayStatics::GetRealTimeSeconds(GetWorld());
+			}
+
+			
 		}
 		
 	}

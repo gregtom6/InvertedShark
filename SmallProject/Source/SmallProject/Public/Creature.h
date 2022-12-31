@@ -51,10 +51,15 @@ public:
 		float movementSpeed;
 
 	UPROPERTY(EditAnywhere)
+		float fastMovementSpeed;
+
+	UPROPERTY(EditAnywhere)
 		float waitTimeBeforeFirstMove;
 
 	UPROPERTY(EditAnywhere)
 		float waitingTimeToMoveForwardAfterDefeatingEnemies;
+
+	void StepTargetIndex();
 
 	Status actualStatus;
 
@@ -70,6 +75,8 @@ public:
 	float Health;
 	float MaxHealth = 120;
 
+	int actualTargetIndex = 0;
+
 	TArray<AActor*> enemiesActuallyAttacking;
 };
 
@@ -79,4 +86,7 @@ enum class Status : uint8
 	Initial,
 	Stopped,
 	Moving,
+	UnderAttack,
+	MovingFast,
+	WaitBeforeMoveFast,
 };

@@ -47,6 +47,9 @@ public:
 	UPROPERTY(EditAnywhere)
 		ACreature* creature;
 
+	UPROPERTY(EditAnywhere)
+		float movementSpeed;
+
 	UFUNCTION()
 		void EnterEvent(class AActor* overlappedActor, class AActor* otherActor);
 
@@ -66,6 +69,8 @@ public:
 	FVector actualStartPosition;
 
 	FVector actualEndPosition;
+
+	FVector lastCurveEndPosition;
 };
 
 UENUM()

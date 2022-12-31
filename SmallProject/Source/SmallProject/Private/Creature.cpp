@@ -53,8 +53,7 @@ void ACreature::BeginPlay()
 		}
 	}
 
-	actualStartPosition = GetActorLocation();
-	actualEndPosition = positionsToMove[0]->GetActorLocation();
+	StepTargetIndex();
 
 	startTime = UGameplayStatics::GetRealTimeSeconds(GetWorld());
 
@@ -62,6 +61,15 @@ void ACreature::BeginPlay()
 
 	OnActorBeginOverlap.AddDynamic(this, &ACreature::EnterEvent);
 	OnActorEndOverlap.AddDynamic(this, &ACreature::ExitEvent);
+}
+
+void ACreature::StepTargetIndex() {
+	if (actualTargetIndex < positionsToMove.Num()) {
+		actualStartPosition = GetActorLocation();
+		actualEndPosition = positionsToMove[actualTargetIndex]->GetActorLocation();
+
+		actualTargetIndex += 1;
+	}
 }
 
 // Called every frame
@@ -79,6 +87,28 @@ void ACreature::Tick(float DeltaTime)
 	else if (actualStatus == Status::Moving) {
 		float currentTime = UGameplayStatics::GetRealTimeSeconds(GetWorld()) - startTime;
 		currentTime *= movementSpeed;
+		if (currentTime > 1.f) {
+
+			actualStatus = Status::Stopped;
+			currentTime = 1.f;
+		}
+
+		UE_LOG(LogTemp, Warning, TEXT("%lf"), currentTime);
+
+		SetActorLocation(FMath::Lerp(actualStartPosition, actualEndPosition, currentTime));
+	}
+	else if (actualStatus == Status::WaitBeforeMoveFast) {
+		float currentTime = UGameplayStatics::GetRealTimeSeconds(GetWorld()) - startTime;
+
+		if (currentTime > waitingTimeToMoveForwardAfterDefeatingEnemies) {
+			startTime = UGameplayStatics::GetRealTimeSeconds(GetWorld());
+			StepTargetIndex();
+			actualStatus = Status::MovingFast;
+		}
+	}
+	else if (actualStatus == Status::MovingFast) {
+		float currentTime = UGameplayStatics::GetRealTimeSeconds(GetWorld()) - startTime;
+		currentTime *= fastMovementSpeed;
 		if (currentTime > 1.f) {
 
 			actualStatus = Status::Stopped;
@@ -108,7 +138,7 @@ void ACreature::EnterEvent(class AActor* overlappedActor, class AActor* otherAct
 			AEnemy* attackingEnemy = Cast<AEnemy>(otherActor);
 			if (!enemiesActuallyAttacking.Contains(attackingEnemy))
 				enemiesActuallyAttacking.Add(attackingEnemy);
-
+			actualStatus = Status::UnderAttack;
 		}
 	}
 }
@@ -123,6 +153,10 @@ void ACreature::ExitEvent(class AActor* overlappedActor, class AActor* otherActo
 			if (enemiesActuallyAttacking.Contains(attackingEnemy))
 				enemiesActuallyAttacking.Remove(attackingEnemy);
 
+			if (actualStatus == Status::UnderAttack && enemiesActuallyAttacking.Num() == 0) {
+				startTime = UGameplayStatics::GetRealTimeSeconds(GetWorld());
+				actualStatus = Status::WaitBeforeMoveFast;
+			}
 		}
 	}
 }
