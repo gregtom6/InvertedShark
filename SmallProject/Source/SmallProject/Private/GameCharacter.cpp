@@ -75,6 +75,8 @@ void AGameCharacter::HugCreature() {
 
 			if (creature != nullptr) {
 				UE_LOG(LogTemp, Warning, TEXT("creature fizikahoz megkapva"));
+
+				creature->GetHugged();
 			}
 
 			RightArm->ConstraintActor1 = this;

@@ -101,9 +101,14 @@ void ACreature::Tick(float DeltaTime)
 		float currentTime = UGameplayStatics::GetRealTimeSeconds(GetWorld()) - startTime;
 
 		if (currentTime > waitingTimeToMoveForwardAfterDefeatingEnemies) {
-			startTime = UGameplayStatics::GetRealTimeSeconds(GetWorld());
-			StepTargetIndex();
-			actualStatus = Status::MovingFast;
+			SwitchingToMovingFast();
+		}
+	}
+	else if (actualStatus == Status::WaitAfterHuggedByPlayer) {
+		float currentTime = UGameplayStatics::GetRealTimeSeconds(GetWorld()) - startTime;
+
+		if (currentTime > waitTimeAfterHuggedToMoveForward) {
+			SwitchingToMovingFast();
 		}
 	}
 	else if (actualStatus == Status::MovingFast) {
@@ -171,4 +176,18 @@ void ACreature::TriggerEnter(class UPrimitiveComponent* HitComp, class AActor* O
 
 		}
 	}
+}
+
+void ACreature::GetHugged() {
+
+	if (actualStatus == Status::WaitBeforeMoveFast) {
+		startTime = UGameplayStatics::GetRealTimeSeconds(GetWorld());
+		actualStatus = Status::WaitAfterHuggedByPlayer;
+	}
+}
+
+void ACreature::SwitchingToMovingFast() {
+	startTime = UGameplayStatics::GetRealTimeSeconds(GetWorld());
+	StepTargetIndex();
+	actualStatus = Status::MovingFast;
 }

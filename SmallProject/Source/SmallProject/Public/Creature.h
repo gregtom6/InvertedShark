@@ -59,7 +59,14 @@ public:
 	UPROPERTY(EditAnywhere)
 		float waitingTimeToMoveForwardAfterDefeatingEnemies;
 
+	UPROPERTY(EditAnywhere)
+		float waitTimeAfterHuggedToMoveForward;
+
 	void StepTargetIndex();
+
+	void GetHugged();
+
+	void SwitchingToMovingFast();
 
 	Status actualStatus;
 
@@ -89,4 +96,5 @@ enum class Status : uint8
 	UnderAttack,
 	MovingFast,
 	WaitBeforeMoveFast,
+	WaitAfterHuggedByPlayer,
 };
