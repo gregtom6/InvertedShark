@@ -17,7 +17,7 @@ class SMALLPROJECT_API AGameCharacter : public APawn
 
 public:
 	// Sets default values for this pawn's properties
-	AGameCharacter();
+	AGameCharacter(const FObjectInitializer& ObjectInitializer);
 
 	void StrafeLR(float movementDelta);
 
@@ -43,6 +43,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		UStaticMeshComponent* Tongue;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "character settings")
+		class UWidgetComponent* EnergyWidgetComp;
+
 	UPROPERTY(EditAnywhere, Category = "character settings")
 		float MovementSpeed = 1.f;
 
@@ -64,6 +67,15 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "character settings")
 		float attackTime = 0.3f;
 
+	UPROPERTY(EditAnywhere, Category = "character settings")
+		float maxEnergy = 120.f;
+
+	UPROPERTY(EditAnywhere, Category = "character settings")
+		float energyDecreaseAfterWingBeat = 10.f;
+
+	UPROPERTY(EditAnywhere, Category = "character settings")
+		float energyRegeneration = 5.f;
+
 	FVector startPos;
 
 public:
@@ -81,6 +93,12 @@ public:
 	GameCharacterStatus actualStatus;
 
 	float startTime;
+
+	float actualEnergy;
+
+	float GetEnergy();
+
+	float GetMaxEnergy();
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

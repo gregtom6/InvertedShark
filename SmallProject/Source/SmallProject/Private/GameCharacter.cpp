@@ -3,9 +3,11 @@
 
 #include "GameCharacter.h"
 #include <Kismet/GameplayStatics.h>
+#include <GameCharacterUserWidget.h>
 
 // Sets default values
-AGameCharacter::AGameCharacter()
+AGameCharacter::AGameCharacter(const FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer)
 {
 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -13,7 +15,7 @@ AGameCharacter::AGameCharacter()
 	//create components
 	CameraMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("CameraMesh"));
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
-	
+
 	LeftLeft = CreateDefaultSubobject<UPhysicsConstraintComponent>(TEXT("LeftLeft"));
 	RightArm = CreateDefaultSubobject< UPhysicsConstraintComponent>(TEXT("RightArm"));
 
@@ -26,6 +28,8 @@ AGameCharacter::AGameCharacter()
 
 	LeftLeft->SetupAttachment(CameraMesh);
 	RightArm->SetupAttachment(CameraMesh);
+
+	EnergyWidgetComp = ObjectInitializer.CreateDefaultSubobject<UWidgetComponent>(this, TEXT("Energybar"));
 
 	isHugging = false;
 }
@@ -57,11 +61,15 @@ void AGameCharacter::WingBeat() {
 
 	if (isHugging) { return; }
 
+	if (actualEnergy < energyDecreaseAfterWingBeat) { return; }
+
 	FVector actorForwardVector = GetActorForwardVector() * ForwardFlyStrength;
 	FVector actorUpVector = GetActorUpVector() * WingStrength;
 	FVector impulseDirection = actorUpVector + actorForwardVector;
 
 	CameraMesh->AddImpulse(impulseDirection);
+
+	actualEnergy -= energyDecreaseAfterWingBeat;
 }
 
 void AGameCharacter::HugCreature() {
@@ -126,7 +134,33 @@ void AGameCharacter::BeginPlay()
 
 	Tongue->SetVisibility(false);
 
+	actualEnergy = maxEnergy;
+
 	actualStatus = GameCharacterStatus::Calm;
+
+	if (EnergyWidgetComp != nullptr) {
+		UUserWidget* wid = EnergyWidgetComp->GetUserWidgetObject();
+
+		if (wid != nullptr) {
+
+
+			UGameCharacterUserWidget* widg = Cast<UGameCharacterUserWidget>(wid);
+
+			UE_LOG(LogTemp, Warning, TEXT("UUserWidget nem null"));
+
+			widg->player = this;
+
+			if (widg != nullptr) {
+				UE_LOG(LogTemp, Warning, TEXT("creatureuserwidget nem null"));
+			}
+			else {
+				UE_LOG(LogTemp, Warning, TEXT("creatureuserwidget null"));
+			}
+		}
+		else {
+			UE_LOG(LogTemp, Warning, TEXT("UUserWidget null"));
+		}
+	}
 }
 
 // Called every frame
@@ -151,10 +185,22 @@ void AGameCharacter::Tick(float DeltaTime)
 		}
 	}
 
+	float newEnergy = actualEnergy + energyRegeneration * DeltaTime;
+	if (newEnergy <= maxEnergy)
+		actualEnergy += energyRegeneration * DeltaTime;
+
 	if (actorLocation.Z <= heightToDie) {
 		//SetActorLocation(startPos);
 		UGameplayStatics::OpenLevel(this, FName(*GetWorld()->GetName()), false);
 	}
+}
+
+float AGameCharacter::GetEnergy() {
+	return actualEnergy;
+}
+
+float AGameCharacter::GetMaxEnergy() {
+	return maxEnergy;
 }
 
 GameCharacterStatus AGameCharacter::GetStatus() {
