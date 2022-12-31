@@ -7,6 +7,7 @@
 #include "Components/SplineComponent.h"
 #include "Components/SplineMeshComponent.h"
 #include "Creature.h"
+#include "GameCharacter.h"
 #include "Enemy.generated.h"
 
 UCLASS()
@@ -46,11 +47,19 @@ public:
 	UPROPERTY(EditAnywhere)
 		ACreature* creature;
 
+	UFUNCTION()
+		void EnterEvent(class AActor* overlappedActor, class AActor* otherActor);
+
+	UFUNCTION()
+		void ExitEvent(class AActor* overlappedActor, class AActor* otherActor);
+
 	USplineMeshComponent* prevSplineMeshComp;
 
 	float currentTime;
 
 	float startTime;
+
+	AGameCharacter* overlappingGameCharacter;
 
 	EnemyStatus actualStatus;
 

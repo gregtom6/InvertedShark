@@ -60,7 +60,10 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "character settings")
 		float heightToDie = -1000.f;
-		
+
+	UPROPERTY(EditAnywhere, Category = "character settings")
+		float attackTime = 0.3f;
+
 	FVector startPos;
 
 public:
@@ -71,7 +74,13 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		UPhysicsConstraintComponent* RightArm;
 
+	GameCharacterStatus GetStatus();
+
 	bool isHugging;
+
+	GameCharacterStatus actualStatus;
+
+	float startTime;
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -79,4 +88,11 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+};
+
+UENUM()
+enum class GameCharacterStatus : uint8
+{
+	Calm,
+	Attack,
 };

@@ -109,6 +109,9 @@ void AGameCharacter::HugCreature() {
 void AGameCharacter::Attack() {
 	UE_LOG(LogTemp, Warning, TEXT("attack tortent"));
 
+	Tongue->SetVisibility(true);
+	startTime = UGameplayStatics::GetRealTimeSeconds(GetWorld());
+	actualStatus = GameCharacterStatus::Attack;
 
 }
 
@@ -118,6 +121,10 @@ void AGameCharacter::BeginPlay()
 	Super::BeginPlay();
 
 	startPos = GetActorLocation();
+
+	Tongue->SetVisibility(false);
+
+	actualStatus = GameCharacterStatus::Calm;
 }
 
 // Called every frame
@@ -132,10 +139,24 @@ void AGameCharacter::Tick(float DeltaTime)
 	FVector actorLocation = GetActorLocation();
 	//UE_LOG(LogTemp, Log, TEXT("height %lf"), actorLocation.Z);
 
+	if (actualStatus == GameCharacterStatus::Attack) {
+
+		float currentTime = UGameplayStatics::GetRealTimeSeconds(GetWorld()) - startTime;
+
+		if (currentTime >= attackTime) {
+			Tongue->SetVisibility(false);
+			actualStatus = GameCharacterStatus::Calm;
+		}
+	}
+
 	if (actorLocation.Z <= heightToDie) {
 		//SetActorLocation(startPos);
 		UGameplayStatics::OpenLevel(this, FName(*GetWorld()->GetName()), false);
 	}
+}
+
+GameCharacterStatus AGameCharacter::GetStatus() {
+	return actualStatus;
 }
 
 // Called to bind functionality to input

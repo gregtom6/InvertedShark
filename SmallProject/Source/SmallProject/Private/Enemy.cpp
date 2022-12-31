@@ -67,22 +67,8 @@ void AEnemy::StartEating() {
 void AEnemy::BeginPlay()
 {
 	Super::BeginPlay();
-	/*
-	if (creature != nullptr) {
-		TArray<FVector> points;
-
-		points.Add(GetActorLocation());
-		points.Add(creature->GetActorLocation());
-
-		splineComponent->SetSplinePoints(points, ESplineCoordinateSpace::World, true);
-
-		UE_LOG(LogTemp, Warning, TEXT("spline feltoltve"));
-
-		SetSpline();
-
-		startTime = UGameplayStatics::GetRealTimeSeconds(GetWorld());
-	}
-	*/
+	
+	OnActorBeginOverlap.AddDynamic(this, &AEnemy::EnterEvent);
 }
 
 // Called every frame
@@ -100,7 +86,7 @@ void AEnemy::Tick(float DeltaTime)
 	}
 
 	else if (actualStatus == EnemyStatus::Eating && creature != nullptr) {
-
+		
 		currentTime = UGameplayStatics::GetRealTimeSeconds(GetWorld()) - startTime;
 
 		if (currentTime > 0.08f) {
@@ -117,6 +103,46 @@ void AEnemy::Tick(float DeltaTime)
 
 			startTime = UGameplayStatics::GetRealTimeSeconds(GetWorld());
 		}
+		
+	}
+
+	if (overlappingGameCharacter != nullptr) {
+		UE_LOG(LogTemp, Warning, TEXT("jatekos van"));
+	}
+	else {
+		UE_LOG(LogTemp, Warning, TEXT("jatekos nincs"));
+	}
+
+	if (overlappingGameCharacter != nullptr && overlappingGameCharacter->GetStatus() == GameCharacterStatus::Attack) {
+		Destroy();
 	}
 }
 
+void AEnemy::EnterEvent(class AActor* overlappedActor, class AActor* otherActor) {
+	if (otherActor && otherActor != this) {
+		if (otherActor->IsA(AGameCharacter::StaticClass())) {
+
+			overlappingGameCharacter = Cast<AGameCharacter>(otherActor);
+			
+			if (overlappingGameCharacter->GetStatus() == GameCharacterStatus::Attack) {
+				Destroy();
+			}
+		}
+	}
+}
+
+void AEnemy::ExitEvent(class AActor* overlappedActor, class AActor* otherActor) {
+	if (otherActor && otherActor != this) {
+		if (otherActor->IsA(AGameCharacter::StaticClass())) {
+
+			overlappingGameCharacter = Cast<AGameCharacter>(otherActor);
+
+			if (overlappingGameCharacter->GetStatus() == GameCharacterStatus::Attack) {
+				Destroy();
+			}
+
+
+			overlappingGameCharacter = nullptr;
+		}
+	}
+}
