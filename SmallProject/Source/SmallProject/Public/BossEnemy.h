@@ -15,14 +15,21 @@ class SMALLPROJECT_API ABossEnemy : public AEnemy
 	GENERATED_BODY()
 
 public:
-	ABossEnemy();
+	ABossEnemy(const FObjectInitializer& ObjectInitializer);
 	
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "boss settings")
+		class UWidgetComponent* BossWidgetComp;
+
 public:
 	virtual void Tick(float DeltaTime) override;
 
 	virtual FVector GetEndPosition() override;
+
+	float GetLife();
+
+	float GetMaxLife();
 };

@@ -126,11 +126,6 @@ void AEnemy::Tick(float DeltaTime)
 	else {
 		UE_LOG(LogTemp, Warning, TEXT("jatekos nincs"));
 	}
-	/*
-	if (overlappingGameCharacter != nullptr && overlappingGameCharacter->GetStatus() == GameCharacterStatus::Attack) {
-		DecreaseLife();
-	}
-	*/
 }
 
 void AEnemy::EnterEvent(class AActor* overlappedActor, class AActor* otherActor) {
