@@ -17,6 +17,10 @@ void UMainMenu::NativeConstruct() {
 	QuitButton->OnClicked.AddDynamic(this, &UMainMenu::OnQuitClick);
 
 	BackButton->OnClicked.AddDynamic(this, &UMainMenu::OnBackClick);
+
+	HowToPlayButton->OnClicked.AddDynamic(this, &UMainMenu::OnHowToPlayClick);
+
+	BackToMainMenuButton->OnClicked.AddDynamic(this, &UMainMenu::OnBackClick);
 }
 
 void UMainMenu::OnStartClick() {
@@ -30,6 +34,10 @@ void UMainMenu::OnControlsClick() {
 
 void UMainMenu::OnQuitClick() {
 	UKismetSystemLibrary::QuitGame(GetWorld(), UGameplayStatics::GetPlayerController(GetWorld(), 0), EQuitPreference::Quit, false);
+}
+
+void UMainMenu::OnHowToPlayClick() {
+	WidgetSwitcher->SetActiveWidgetIndex(2);
 }
 
 void UMainMenu::OnBackClick() {

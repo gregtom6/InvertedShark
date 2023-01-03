@@ -29,6 +29,12 @@ public:
 		class UButton* BackButton;
 
 	UPROPERTY(meta = (BindWidget))
+		class UButton* HowToPlayButton;
+
+	UPROPERTY(meta = (BindWidget))
+		class UButton* BackToMainMenuButton;
+
+	UPROPERTY(meta = (BindWidget))
 		class UWidgetSwitcher* WidgetSwitcher;
 
 	UPROPERTY(EditAnywhere)
@@ -39,6 +45,9 @@ public:
 
 	UFUNCTION()
 		void OnControlsClick();
+
+	UFUNCTION()
+		void OnHowToPlayClick();
 
 	UFUNCTION()
 		void OnQuitClick();
