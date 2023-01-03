@@ -35,6 +35,8 @@ public:
 
 	void StartEating();
 
+	void DecreaseLife();
+
 	virtual FVector GetEndPosition();
 
 	UPROPERTY(EditAnywhere, Category = "Spline")
@@ -52,11 +54,19 @@ public:
 	UPROPERTY(EditAnywhere)
 		float movementSpeed;
 
+	UPROPERTY(EditAnywhere)
+		float maxLife;
+
+	UPROPERTY(EditAnywhere)
+		float lifeDecreaseAfterAttack;
+
 	UFUNCTION()
 		void EnterEvent(class AActor* overlappedActor, class AActor* otherActor);
 
 	UFUNCTION()
 		void ExitEvent(class AActor* overlappedActor, class AActor* otherActor);
+
+	float actualLife;
 
 	USplineMeshComponent* prevSplineMeshComp;
 

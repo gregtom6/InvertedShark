@@ -67,6 +67,8 @@ void AEnemy::StartEating() {
 void AEnemy::BeginPlay()
 {
 	Super::BeginPlay();
+
+	actualLife = maxLife;
 	
 	OnActorBeginOverlap.AddDynamic(this, &AEnemy::EnterEvent);
 }
@@ -124,10 +126,11 @@ void AEnemy::Tick(float DeltaTime)
 	else {
 		UE_LOG(LogTemp, Warning, TEXT("jatekos nincs"));
 	}
-
+	/*
 	if (overlappingGameCharacter != nullptr && overlappingGameCharacter->GetStatus() == GameCharacterStatus::Attack) {
-		Destroy();
+		DecreaseLife();
 	}
+	*/
 }
 
 void AEnemy::EnterEvent(class AActor* overlappedActor, class AActor* otherActor) {
@@ -137,7 +140,7 @@ void AEnemy::EnterEvent(class AActor* overlappedActor, class AActor* otherActor)
 			overlappingGameCharacter = Cast<AGameCharacter>(otherActor);
 			
 			if (overlappingGameCharacter->GetStatus() == GameCharacterStatus::Attack) {
-				Destroy();
+				DecreaseLife();
 			}
 		}
 	}
@@ -150,7 +153,7 @@ void AEnemy::ExitEvent(class AActor* overlappedActor, class AActor* otherActor) 
 			overlappingGameCharacter = Cast<AGameCharacter>(otherActor);
 
 			if (overlappingGameCharacter->GetStatus() == GameCharacterStatus::Attack) {
-				Destroy();
+				DecreaseLife();
 			}
 
 
@@ -161,4 +164,12 @@ void AEnemy::ExitEvent(class AActor* overlappedActor, class AActor* otherActor) 
 
 FVector AEnemy::GetEndPosition() {
 	return creature->GetActorLocation();
+}
+
+void AEnemy::DecreaseLife() {
+	actualLife -= lifeDecreaseAfterAttack;
+
+	if (actualLife <= 0) {
+		Destroy();
+	}
 }

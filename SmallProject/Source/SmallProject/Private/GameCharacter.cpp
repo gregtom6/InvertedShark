@@ -130,6 +130,9 @@ void AGameCharacter::HugCreature() {
 }
 
 void AGameCharacter::Attack() {
+
+	if (actualStatus == GameCharacterStatus::Attack) { return; }
+
 	UE_LOG(LogTemp, Warning, TEXT("attack tortent"));
 
 	Tongue->SetVisibility(true);
