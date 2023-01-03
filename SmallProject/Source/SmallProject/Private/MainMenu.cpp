@@ -3,6 +3,7 @@
 
 #include "MainMenu.h"
 #include "UMG/Public/Components/Button.h"
+#include "UMG/Public/Components/WidgetSwitcher.h"
 #include <Kismet/KismetSystemLibrary.h>
 #include <Kismet/GameplayStatics.h>
 
@@ -14,6 +15,8 @@ void UMainMenu::NativeConstruct() {
 	ControlsButton->OnClicked.AddDynamic(this, &UMainMenu::OnControlsClick);
 
 	QuitButton->OnClicked.AddDynamic(this, &UMainMenu::OnQuitClick);
+
+	BackButton->OnClicked.AddDynamic(this, &UMainMenu::OnBackClick);
 }
 
 void UMainMenu::OnStartClick() {
@@ -22,9 +25,13 @@ void UMainMenu::OnStartClick() {
 }
 
 void UMainMenu::OnControlsClick() {
-
+	WidgetSwitcher->SetActiveWidgetIndex(1);
 }
 
 void UMainMenu::OnQuitClick() {
 	UKismetSystemLibrary::QuitGame(GetWorld(), UGameplayStatics::GetPlayerController(GetWorld(), 0), EQuitPreference::Quit, false);
+}
+
+void UMainMenu::OnBackClick() {
+	WidgetSwitcher->SetActiveWidgetIndex(0);
 }

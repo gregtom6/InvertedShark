@@ -25,6 +25,12 @@ public:
 	UPROPERTY(meta = (BindWidget))
 		class UButton* QuitButton;
 
+	UPROPERTY(meta = (BindWidget))
+		class UButton* BackButton;
+
+	UPROPERTY(meta = (BindWidget))
+		class UWidgetSwitcher* WidgetSwitcher;
+
 	UPROPERTY(EditAnywhere)
 		FName levelToLoad;
 
@@ -36,4 +42,7 @@ public:
 
 	UFUNCTION()
 		void OnQuitClick();
+
+	UFUNCTION()
+		void OnBackClick();
 };
