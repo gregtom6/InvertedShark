@@ -81,7 +81,7 @@ void AEnemy::Tick(float DeltaTime)
 
 		currentTime *= movementSpeed;
 
-		actualEndPosition = creature->GetActorLocation();
+		actualEndPosition = GetEndPosition();
 
 		if (currentTime > 1.f)
 			currentTime = 1.f;
@@ -157,4 +157,8 @@ void AEnemy::ExitEvent(class AActor* overlappedActor, class AActor* otherActor) 
 			overlappingGameCharacter = nullptr;
 		}
 	}
+}
+
+FVector AEnemy::GetEndPosition() {
+	return creature->GetActorLocation();
 }

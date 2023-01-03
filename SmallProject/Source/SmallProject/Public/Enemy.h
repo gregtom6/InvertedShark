@@ -35,6 +35,8 @@ public:
 
 	void StartEating();
 
+	virtual FVector GetEndPosition();
+
 	UPROPERTY(EditAnywhere, Category = "Spline")
 		USplineComponent* splineComponent;
 

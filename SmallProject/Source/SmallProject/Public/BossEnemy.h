@@ -13,5 +13,16 @@ UCLASS()
 class SMALLPROJECT_API ABossEnemy : public AEnemy
 {
 	GENERATED_BODY()
+
+public:
+	ABossEnemy();
 	
+protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
+
+public:
+	virtual void Tick(float DeltaTime) override;
+
+	virtual FVector GetEndPosition() override;
 };
