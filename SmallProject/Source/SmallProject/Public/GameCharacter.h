@@ -6,8 +6,10 @@
 #include "GameFramework/Pawn.h"
 #include "Camera/CameraComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "Components/AudioComponent.h"
 #include "PhysicsEngine/PhysicsConstraintComponent.h"
 #include "Creature.h"
+#include <Sound/SoundCue.h >
 #include "GameCharacter.generated.h"
 
 UCLASS(BlueprintType)
@@ -85,6 +87,12 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		UPhysicsConstraintComponent* RightArm;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		UAudioComponent* AudioComp;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		USoundCue* wingBeat;
 
 	GameCharacterStatus GetStatus();
 

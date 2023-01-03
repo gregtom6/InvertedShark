@@ -4,6 +4,8 @@
 #include "GameCharacter.h"
 #include <Kismet/GameplayStatics.h>
 #include <GameCharacterUserWidget.h>
+#include "Components/AudioComponent.h"
+
 
 // Sets default values
 AGameCharacter::AGameCharacter(const FObjectInitializer& ObjectInitializer)
@@ -20,6 +22,9 @@ AGameCharacter::AGameCharacter(const FObjectInitializer& ObjectInitializer)
 	RightArm = CreateDefaultSubobject< UPhysicsConstraintComponent>(TEXT("RightArm"));
 
 	Tongue = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Tongue"));
+
+	AudioComp = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComp"));
+
 	Tongue->SetupAttachment(CameraMesh);
 
 	Camera->FieldOfView = 120.f;
@@ -28,6 +33,8 @@ AGameCharacter::AGameCharacter(const FObjectInitializer& ObjectInitializer)
 
 	LeftLeft->SetupAttachment(CameraMesh);
 	RightArm->SetupAttachment(CameraMesh);
+
+	AudioComp->SetupAttachment(CameraMesh);
 
 	EnergyWidgetComp = ObjectInitializer.CreateDefaultSubobject<UWidgetComponent>(this, TEXT("Energybar"));
 
@@ -70,6 +77,12 @@ void AGameCharacter::WingBeat() {
 	CameraMesh->AddImpulse(impulseDirection);
 
 	actualEnergy -= energyDecreaseAfterWingBeat;
+
+	if (AudioComp && wingBeat) {
+		UE_LOG(LogTemp, Warning, TEXT("hang jo"));
+	}
+
+	AudioComp->Play(0.f);
 }
 
 void AGameCharacter::HugCreature() {
@@ -129,6 +142,12 @@ void AGameCharacter::Attack() {
 void AGameCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	if (AudioComp && wingBeat) {
+		UE_LOG(LogTemp, Warning, TEXT("hang jo"));
+	AudioComp->SetSound(wingBeat);
+	}
+
 
 	startPos = GetActorLocation();
 
