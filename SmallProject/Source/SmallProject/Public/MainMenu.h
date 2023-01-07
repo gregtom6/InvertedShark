@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include <Sound/SoundCue.h>
 #include "MainMenu.generated.h"
 
 /**
@@ -17,6 +18,13 @@ class SMALLPROJECT_API UMainMenu : public UUserWidget
 public:
 
 	virtual void NativeConstruct() override;
+
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		//USoundCue* ambientSound;
+
+
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		//UAudioComponent* AudioComp;
 
 		UPROPERTY(meta = (BindWidget))
 		class UButton* StartButton;
