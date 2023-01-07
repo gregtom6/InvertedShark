@@ -13,7 +13,9 @@ UCLASS()
 class SMALLPROJECT_API UPauseUserWidget : public UUserWidget
 {
 	GENERATED_BODY()
-	
+
+		AGameCharacter* gameChar;
+
 public:
 
 	virtual void NativeConstruct() override;
@@ -32,4 +34,7 @@ public:
 
 	UFUNCTION()
 		void OnQuitToMainMenuClick();
+
+	UFUNCTION()
+		void SetGameCharacter(AGameCharacter* gameCharacter);
 };

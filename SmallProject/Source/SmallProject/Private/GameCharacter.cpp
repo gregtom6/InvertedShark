@@ -144,15 +144,34 @@ void AGameCharacter::Attack() {
 void AGameCharacter::Pause() {
 
 	if (pauseStatus == PauseStatus::Played) {
-
+		UE_LOG(LogTemp, Warning, TEXT("pause aktivalas"));
 		UGameplayStatics::SetGamePaused(GetWorld(), true);
 		pauseStatus = PauseStatus::Paused;
 		
+		APlayerController* PC = Cast<APlayerController>(GetController());
+
+		if (PC)
+		{
+			PC->bShowMouseCursor = true;
+			PC->bEnableClickEvents = true;
+			PC->bEnableMouseOverEvents = true;
+		}
+
 		widgetPauseMenuInstance->AddToViewport();
 	}
 	else if (pauseStatus == PauseStatus::Paused) {
+		UE_LOG(LogTemp, Warning, TEXT("pause deaktivalas"));
 		UGameplayStatics::SetGamePaused(GetWorld(), false);
 		pauseStatus = PauseStatus::Played;
+
+		APlayerController* PC = Cast<APlayerController>(GetController());
+
+		if (PC)
+		{
+			PC->bShowMouseCursor = false;
+			PC->bEnableClickEvents = false;
+			PC->bEnableMouseOverEvents = false;
+		}
 
 		widgetPauseMenuInstance->RemoveFromViewport();
 	}
@@ -169,6 +188,9 @@ void AGameCharacter::BeginPlay()
 	}
 
 	widgetPauseMenuInstance = CreateWidget<UPauseUserWidget>(GetWorld(), widgetPauseMenu);
+
+	if (widgetPauseMenuInstance != nullptr)
+		widgetPauseMenuInstance->SetGameCharacter(this);
 
 	startPos = GetActorLocation();
 
