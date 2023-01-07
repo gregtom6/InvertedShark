@@ -10,6 +10,7 @@
 #include "PhysicsEngine/PhysicsConstraintComponent.h"
 #include "Creature.h"
 #include <Sound/SoundCue.h >
+#include <PauseUserWidget.h>
 #include "GameCharacter.generated.h"
 
 UCLASS(BlueprintType)
@@ -30,6 +31,8 @@ public:
 	void HugCreature();
 
 	void Attack();
+
+	void Pause();
 
 protected:
 	// Called when the game starts or when spawned
@@ -80,6 +83,8 @@ protected:
 
 	FVector startPos;
 
+	float time;
+
 public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -94,11 +99,16 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		USoundCue* wingBeat;
 
+	UPROPERTY(EditAnywhere) TSubclassOf<UPauseUserWidget> widgetPauseMenu;
+	UPauseUserWidget* widgetPauseMenuInstance;
+
 	GameCharacterStatus GetStatus();
 
 	bool isHugging;
 
 	GameCharacterStatus actualStatus;
+
+	PauseStatus pauseStatus;
 
 	float startTime;
 
@@ -121,4 +131,11 @@ enum class GameCharacterStatus : uint8
 {
 	Calm,
 	Attack,
+};
+
+UENUM()
+enum class PauseStatus : uint8
+{
+	Played,
+	Paused,
 };

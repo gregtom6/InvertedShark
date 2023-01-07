@@ -141,6 +141,23 @@ void AGameCharacter::Attack() {
 
 }
 
+void AGameCharacter::Pause() {
+
+	if (pauseStatus == PauseStatus::Played) {
+
+		UGameplayStatics::SetGamePaused(GetWorld(), true);
+		pauseStatus = PauseStatus::Paused;
+		
+		widgetPauseMenuInstance->AddToViewport();
+	}
+	else if (pauseStatus == PauseStatus::Paused) {
+		UGameplayStatics::SetGamePaused(GetWorld(), false);
+		pauseStatus = PauseStatus::Played;
+
+		widgetPauseMenuInstance->RemoveFromViewport();
+	}
+}
+
 // Called when the game starts or when spawned
 void AGameCharacter::BeginPlay()
 {
@@ -148,9 +165,10 @@ void AGameCharacter::BeginPlay()
 
 	if (AudioComp && wingBeat) {
 		UE_LOG(LogTemp, Warning, TEXT("hang jo"));
-	AudioComp->SetSound(wingBeat);
+		AudioComp->SetSound(wingBeat);
 	}
 
+	widgetPauseMenuInstance = CreateWidget<UPauseUserWidget>(GetWorld(), widgetPauseMenu);
 
 	startPos = GetActorLocation();
 
@@ -159,6 +177,8 @@ void AGameCharacter::BeginPlay()
 	actualEnergy = maxEnergy;
 
 	actualStatus = GameCharacterStatus::Calm;
+
+	pauseStatus = PauseStatus::Played;
 
 	if (EnergyWidgetComp != nullptr) {
 		UUserWidget* wid = EnergyWidgetComp->GetUserWidgetObject();
@@ -244,5 +264,8 @@ void AGameCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	PlayerInputComponent->BindAction(TEXT("HugCreature"), IE_Pressed, this, &AGameCharacter::HugCreature);
 
 	PlayerInputComponent->BindAction(TEXT("Attack"), IE_Pressed, this, &AGameCharacter::Attack);
+
+	FInputActionBinding& toggle = PlayerInputComponent->BindAction(TEXT("Pause"), IE_Pressed, this, &AGameCharacter::Pause);
+	toggle.bExecuteWhenPaused = true;
 }
 
