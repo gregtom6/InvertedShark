@@ -165,6 +165,11 @@ void AEnemy::DecreaseLife() {
 	actualLife -= lifeDecreaseAfterAttack;
 
 	if (actualLife <= 0) {
-		Destroy();
+		RemoveEnemy();
 	}
+}
+
+void AEnemy::RemoveEnemy() {
+
+	Destroy();
 }

@@ -37,6 +37,8 @@ public:
 
 	void DecreaseLife();
 
+	virtual void RemoveEnemy();
+
 	virtual FVector GetEndPosition();
 
 	UPROPERTY(EditAnywhere, Category = "Spline")
@@ -91,4 +93,5 @@ enum class EnemyStatus : uint8
 	Initial,
 	Moving,
 	Eating,
+	SpecialDying,
 };

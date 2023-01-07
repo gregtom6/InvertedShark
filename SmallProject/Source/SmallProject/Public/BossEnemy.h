@@ -24,6 +24,15 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "boss settings")
 		class UWidgetComponent* BossWidgetComp;
 
+	UPROPERTY(EditAnywhere)
+		float dyingTime;
+
+	UPROPERTY(EditAnywhere)
+		FName levelToLoadAfterDefeat;
+
+	FVector startScale;
+	FVector endScale;
+
 public:
 	virtual void Tick(float DeltaTime) override;
 
@@ -32,4 +41,6 @@ public:
 	float GetLife();
 
 	float GetMaxLife();
+
+	virtual void RemoveEnemy();
 };
