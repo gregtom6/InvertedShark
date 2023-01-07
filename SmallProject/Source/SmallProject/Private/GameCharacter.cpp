@@ -136,7 +136,7 @@ void AGameCharacter::Attack() {
 	UE_LOG(LogTemp, Warning, TEXT("attack tortent"));
 
 	Tongue->SetVisibility(true);
-	startTime = UGameplayStatics::GetRealTimeSeconds(GetWorld());
+	startTime = GetWorld()->GetTimeSeconds();
 	actualStatus = GameCharacterStatus::Attack;
 
 }
@@ -241,7 +241,7 @@ void AGameCharacter::Tick(float DeltaTime)
 
 	if (actualStatus == GameCharacterStatus::Attack) {
 
-		float currentTime = UGameplayStatics::GetRealTimeSeconds(GetWorld()) - startTime;
+		float currentTime = GetWorld()->GetTimeSeconds() - startTime;
 
 		if (currentTime >= attackTime) {
 			Tongue->SetVisibility(false);

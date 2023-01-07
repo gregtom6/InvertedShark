@@ -55,7 +55,7 @@ void ACreature::BeginPlay()
 
 	StepTargetIndex();
 
-	startTime = UGameplayStatics::GetRealTimeSeconds(GetWorld());
+	startTime = GetWorld()->GetTimeSeconds();
 
 	actualStatus = Status::Initial;
 
@@ -78,14 +78,14 @@ void ACreature::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	if (actualStatus == Status::Initial) {
-		float currentTime = UGameplayStatics::GetRealTimeSeconds(GetWorld()) - startTime;
+		float currentTime = GetWorld()->GetTimeSeconds() - startTime;
 		if (currentTime >= waitTimeBeforeFirstMove) {
-			startTime = UGameplayStatics::GetRealTimeSeconds(GetWorld());
+			startTime = GetWorld()->GetTimeSeconds();
 			actualStatus = Status::Moving;
 		}
 	}
 	else if (actualStatus == Status::Moving) {
-		float currentTime = UGameplayStatics::GetRealTimeSeconds(GetWorld()) - startTime;
+		float currentTime = GetWorld()->GetTimeSeconds() - startTime;
 		currentTime *= movementSpeed;
 		if (currentTime > 1.f) {
 
@@ -98,21 +98,21 @@ void ACreature::Tick(float DeltaTime)
 		SetActorLocation(FMath::Lerp(actualStartPosition, actualEndPosition, currentTime));
 	}
 	else if (actualStatus == Status::WaitBeforeMoveFast) {
-		float currentTime = UGameplayStatics::GetRealTimeSeconds(GetWorld()) - startTime;
+		float currentTime = GetWorld()->GetTimeSeconds() - startTime;
 
 		if (currentTime > waitingTimeToMoveForwardAfterDefeatingEnemies) {
 			SwitchingToMovingFast();
 		}
 	}
 	else if (actualStatus == Status::WaitAfterHuggedByPlayer) {
-		float currentTime = UGameplayStatics::GetRealTimeSeconds(GetWorld()) - startTime;
+		float currentTime = GetWorld()->GetTimeSeconds() - startTime;
 
 		if (currentTime > waitTimeAfterHuggedToMoveForward) {
 			SwitchingToMovingFast();
 		}
 	}
 	else if (actualStatus == Status::MovingFast) {
-		float currentTime = UGameplayStatics::GetRealTimeSeconds(GetWorld()) - startTime;
+		float currentTime = GetWorld()->GetTimeSeconds() - startTime;
 		currentTime *= fastMovementSpeed;
 		if (currentTime > 1.f) {
 
@@ -159,7 +159,7 @@ void ACreature::ExitEvent(class AActor* overlappedActor, class AActor* otherActo
 				enemiesActuallyAttacking.Remove(attackingEnemy);
 
 			if (actualStatus == Status::UnderAttack && enemiesActuallyAttacking.Num() == 0) {
-				startTime = UGameplayStatics::GetRealTimeSeconds(GetWorld());
+				startTime = GetWorld()->GetTimeSeconds();
 				actualStatus = Status::WaitBeforeMoveFast;
 			}
 		}
@@ -181,13 +181,13 @@ void ACreature::TriggerEnter(class UPrimitiveComponent* HitComp, class AActor* O
 void ACreature::GetHugged() {
 
 	if (actualStatus == Status::WaitBeforeMoveFast) {
-		startTime = UGameplayStatics::GetRealTimeSeconds(GetWorld());
+		startTime = GetWorld()->GetTimeSeconds();
 		actualStatus = Status::WaitAfterHuggedByPlayer;
 	}
 }
 
 void ACreature::SwitchingToMovingFast() {
-	startTime = UGameplayStatics::GetRealTimeSeconds(GetWorld());
+	startTime = GetWorld()->GetTimeSeconds();
 	StepTargetIndex();
 	actualStatus = Status::MovingFast;
 }

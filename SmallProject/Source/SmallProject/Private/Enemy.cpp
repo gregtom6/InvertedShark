@@ -52,13 +52,13 @@ void AEnemy::SetSpline() {
 }
 
 void AEnemy::MoveToCreature() {
-	startTime = UGameplayStatics::GetRealTimeSeconds(GetWorld());
+	startTime = GetWorld()->GetTimeSeconds();
 	actualStartPosition = GetActorLocation();
 	actualStatus = EnemyStatus::Moving;
 }
 
 void AEnemy::StartEating() {
-	startTime = UGameplayStatics::GetRealTimeSeconds(GetWorld());
+	startTime = GetWorld()->GetTimeSeconds();
 	actualStartPosition = GetActorLocation();
 	actualStatus = EnemyStatus::Eating;
 }
@@ -79,7 +79,7 @@ void AEnemy::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	if (actualStatus == EnemyStatus::Moving && creature != nullptr) {
-		currentTime = UGameplayStatics::GetRealTimeSeconds(GetWorld()) - startTime;
+		currentTime = GetWorld()->GetTimeSeconds() - startTime;
 
 		currentTime *= movementSpeed;
 
@@ -93,7 +93,7 @@ void AEnemy::Tick(float DeltaTime)
 
 	else if (actualStatus == EnemyStatus::Eating && creature != nullptr) {
 		
-		currentTime = UGameplayStatics::GetRealTimeSeconds(GetWorld()) - startTime;
+		currentTime = GetWorld()->GetTimeSeconds() - startTime;
 
 		if (currentTime > 0.08f) {
 
@@ -112,7 +112,7 @@ void AEnemy::Tick(float DeltaTime)
 
 				lastCurveEndPosition = creature->GetActorLocation();
 
-				startTime = UGameplayStatics::GetRealTimeSeconds(GetWorld());
+				startTime = GetWorld()->GetTimeSeconds();
 			}
 
 			
