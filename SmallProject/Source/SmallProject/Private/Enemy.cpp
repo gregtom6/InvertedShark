@@ -4,6 +4,8 @@
 #include "Enemy.h"
 #include <Kismet/GameplayStatics.h>
 #include "Components/AudioComponent.h"
+#include "Math/UnrealMathUtility.h"
+
 
 // Sets default values
 AEnemy::AEnemy()
@@ -15,6 +17,9 @@ AEnemy::AEnemy()
 
 	PopAudioComp=CreateDefaultSubobject<UAudioComponent>(TEXT("PopAudioComp"));
 	PopAudioComp->SetupAttachment(RootComponent);
+
+	SlurpAudioComp = CreateDefaultSubobject<UAudioComponent>(TEXT("SlurpAudioComp"));
+	SlurpAudioComp->SetupAttachment(RootComponent);
 
 	actualStatus = EnemyStatus::Initial;
 }
@@ -62,6 +67,8 @@ void AEnemy::StartEating() {
 	startTime = GetWorld()->GetTimeSeconds();
 	actualStartPosition = GetActorLocation();
 	actualStatus = EnemyStatus::Eating;
+
+	SlurpAudioComp->Play(FMath::FRandRange(0.f,3.f));
 }
 
 // Called when the game starts or when spawned
@@ -72,6 +79,11 @@ void AEnemy::BeginPlay()
 	if (PopAudioComp && popSound) {
 		UE_LOG(LogTemp, Warning, TEXT("hang jo"));
 		PopAudioComp->SetSound(popSound);
+	}
+
+	if (SlurpAudioComp && slurpSound) {
+		UE_LOG(LogTemp, Warning, TEXT("slurp beallitas"));
+		SlurpAudioComp->SetSound(slurpSound);
 	}
 
 	actualLife = maxLife;
@@ -198,6 +210,7 @@ void AEnemy::RemoveEnemy() {
 	endScale = FVector(0.f, 0.f, 0.f);
 	actualStatus = EnemyStatus::SpecialDying;
 
+	SlurpAudioComp->Stop();
 	PopAudioComp->Play(0.f);
 }
 

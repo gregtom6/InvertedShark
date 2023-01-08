@@ -66,6 +66,13 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		UAudioComponent* PopAudioComp;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		USoundCue* slurpSound;
+
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		UAudioComponent* SlurpAudioComp;
+
 	UPROPERTY(EditAnywhere)
 		float movementSpeed;
 
