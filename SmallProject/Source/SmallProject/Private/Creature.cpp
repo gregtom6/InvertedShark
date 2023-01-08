@@ -7,6 +7,7 @@
 #include <Kismet/GameplayStatics.h>
 #include "Components/AudioComponent.h"
 #include "Enemy.h"
+#include <Kismet/KismetMathLibrary.h>
 
 // Sets default values
 ACreature::ACreature(const FObjectInitializer& ObjectInitializer)
@@ -70,6 +71,10 @@ void ACreature::BeginPlay()
 
 	actualStatus = Status::Initial;
 
+	FRotator PlayerRot = UKismetMathLibrary::FindLookAtRotation(this->GetActorLocation(), positionsToMove[actualTargetIndex]->GetActorLocation());
+
+	SetActorRotation(PlayerRot);
+
 	OnActorBeginOverlap.AddDynamic(this, &ACreature::EnterEvent);
 	OnActorEndOverlap.AddDynamic(this, &ACreature::ExitEvent);
 }
@@ -88,6 +93,7 @@ void ACreature::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	
 	if (actualStatus == Status::Initial) {
 		float currentTime = GetWorld()->GetTimeSeconds() - startTime;
 		if (currentTime >= waitTimeBeforeFirstMove) {
@@ -105,6 +111,11 @@ void ACreature::Tick(float DeltaTime)
 		}
 
 		UE_LOG(LogTemp, Warning, TEXT("%lf"), currentTime);
+
+
+		FRotator PlayerRot = UKismetMathLibrary::FindLookAtRotation(this->GetActorLocation(), actualEndPosition);
+
+		SetActorRotation(PlayerRot);
 
 		SetActorLocation(FMath::Lerp(actualStartPosition, actualEndPosition, currentTime));
 	}
@@ -130,6 +141,10 @@ void ACreature::Tick(float DeltaTime)
 			actualStatus = Status::Stopped;
 			currentTime = 1.f;
 		}
+
+		FRotator PlayerRot = UKismetMathLibrary::FindLookAtRotation(this->GetActorLocation(), actualEndPosition);
+
+		SetActorRotation(PlayerRot);
 
 		UE_LOG(LogTemp, Warning, TEXT("%lf"), currentTime);
 
