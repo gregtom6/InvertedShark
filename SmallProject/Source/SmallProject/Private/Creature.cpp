@@ -5,6 +5,7 @@
 #include "Components/WidgetComponent.h"
 #include "CreatureUserWidget.h"
 #include <Kismet/GameplayStatics.h>
+#include "Components/AudioComponent.h"
 #include "Enemy.h"
 
 // Sets default values
@@ -21,6 +22,9 @@ ACreature::ACreature(const FObjectInitializer& ObjectInitializer)
 	HealthWidgetComp = ObjectInitializer.CreateDefaultSubobject<UWidgetComponent>(this, TEXT("Healthbar"));
 	//HealthWidgetComp->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 
+	WhaleAudioComp = CreateDefaultSubobject<UAudioComponent>(TEXT("WhaleAudioComp"));
+	WhaleAudioComp->SetupAttachment(CreatureMesh);
+
 	Health = MaxHealth;
 }
 
@@ -28,6 +32,13 @@ ACreature::ACreature(const FObjectInitializer& ObjectInitializer)
 void ACreature::BeginPlay()
 {
 	Super::BeginPlay();
+
+	if (WhaleAudioComp && whaleSound) {
+		UE_LOG(LogTemp, Warning, TEXT("hang jo"));
+		WhaleAudioComp->SetSound(whaleSound);
+	}
+
+	WhaleAudioComp->Play(0.f);
 
 	if (HealthWidgetComp != nullptr) {
 		UUserWidget* wid = HealthWidgetComp->GetUserWidgetObject();
@@ -159,6 +170,7 @@ void ACreature::ExitEvent(class AActor* overlappedActor, class AActor* otherActo
 				enemiesActuallyAttacking.Remove(attackingEnemy);
 
 			if (actualStatus == Status::UnderAttack && enemiesActuallyAttacking.Num() == 0) {
+				WhaleAudioComp->Play(0.f);
 				startTime = GetWorld()->GetTimeSeconds();
 				actualStatus = Status::WaitBeforeMoveFast;
 			}
