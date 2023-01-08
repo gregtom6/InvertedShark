@@ -12,6 +12,8 @@ void UVictoryScreenUserWidget::NativeConstruct() {
 }
 
 void UVictoryScreenUserWidget::OnReturnMenuClick() {
+	UGameplayStatics::PlaySound2D(this, ButtonClickSound);
+
 	FLatentActionInfo latentInfo;
 	UGameplayStatics::OpenLevel(this, levelToLoad, true);
 }

@@ -26,6 +26,9 @@ public:
 	//UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		//UAudioComponent* AudioComp;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Sounds") 
+		USoundBase* ButtonClickSound;
+
 		UPROPERTY(meta = (BindWidget))
 		class UButton* StartButton;
 	UPROPERTY(meta = (BindWidget))

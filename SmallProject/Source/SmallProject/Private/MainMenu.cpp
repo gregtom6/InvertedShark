@@ -24,11 +24,16 @@ void UMainMenu::NativeConstruct() {
 }
 
 void UMainMenu::OnStartClick() {
+	UGameplayStatics::PlaySound2D(this, ButtonClickSound);
+
 	FLatentActionInfo latentInfo;
 	UGameplayStatics::OpenLevel(this, levelToLoad, true);
 }
 
 void UMainMenu::OnControlsClick() {
+
+	UGameplayStatics::PlaySound2D(this, ButtonClickSound);
+
 	WidgetSwitcher->SetActiveWidgetIndex(1);
 }
 
@@ -37,9 +42,13 @@ void UMainMenu::OnQuitClick() {
 }
 
 void UMainMenu::OnHowToPlayClick() {
+	UGameplayStatics::PlaySound2D(this, ButtonClickSound);
+
 	WidgetSwitcher->SetActiveWidgetIndex(2);
 }
 
 void UMainMenu::OnBackClick() {
+	UGameplayStatics::PlaySound2D(this, ButtonClickSound);
+
 	WidgetSwitcher->SetActiveWidgetIndex(0);
 }

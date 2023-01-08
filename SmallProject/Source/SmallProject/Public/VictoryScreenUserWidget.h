@@ -18,6 +18,9 @@ public:
 
 	virtual void NativeConstruct() override;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Sounds")
+		USoundBase* ButtonClickSound;
+
 	UPROPERTY(meta = (BindWidget))
 		class UButton* ReturnToMenuButton;
 
