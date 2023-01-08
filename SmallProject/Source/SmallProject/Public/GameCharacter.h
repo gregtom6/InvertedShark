@@ -97,7 +97,13 @@ public:
 		UAudioComponent* AudioComp;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		UAudioComponent* TongueAudio;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		USoundCue* wingBeat;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		USoundCue* tongueSound;
 
 	UPROPERTY(EditAnywhere) TSubclassOf<UPauseUserWidget> widgetPauseMenu;
 	UPauseUserWidget* widgetPauseMenuInstance;

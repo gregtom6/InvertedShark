@@ -25,6 +25,8 @@ AGameCharacter::AGameCharacter(const FObjectInitializer& ObjectInitializer)
 
 	AudioComp = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComp"));
 
+	TongueAudio = CreateDefaultSubobject<UAudioComponent>(TEXT("TongueAudio"));
+
 	Tongue->SetupAttachment(CameraMesh);
 
 	Camera->FieldOfView = 120.f;
@@ -35,6 +37,8 @@ AGameCharacter::AGameCharacter(const FObjectInitializer& ObjectInitializer)
 	RightArm->SetupAttachment(CameraMesh);
 
 	AudioComp->SetupAttachment(CameraMesh);
+
+	TongueAudio->SetupAttachment(CameraMesh);
 
 	EnergyWidgetComp = ObjectInitializer.CreateDefaultSubobject<UWidgetComponent>(this, TEXT("Energybar"));
 
@@ -139,6 +143,7 @@ void AGameCharacter::Attack() {
 	startTime = GetWorld()->GetTimeSeconds();
 	actualStatus = GameCharacterStatus::Attack;
 
+	TongueAudio->Play(0.f);
 }
 
 void AGameCharacter::Pause() {
@@ -185,6 +190,10 @@ void AGameCharacter::BeginPlay()
 	if (AudioComp && wingBeat) {
 		UE_LOG(LogTemp, Warning, TEXT("hang jo"));
 		AudioComp->SetSound(wingBeat);
+	}
+
+	if (TongueAudio && tongueSound) {
+		TongueAudio->SetSound(tongueSound);
 	}
 
 	widgetPauseMenuInstance = CreateWidget<UPauseUserWidget>(GetWorld(), widgetPauseMenu);
