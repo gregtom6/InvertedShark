@@ -25,13 +25,7 @@ protected:
 		class UWidgetComponent* BossWidgetComp;
 
 	UPROPERTY(EditAnywhere)
-		float dyingTime;
-
-	UPROPERTY(EditAnywhere)
 		FName levelToLoadAfterDefeat;
-
-	FVector startScale;
-	FVector endScale;
 
 public:
 	virtual void Tick(float DeltaTime) override;
@@ -42,5 +36,5 @@ public:
 
 	float GetMaxLife();
 
-	virtual void RemoveEnemy();
+	virtual void DoAfterDead() override;
 };

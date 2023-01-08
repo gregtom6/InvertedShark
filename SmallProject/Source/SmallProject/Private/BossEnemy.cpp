@@ -55,8 +55,7 @@ void ABossEnemy::Tick(float DeltaTime) {
 		SetActorScale3D(FMath::Lerp(startScale, endScale, currentTime));
 
 		if (currentTime >= 1.f) {
-			FLatentActionInfo latentInfo;
-			UGameplayStatics::OpenLevel(this, levelToLoadAfterDefeat, true);
+			DoAfterDead();
 		}
 	}
 }
@@ -76,11 +75,7 @@ float ABossEnemy::GetMaxLife() {
 	return maxLife;
 }
 
-void ABossEnemy::RemoveEnemy() {
-	UE_LOG(LogTemp, Warning, TEXT("victory"));
-
-	startTime= GetWorld()->GetTimeSeconds();
-	startScale = GetActorScale3D();
-	endScale = FVector(0.f, 0.f, 0.f);
-	actualStatus = EnemyStatus::SpecialDying;
+void ABossEnemy::DoAfterDead() {
+	FLatentActionInfo latentInfo;
+	UGameplayStatics::OpenLevel(this, levelToLoadAfterDefeat, true);
 }

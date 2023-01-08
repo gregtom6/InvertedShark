@@ -6,8 +6,10 @@
 #include "GameFramework/Actor.h"
 #include "Components/SplineComponent.h"
 #include "Components/SplineMeshComponent.h"
+#include "Components/AudioComponent.h"
 #include "Creature.h"
 #include "GameCharacter.h"
+#include <Sound/SoundCue.h >
 #include "Enemy.generated.h"
 
 UCLASS()
@@ -37,7 +39,11 @@ public:
 
 	void DecreaseLife();
 
-	virtual void RemoveEnemy();
+	void RemoveEnemy();
+
+	void DestroySpline();
+
+	virtual void DoAfterDead();
 
 	virtual FVector GetEndPosition();
 
@@ -53,6 +59,13 @@ public:
 	UPROPERTY(EditAnywhere)
 		ACreature* creature;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		USoundCue* popSound;
+
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		UAudioComponent* PopAudioComp;
+
 	UPROPERTY(EditAnywhere)
 		float movementSpeed;
 
@@ -61,6 +74,9 @@ public:
 
 	UPROPERTY(EditAnywhere)
 		float lifeDecreaseAfterAttack;
+
+	UPROPERTY(EditAnywhere)
+		float dyingTime;
 
 	UFUNCTION()
 		void EnterEvent(class AActor* overlappedActor, class AActor* otherActor);
@@ -85,6 +101,9 @@ public:
 	FVector actualEndPosition;
 
 	FVector lastCurveEndPosition;
+
+	FVector startScale;
+	FVector endScale;
 };
 
 UENUM()

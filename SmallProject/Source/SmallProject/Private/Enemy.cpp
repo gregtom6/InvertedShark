@@ -3,6 +3,7 @@
 
 #include "Enemy.h"
 #include <Kismet/GameplayStatics.h>
+#include "Components/AudioComponent.h"
 
 // Sets default values
 AEnemy::AEnemy()
@@ -11,6 +12,9 @@ AEnemy::AEnemy()
 	PrimaryActorTick.bCanEverTick = true;
 	splineComponent = CreateDefaultSubobject<USplineComponent>(TEXT("Spline"));
 	SetRootComponent(splineComponent);
+
+	PopAudioComp=CreateDefaultSubobject<UAudioComponent>(TEXT("PopAudioComp"));
+	PopAudioComp->SetupAttachment(RootComponent);
 
 	actualStatus = EnemyStatus::Initial;
 }
@@ -21,10 +25,7 @@ void AEnemy::OnConstruction(const FTransform& Transform) {
 
 void AEnemy::SetSpline() {
 
-	if (prevSplineMeshComp != nullptr) {
-		UE_LOG(LogTemp, Warning, TEXT("spline torles"));
-		prevSplineMeshComp->DestroyComponent();
-	}
+	DestroySpline();
 
 	for (int SplineCount = 0; SplineCount < (splineComponent->GetNumberOfSplinePoints() - 1); SplineCount++) {
 		USplineMeshComponent* splineMeshComponent = NewObject<USplineMeshComponent>(this, USplineMeshComponent::StaticClass());
@@ -67,6 +68,11 @@ void AEnemy::StartEating() {
 void AEnemy::BeginPlay()
 {
 	Super::BeginPlay();
+
+	if (PopAudioComp && popSound) {
+		UE_LOG(LogTemp, Warning, TEXT("hang jo"));
+		PopAudioComp->SetSound(popSound);
+	}
 
 	actualLife = maxLife;
 	
@@ -120,6 +126,21 @@ void AEnemy::Tick(float DeltaTime)
 		
 	}
 
+	else if (actualStatus == EnemyStatus::SpecialDying) {
+		currentTime = GetWorld()->GetTimeSeconds() - startTime;
+
+		currentTime /= dyingTime;
+
+		if (currentTime >= 1.f)
+			currentTime = 1.f;
+
+		SetActorScale3D(FMath::Lerp(startScale, endScale, currentTime));
+
+		if (currentTime >= 1.f) {
+			DoAfterDead();
+		}
+	}
+
 	if (overlappingGameCharacter != nullptr) {
 		UE_LOG(LogTemp, Warning, TEXT("jatekos van"));
 	}
@@ -171,5 +192,22 @@ void AEnemy::DecreaseLife() {
 
 void AEnemy::RemoveEnemy() {
 
+	DestroySpline();
+	startTime = GetWorld()->GetTimeSeconds();
+	startScale = GetActorScale3D();
+	endScale = FVector(0.f, 0.f, 0.f);
+	actualStatus = EnemyStatus::SpecialDying;
+
+	PopAudioComp->Play(0.f);
+}
+
+void AEnemy::DoAfterDead() {
 	Destroy();
+}
+
+void AEnemy::DestroySpline() {
+	if (prevSplineMeshComp != nullptr) {
+		UE_LOG(LogTemp, Warning, TEXT("spline torles"));
+		prevSplineMeshComp->DestroyComponent();
+	}
 }
