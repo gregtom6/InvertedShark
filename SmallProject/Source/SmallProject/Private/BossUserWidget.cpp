@@ -7,14 +7,14 @@ void UBossUserWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	AddToPlayerScreen();
+	//AddToPlayerScreen();
 }
 
 void UBossUserWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 {
 	Super::NativeTick(MyGeometry, InDeltaTime);
 
-	if (boss != nullptr) {
+	if (boss != nullptr && bosslifebar!=nullptr) {
 		bosslifebar->SetPercent(boss->GetLife() / boss->GetMaxLife());
 	}
 }

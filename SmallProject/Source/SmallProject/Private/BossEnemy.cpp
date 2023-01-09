@@ -7,36 +7,25 @@
 
 ABossEnemy::ABossEnemy(const FObjectInitializer& ObjectInitializer)
 {
-	
-	BossWidgetComp = ObjectInitializer.CreateDefaultSubobject<UWidgetComponent>(this, TEXT("bossbar"));
-
 	OnActorBeginOverlap.AddDynamic(this, &AEnemy::EnterEvent);
 }
 
 void ABossEnemy::BeginPlay() {
-	Super::BeginPlay();
+	Super::BeginPlay();	
 
-	if (BossWidgetComp != nullptr) {
-		UUserWidget* wid = BossWidgetComp->GetUserWidgetObject();
+	UE_LOG(LogTemp, Warning, TEXT("bossenemy1"));
 
-		if (wid != nullptr) {
+	if (IsValid(widgetclass)) {
 
+		UE_LOG(LogTemp, Warning, TEXT("bossenemy2"));
+		bossuserwidget = Cast<UBossUserWidget>(CreateWidget(GetWorld(), widgetclass));
 
-			UBossUserWidget* widg = Cast<UBossUserWidget>(wid);
+		if (bossuserwidget != nullptr) {
 
-			UE_LOG(LogTemp, Warning, TEXT("UUserWidget nem null"));
+			bossuserwidget->boss = this;
 
-			widg->boss = this;
-
-			if (widg != nullptr) {
-				UE_LOG(LogTemp, Warning, TEXT("creatureuserwidget nem null"));
-			}
-			else {
-				UE_LOG(LogTemp, Warning, TEXT("creatureuserwidget null"));
-			}
-		}
-		else {
-			UE_LOG(LogTemp, Warning, TEXT("UUserWidget null"));
+			UE_LOG(LogTemp, Warning, TEXT("bossenemy3"));
+			bossuserwidget->AddToViewport(0);
 		}
 	}
 }

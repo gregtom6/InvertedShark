@@ -21,8 +21,11 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "boss settings")
-		class UWidgetComponent* BossWidgetComp;
+	UPROPERTY(EditAnywhere)
+		TSubclassOf<UUserWidget> widgetclass;
+
+	UPROPERTY(VisibleInstanceOnly)
+		class UBossUserWidget* bossuserwidget;
 
 	UPROPERTY(EditAnywhere)
 		FName levelToLoadAfterDefeat;
