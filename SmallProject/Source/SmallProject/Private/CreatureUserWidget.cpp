@@ -9,7 +9,7 @@ void UCreatureUserWidget::NativeConstruct() {
 
 	UE_LOG(LogTemp, Warning, TEXT("lefutok"));
 	
-	AddToPlayerScreen();
+	//AddToPlayerScreen();
 }
 
 void UCreatureUserWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)

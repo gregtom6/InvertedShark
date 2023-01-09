@@ -14,14 +14,6 @@ ACreature::ACreature(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
 	PrimaryActorTick.bCanEverTick = true;
-	/*
-	if (RootComponent == nullptr)
-	{
-		RootComponent = ObjectInitializer.CreateDefaultSubobject<USceneComponent>(this, TEXT("Root"));
-	}
-	*/
-	HealthWidgetComp = ObjectInitializer.CreateDefaultSubobject<UWidgetComponent>(this, TEXT("Healthbar"));
-	//HealthWidgetComp->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 
 	WhaleAudioComp = CreateDefaultSubobject<UAudioComponent>(TEXT("WhaleAudioComp"));
 	WhaleAudioComp->SetupAttachment(CreatureMesh);
@@ -41,27 +33,17 @@ void ACreature::BeginPlay()
 
 	WhaleAudioComp->Play(0.f);
 
-	if (HealthWidgetComp != nullptr) {
-		UUserWidget* wid = HealthWidgetComp->GetUserWidgetObject();
+	if (IsValid(widgetclass)) {
 
-		if (wid != nullptr) {
+		UE_LOG(LogTemp, Warning, TEXT("creature1"));
+		creatureuserwidget = Cast<UCreatureUserWidget>(CreateWidget(GetWorld(), widgetclass));
 
+		if (creatureuserwidget != nullptr) {
 
-			UCreatureUserWidget* widg = Cast<UCreatureUserWidget>(wid);
+			creatureuserwidget->creature = this;
 
-			UE_LOG(LogTemp, Warning, TEXT("UUserWidget nem null"));
-
-			widg->creature = this;
-
-			if (widg != nullptr) {
-				UE_LOG(LogTemp, Warning, TEXT("creatureuserwidget nem null"));
-			}
-			else {
-				UE_LOG(LogTemp, Warning, TEXT("creatureuserwidget null"));
-			}
-		}
-		else {
-			UE_LOG(LogTemp, Warning, TEXT("UUserWidget null"));
+			UE_LOG(LogTemp, Warning, TEXT("creature2"));
+			creatureuserwidget->AddToViewport(0);
 		}
 	}
 

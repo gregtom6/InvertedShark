@@ -44,8 +44,11 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		UAudioComponent* WhaleAudioComp;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="settings")
-		class UWidgetComponent* HealthWidgetComp;
+	UPROPERTY(EditAnywhere)
+		TSubclassOf<UUserWidget> widgetclass;
+
+	UPROPERTY(VisibleInstanceOnly)
+		class UCreatureUserWidget* creatureuserwidget;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "settings")
 		float deltaDamage;
