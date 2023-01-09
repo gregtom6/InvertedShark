@@ -93,6 +93,12 @@ protected:
 
 public:
 
+	UPROPERTY(EditAnywhere)
+		UStaticMeshComponent* leftHandVisual;
+
+	UPROPERTY(EditAnywhere)
+		class UStaticMeshComponent* rightHandVisual;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		UPhysicsConstraintComponent* LeftLeft;
 
