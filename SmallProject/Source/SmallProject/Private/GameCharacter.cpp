@@ -40,8 +40,6 @@ AGameCharacter::AGameCharacter(const FObjectInitializer& ObjectInitializer)
 
 	TongueAudio->SetupAttachment(CameraMesh);
 
-	EnergyWidgetComp = ObjectInitializer.CreateDefaultSubobject<UWidgetComponent>(this, TEXT("Energybar"));
-
 	isHugging = false;
 }
 
@@ -152,7 +150,7 @@ void AGameCharacter::Pause() {
 		UE_LOG(LogTemp, Warning, TEXT("pause aktivalas"));
 		UGameplayStatics::SetGamePaused(GetWorld(), true);
 		pauseStatus = PauseStatus::Paused;
-		
+
 		APlayerController* PC = Cast<APlayerController>(GetController());
 
 		if (PC)
@@ -211,27 +209,17 @@ void AGameCharacter::BeginPlay()
 
 	pauseStatus = PauseStatus::Played;
 
-	if (EnergyWidgetComp != nullptr) {
-		UUserWidget* wid = EnergyWidgetComp->GetUserWidgetObject();
+	if (IsValid(widgetclass)) {
 
-		if (wid != nullptr) {
+		UE_LOG(LogTemp, Warning, TEXT("energy1"));
+		energyuserwidget = Cast<UGameCharacterUserWidget>(CreateWidget(GetWorld(), widgetclass));
 
+		if (energyuserwidget != nullptr) {
 
-			UGameCharacterUserWidget* widg = Cast<UGameCharacterUserWidget>(wid);
+			energyuserwidget->player = this;
 
-			UE_LOG(LogTemp, Warning, TEXT("UUserWidget nem null"));
-
-			widg->player = this;
-
-			if (widg != nullptr) {
-				UE_LOG(LogTemp, Warning, TEXT("creatureuserwidget nem null"));
-			}
-			else {
-				UE_LOG(LogTemp, Warning, TEXT("creatureuserwidget null"));
-			}
-		}
-		else {
-			UE_LOG(LogTemp, Warning, TEXT("UUserWidget null"));
+			UE_LOG(LogTemp, Warning, TEXT("energy2"));
+			energyuserwidget->AddToViewport(0);
 		}
 	}
 }
@@ -259,8 +247,16 @@ void AGameCharacter::Tick(float DeltaTime)
 	}
 
 	float newEnergy = actualEnergy + energyRegeneration * DeltaTime;
+	float restMult = 1.f;
+
+	UE_LOG(LogTemp, Warning, TEXT("veloc %lf"),currentVelocity.X);
+
+	if (isHugging || (currentVelocity.X<0.3f && currentVelocity.Y<0.3f && currentVelocity.Z<0.3f)) {
+		restMult = restingMultiplier;
+	}
+
 	if (newEnergy <= maxEnergy)
-		actualEnergy += energyRegeneration * DeltaTime;
+		actualEnergy += energyRegeneration * restMult * DeltaTime;
 
 	if (actorLocation.Z <= heightToDie) {
 		//SetActorLocation(startPos);

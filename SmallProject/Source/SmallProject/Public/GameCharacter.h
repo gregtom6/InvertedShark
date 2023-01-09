@@ -48,8 +48,11 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		UStaticMeshComponent* Tongue;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "character settings")
-		class UWidgetComponent* EnergyWidgetComp;
+	UPROPERTY(EditAnywhere)
+		TSubclassOf<UUserWidget> widgetclass;
+
+	UPROPERTY(VisibleInstanceOnly)
+		class UGameCharacterUserWidget* energyuserwidget;
 
 	UPROPERTY(EditAnywhere, Category = "character settings")
 		float MovementSpeed = 1.f;
@@ -80,6 +83,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "character settings")
 		float energyRegeneration = 5.f;
+
+	UPROPERTY(EditAnywhere, Category = "character settings")
+		float restingMultiplier = 5.f;
 
 	FVector startPos;
 
