@@ -140,6 +140,7 @@ void AGameCharacter::Attack() {
 
 	Tongue->SetVisibility(true);
 	startTime = GetWorld()->GetTimeSeconds();
+	prevStatus = actualStatus;
 	actualStatus = GameCharacterStatus::Attack;
 
 	TongueAudio->Play(0.f);
@@ -207,6 +208,7 @@ void AGameCharacter::BeginPlay()
 	actualEnergy = maxEnergy;
 
 	actualStatus = GameCharacterStatus::Calm;
+	prevStatus = GameCharacterStatus::Calm;
 
 	pauseStatus = PauseStatus::Played;
 
@@ -243,6 +245,7 @@ void AGameCharacter::Tick(float DeltaTime)
 
 		if (currentTime >= attackTime) {
 			Tongue->SetVisibility(false);
+			prevStatus = actualStatus;
 			actualStatus = GameCharacterStatus::Calm;
 		}
 	}
@@ -275,6 +278,14 @@ float AGameCharacter::GetMaxEnergy() {
 
 GameCharacterStatus AGameCharacter::GetStatus() {
 	return actualStatus;
+}
+
+GameCharacterStatus AGameCharacter::GetPrevStatus() {
+	return prevStatus;
+}
+
+void AGameCharacter::SetPrevStatusToActualStatus() {
+	prevStatus = actualStatus;
 }
 
 // Called to bind functionality to input

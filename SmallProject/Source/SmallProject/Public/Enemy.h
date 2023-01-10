@@ -99,6 +99,8 @@ public:
 
 	float startTime;
 
+	bool canPlayerDamageMe = true;
+
 	AGameCharacter* overlappingGameCharacter;
 
 	EnemyStatus actualStatus;

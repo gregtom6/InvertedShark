@@ -122,9 +122,14 @@ public:
 
 	GameCharacterStatus GetStatus();
 
+	GameCharacterStatus GetPrevStatus();
+
+	void SetPrevStatusToActualStatus();
+
 	bool isHugging;
 
 	GameCharacterStatus actualStatus;
+	GameCharacterStatus prevStatus;
 
 	PauseStatus pauseStatus;
 

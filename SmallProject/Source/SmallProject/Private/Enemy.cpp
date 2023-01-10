@@ -155,6 +155,16 @@ void AEnemy::Tick(float DeltaTime)
 
 	if (overlappingGameCharacter != nullptr) {
 		UE_LOG(LogTemp, Warning, TEXT("jatekos van"));
+
+		if (overlappingGameCharacter->GetStatus() == GameCharacterStatus::Attack && overlappingGameCharacter->GetPrevStatus() == GameCharacterStatus::Calm) {
+			canPlayerDamageMe = true;
+			overlappingGameCharacter->SetPrevStatusToActualStatus();
+		}
+
+		if (overlappingGameCharacter->GetStatus() == GameCharacterStatus::Attack && canPlayerDamageMe) {
+			DecreaseLife();
+			canPlayerDamageMe = false;
+		}
 	}
 	else {
 		UE_LOG(LogTemp, Warning, TEXT("jatekos nincs"));
@@ -166,10 +176,8 @@ void AEnemy::EnterEvent(class AActor* overlappedActor, class AActor* otherActor)
 		if (otherActor->IsA(AGameCharacter::StaticClass())) {
 
 			overlappingGameCharacter = Cast<AGameCharacter>(otherActor);
-			
-			if (overlappingGameCharacter->GetStatus() == GameCharacterStatus::Attack) {
-				DecreaseLife();
-			}
+
+			canPlayerDamageMe = true;
 		}
 	}
 }
@@ -178,14 +186,9 @@ void AEnemy::ExitEvent(class AActor* overlappedActor, class AActor* otherActor) 
 	if (otherActor && otherActor != this) {
 		if (otherActor->IsA(AGameCharacter::StaticClass())) {
 
-			overlappingGameCharacter = Cast<AGameCharacter>(otherActor);
-
-			if (overlappingGameCharacter->GetStatus() == GameCharacterStatus::Attack) {
-				DecreaseLife();
-			}
-
-
 			overlappingGameCharacter = nullptr;
+
+			canPlayerDamageMe = false;
 		}
 	}
 }
@@ -200,6 +203,8 @@ void AEnemy::DecreaseLife() {
 	if (actualLife <= 0) {
 		RemoveEnemy();
 	}
+
+	canPlayerDamageMe = false;
 }
 
 void AEnemy::RemoveEnemy() {
