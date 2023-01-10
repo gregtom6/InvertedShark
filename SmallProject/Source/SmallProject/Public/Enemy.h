@@ -33,7 +33,7 @@ public:
 
 	void SetSpline();
 
-	void MoveToCreature();
+	virtual void MoveToCreature();
 
 	void StartEating();
 

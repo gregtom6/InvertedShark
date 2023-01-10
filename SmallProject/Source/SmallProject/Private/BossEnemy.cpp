@@ -14,6 +14,13 @@ ABossEnemy::ABossEnemy(const FObjectInitializer& ObjectInitializer)
 void ABossEnemy::BeginPlay() {
 	Super::BeginPlay();	
 
+	
+}
+
+void ABossEnemy::MoveToCreature() {
+
+	Super::MoveToCreature();
+
 	UE_LOG(LogTemp, Warning, TEXT("bossenemy1"));
 
 	if (IsValid(widgetclass)) {

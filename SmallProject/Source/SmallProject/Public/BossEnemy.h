@@ -31,6 +31,9 @@ protected:
 		FName levelToLoadAfterDefeat;
 
 public:
+
+	virtual void MoveToCreature() override;
+
 	virtual void Tick(float DeltaTime) override;
 
 	virtual FVector GetEndPosition() override;
