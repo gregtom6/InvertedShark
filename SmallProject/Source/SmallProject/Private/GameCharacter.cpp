@@ -96,30 +96,31 @@ void AGameCharacter::HugCreature() {
 		if (FoundActors.Num() > 0) {
 			ACreature* creature = Cast<ACreature>(FoundActors[0]);
 
-			if (creature != nullptr) {
+			if (creature != nullptr && creature->IsCharacterInFur()) {
 				UE_LOG(LogTemp, Warning, TEXT("creature fizikahoz megkapva"));
 
 				creature->GetHugged();
+
+
+				RightArm->ConstraintActor1 = this;
+				FConstrainComponentPropName name1;
+				name1.ComponentName = CameraMesh->GetFName();
+				RightArm->ComponentName1 = name1;
+
+				RightArm->ConstraintActor2 = creature;
+				FConstrainComponentPropName name2;
+				name2.ComponentName = "StaticMesh";
+				RightArm->ComponentName2 = name2;
+
+				CameraMesh->SetAllPhysicsLinearVelocity(FVector::ZeroVector);
+				CameraMesh->SetAllPhysicsAngularVelocityInDegrees(FVector::ZeroVector);
+
+				RightArm->SetWorldLocation(creature->GetLocation());
+
+				RightArm->InitComponentConstraint();
+
+				isHugging = true;
 			}
-
-			RightArm->ConstraintActor1 = this;
-			FConstrainComponentPropName name1;
-			name1.ComponentName = CameraMesh->GetFName();
-			RightArm->ComponentName1 = name1;
-
-			RightArm->ConstraintActor2 = creature;
-			FConstrainComponentPropName name2;
-			name2.ComponentName = "StaticMesh";
-			RightArm->ComponentName2 = name2;
-
-			CameraMesh->SetAllPhysicsLinearVelocity(FVector::ZeroVector);
-			CameraMesh->SetAllPhysicsAngularVelocityInDegrees(FVector::ZeroVector);
-
-			RightArm->SetWorldLocation(creature->GetLocation());
-
-			RightArm->InitComponentConstraint();
-
-			isHugging = true;
 		}
 	}
 	else {

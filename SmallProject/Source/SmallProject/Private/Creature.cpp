@@ -6,6 +6,7 @@
 #include "CreatureUserWidget.h"
 #include <Kismet/GameplayStatics.h>
 #include "Components/AudioComponent.h"
+#include "Components/BoxComponent.h"
 #include "Enemy.h"
 #include <Kismet/KismetMathLibrary.h>
 
@@ -17,6 +18,9 @@ ACreature::ACreature(const FObjectInitializer& ObjectInitializer)
 
 	WhaleAudioComp = CreateDefaultSubobject<UAudioComponent>(TEXT("WhaleAudioComp"));
 	WhaleAudioComp->SetupAttachment(CreatureMesh);
+
+	huggableComp = CreateDefaultSubobject<UBoxComponent>(TEXT("huggableComp"));
+	huggableComp->SetupAttachment(WhaleAudioComp);
 
 	Health = MaxHealth;
 }
@@ -59,6 +63,9 @@ void ACreature::BeginPlay()
 
 	OnActorBeginOverlap.AddDynamic(this, &ACreature::EnterEvent);
 	OnActorEndOverlap.AddDynamic(this, &ACreature::ExitEvent);
+
+	huggableComp->OnComponentBeginOverlap.AddDynamic(this, &ACreature::TriggerEnter);
+	huggableComp->OnComponentEndOverlap.AddDynamic(this, &ACreature::TriggerExit);
 }
 
 void ACreature::StepTargetIndex() {
@@ -184,6 +191,26 @@ void ACreature::TriggerEnter(class UPrimitiveComponent* HitComp, class AActor* O
 
 
 		}
+		else if (OtherActor->IsA(AGameCharacter::StaticClass())) {
+			UE_LOG(LogTemp, Warning, TEXT("fur be"));
+			isCharInFur = true;
+		}
+	}
+}
+
+void ACreature::TriggerExit(class UPrimitiveComponent* HitComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) {
+	UE_LOG(LogTemp, Warning, TEXT("fur ki1"));
+	if (OtherActor && OtherActor != this) {
+		UE_LOG(LogTemp, Warning, TEXT("fur ki2"));
+		if (OtherActor->IsA(AEnemy::StaticClass())) {
+			UE_LOG(LogTemp, Warning, TEXT("enemy megtamadott"));
+
+
+		}
+		else if (OtherActor->IsA(AGameCharacter::StaticClass())) {
+			UE_LOG(LogTemp, Warning, TEXT("fur ki"));
+			isCharInFur = false;
+		}
 	}
 }
 
@@ -199,4 +226,8 @@ void ACreature::SwitchingToMovingFast() {
 	startTime = GetWorld()->GetTimeSeconds();
 	StepTargetIndex();
 	actualStatus = Status::MovingFast;
+}
+
+bool ACreature::IsCharacterInFur() {
+	return isCharInFur;
 }

@@ -7,6 +7,7 @@
 #include "Blueprint/UserWidget.h"
 #include "Components/WidgetComponent.h"
 #include "Components/AudioComponent.h"
+#include "Components/BoxComponent.h"
 #include <Sound/SoundCue.h >
 #include "Creature.generated.h"
 
@@ -37,6 +38,8 @@ public:
 	UFUNCTION()
 		void TriggerEnter(class UPrimitiveComponent* HitComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
+	UFUNCTION()
+		void TriggerExit(class UPrimitiveComponent* HitComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		USoundCue* whaleSound;
@@ -60,6 +63,9 @@ public:
 		TArray<AActor*> positionsToMove;
 
 	UPROPERTY(EditAnywhere)
+		UBoxComponent* huggableComp;
+
+	UPROPERTY(EditAnywhere)
 		float movementSpeed;
 
 	UPROPERTY(EditAnywhere)
@@ -79,6 +85,10 @@ public:
 	void GetHugged();
 
 	void SwitchingToMovingFast();
+
+	bool IsCharacterInFur();
+
+	bool isCharInFur;
 
 	Status actualStatus;
 
