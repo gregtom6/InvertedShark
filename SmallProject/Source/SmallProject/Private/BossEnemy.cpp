@@ -4,6 +4,7 @@
 #include "BossEnemy.h"
 #include "BossUserWidget.h"
 #include <Kismet/GameplayStatics.h>
+#include <Blueprint/WidgetLayoutLibrary.h>
 
 ABossEnemy::ABossEnemy(const FObjectInitializer& ObjectInitializer)
 {
@@ -65,6 +66,9 @@ float ABossEnemy::GetMaxLife() {
 }
 
 void ABossEnemy::DoAfterDead() {
+
+	UWidgetLayoutLibrary::RemoveAllWidgets(GetWorld());
+
 	FLatentActionInfo latentInfo;
 	UGameplayStatics::OpenLevel(this, levelToLoadAfterDefeat, true);
 }

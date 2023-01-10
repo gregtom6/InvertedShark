@@ -5,6 +5,7 @@
 #include "UMG/Public/Components/Button.h"
 #include "GameCharacter.h"
 #include <Kismet/GameplayStatics.h>
+#include <Blueprint/WidgetLayoutLibrary.h>
 
 void UPauseUserWidget::NativeConstruct() {
 	Super::NativeConstruct();
@@ -23,6 +24,8 @@ void UPauseUserWidget::OnResumeClick() {
 }
 
 void UPauseUserWidget::OnQuitToMainMenuClick() {
+	UWidgetLayoutLibrary::RemoveAllWidgets(GetWorld());
+
 	FLatentActionInfo latentInfo;
 	UGameplayStatics::OpenLevel(this, levelToLoad, true);
 }
