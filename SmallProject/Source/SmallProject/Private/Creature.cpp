@@ -57,9 +57,12 @@ void ACreature::BeginPlay()
 
 	actualStatus = Status::Initial;
 
-	FRotator PlayerRot = UKismetMathLibrary::FindLookAtRotation(this->GetActorLocation(), positionsToMove[actualTargetIndex]->GetActorLocation());
+	if (actualTargetIndex < positionsToMove.Num()) {
+		FRotator PlayerRot = UKismetMathLibrary::FindLookAtRotation(this->GetActorLocation(), positionsToMove[actualTargetIndex]->GetActorLocation());
 
-	SetActorRotation(PlayerRot);
+		SetActorRotation(PlayerRot);
+	}
+	
 
 	OnActorBeginOverlap.AddDynamic(this, &ACreature::EnterEvent);
 	OnActorEndOverlap.AddDynamic(this, &ACreature::ExitEvent);
