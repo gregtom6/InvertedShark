@@ -24,16 +24,10 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
-public:	
-	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
 	void SetSpline();
 
-	virtual void MoveToCreature();
-
-	void StartEating();
+	
 
 	void DecreaseLife();
 
@@ -44,6 +38,33 @@ public:
 	virtual void DoAfterDead();
 
 	virtual FVector GetEndPosition();
+
+	float actualLife;
+
+	USplineMeshComponent* prevSplineMeshComp;
+
+	float currentTime;
+
+	float startTime;
+
+	bool canPlayerDamageMe = true;
+
+	AGameCharacter* overlappingGameCharacter;
+
+	EnemyStatus actualStatus;
+
+	FVector actualStartPosition;
+
+	FVector actualEndPosition;
+
+	FVector lastCurveEndPosition;
+
+	FVector startScale;
+	FVector endScale;
+
+public:	
+	// Called every frame
+
 
 	UPROPERTY(EditAnywhere, Category = "Spline")
 		USplineComponent* splineComponent;
@@ -89,28 +110,9 @@ public:
 	UFUNCTION()
 		void ExitEvent(class AActor* overlappedActor, class AActor* otherActor);
 
-	float actualLife;
+	virtual void MoveToCreature();
 
-	USplineMeshComponent* prevSplineMeshComp;
-
-	float currentTime;
-
-	float startTime;
-
-	bool canPlayerDamageMe = true;
-
-	AGameCharacter* overlappingGameCharacter;
-
-	EnemyStatus actualStatus;
-
-	FVector actualStartPosition;
-
-	FVector actualEndPosition;
-
-	FVector lastCurveEndPosition;
-
-	FVector startScale;
-	FVector endScale;
+	void StartEating();
 };
 
 UENUM()

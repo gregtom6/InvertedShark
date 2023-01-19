@@ -28,15 +28,15 @@ protected:
 	UPROPERTY(EditAnywhere)
 		FName levelToLoadAfterDefeat;
 
+	virtual FVector GetEndPosition() override;
+	virtual void DoAfterDead() override;
 public:
 
 	virtual void MoveToCreature() override;
 
-	virtual FVector GetEndPosition() override;
 
 	float GetLife();
 
 	float GetMaxLife();
 
-	virtual void DoAfterDead() override;
 };
