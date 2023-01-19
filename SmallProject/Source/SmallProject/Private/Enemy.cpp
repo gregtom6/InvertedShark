@@ -66,7 +66,7 @@ void AEnemy::MoveToCreature() {
 }
 
 /*
-setting up the Eating state, starting slurp sound
+setting up the Eating state, starting slurp sound. Creating spline between fur creature and enemy to represent blood transfusion. 
 */
 
 void AEnemy::StartEating() {
@@ -75,6 +75,25 @@ void AEnemy::StartEating() {
 	actualStatus = EnemyStatus::Eating;
 
 	SlurpAudioComp->Play(FMath::FRandRange(0.f,3.f));
+
+
+	FTransform transform = splineComponent->GetTransformAtSplinePoint(1, ESplineCoordinateSpace::World);
+	if (transform.GetLocation() != lastCurveEndPosition) {
+		TArray<FVector> points;
+
+		points.Add(GetActorLocation());
+		points.Add(creature->GetActorLocation());
+
+		splineComponent->SetSplinePoints(points, ESplineCoordinateSpace::World, true);
+
+		UE_LOG(LogTemp, Warning, TEXT("spline uploaded"));
+
+		SetSpline();
+
+		lastCurveEndPosition = creature->GetActorLocation();
+
+		startTime = GetWorld()->GetTimeSeconds();
+	}
 }
 
 // Called when the game starts or when spawned
@@ -122,32 +141,6 @@ void AEnemy::Tick(float DeltaTime)
 			currentTime = 1.f;
 
 			SetActorLocation(FMath::Lerp(actualStartPosition, actualEndPosition, currentTime));
-	}
-
-	else if (actualStatus == EnemyStatus::Eating && creature != nullptr) {
-		
-		currentTime = GetWorld()->GetTimeSeconds() - startTime;
-
-		if (currentTime > 0.08f) {
-
-			FTransform transform=splineComponent->GetTransformAtSplinePoint(1, ESplineCoordinateSpace::World);
-			if (transform.GetLocation() != lastCurveEndPosition) {
-				TArray<FVector> points;
-
-				points.Add(GetActorLocation());
-				points.Add(creature->GetActorLocation());
-
-				splineComponent->SetSplinePoints(points, ESplineCoordinateSpace::World, true);
-
-				UE_LOG(LogTemp, Warning, TEXT("spline uploaded"));
-
-				SetSpline();
-
-				lastCurveEndPosition = creature->GetActorLocation();
-
-				startTime = GetWorld()->GetTimeSeconds();
-			}
-		}
 	}
 
 	else if (actualStatus == EnemyStatus::SpecialDying) {
