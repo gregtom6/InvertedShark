@@ -18,8 +18,6 @@ public:
 	ABossEnemy(const FObjectInitializer& ObjectInitializer);
 	
 protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
 
 	UPROPERTY(EditAnywhere)
 		TSubclassOf<UUserWidget> widgetclass;
@@ -33,8 +31,6 @@ protected:
 public:
 
 	virtual void MoveToCreature() override;
-
-	virtual void Tick(float DeltaTime) override;
 
 	virtual FVector GetEndPosition() override;
 

@@ -6,12 +6,10 @@
 #include "Components/AudioComponent.h"
 #include "Math/UnrealMathUtility.h"
 
-
-// Sets default values
 AEnemy::AEnemy()
 {
-	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+
 	splineComponent = CreateDefaultSubobject<USplineComponent>(TEXT("Spline"));
 	SetRootComponent(splineComponent);
 
@@ -24,9 +22,9 @@ AEnemy::AEnemy()
 	actualStatus = EnemyStatus::Initial;
 }
 
-void AEnemy::OnConstruction(const FTransform& Transform) {
-
-}
+/*
+this method creates spline between the enemy and the creature. Spline is to show the blood transfusion between the enemy and the fur creature. 
+*/
 
 void AEnemy::SetSpline() {
 
@@ -57,11 +55,19 @@ void AEnemy::SetSpline() {
 	}
 }
 
+/*
+setting up the Moving state
+*/
+
 void AEnemy::MoveToCreature() {
 	startTime = GetWorld()->GetTimeSeconds();
 	actualStartPosition = GetActorLocation();
 	actualStatus = EnemyStatus::Moving;
 }
+
+/*
+setting up the Eating state, starting slurp sound
+*/
 
 void AEnemy::StartEating() {
 	startTime = GetWorld()->GetTimeSeconds();
@@ -77,12 +83,12 @@ void AEnemy::BeginPlay()
 	Super::BeginPlay();
 
 	if (PopAudioComp && popSound) {
-		UE_LOG(LogTemp, Warning, TEXT("hang jo"));
+		UE_LOG(LogTemp, Warning, TEXT("pop sound is okay"));
 		PopAudioComp->SetSound(popSound);
 	}
 
 	if (SlurpAudioComp && slurpSound) {
-		UE_LOG(LogTemp, Warning, TEXT("slurp beallitas"));
+		UE_LOG(LogTemp, Warning, TEXT("slurp sound is okay"));
 		SlurpAudioComp->SetSound(slurpSound);
 	}
 
@@ -91,7 +97,16 @@ void AEnemy::BeginPlay()
 	OnActorBeginOverlap.AddDynamic(this, &AEnemy::EnterEvent);
 }
 
-// Called every frame
+/*
+moving state: when enemy is moving, it goes from actualStartPosition to actualEndPosition. actualStartPosition setted by the same way in Enemy.cpp and 
+BossEnemy.cpp, it will always be the enemy's actual position during state switching. 
+actualEndPosition will be different for enemy and bossenemy. For enemy, it will be the creature itself. For the bossenemy, it will be above the creature. 
+
+dying state: for enemies, it will mean only to scale down the actor. For the bossenemy, the functionality gets extended, the DoAfterDead will load a new level
+and removes widgets from viewport. 
+
+Tick method also manages life decrease when getting attacked by player, for both the enemy and the bossenemy. 
+*/
 void AEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
@@ -124,7 +139,7 @@ void AEnemy::Tick(float DeltaTime)
 
 				splineComponent->SetSplinePoints(points, ESplineCoordinateSpace::World, true);
 
-				UE_LOG(LogTemp, Warning, TEXT("spline feltoltve"));
+				UE_LOG(LogTemp, Warning, TEXT("spline uploaded"));
 
 				SetSpline();
 
@@ -132,10 +147,7 @@ void AEnemy::Tick(float DeltaTime)
 
 				startTime = GetWorld()->GetTimeSeconds();
 			}
-
-			
 		}
-		
 	}
 
 	else if (actualStatus == EnemyStatus::SpecialDying) {
@@ -154,7 +166,7 @@ void AEnemy::Tick(float DeltaTime)
 	}
 
 	if (overlappingGameCharacter != nullptr) {
-		UE_LOG(LogTemp, Warning, TEXT("jatekos van"));
+		UE_LOG(LogTemp, Warning, TEXT("player inside"));
 
 		if (overlappingGameCharacter->GetStatus() == GameCharacterStatus::Attack && overlappingGameCharacter->GetPrevStatus() == GameCharacterStatus::Calm) {
 			canPlayerDamageMe = true;
@@ -167,9 +179,13 @@ void AEnemy::Tick(float DeltaTime)
 		}
 	}
 	else {
-		UE_LOG(LogTemp, Warning, TEXT("jatekos nincs"));
+		UE_LOG(LogTemp, Warning, TEXT("player outside"));
 	}
 }
+
+/*
+events to detect player actor to receive the correct amount of damaging
+*/
 
 void AEnemy::EnterEvent(class AActor* overlappedActor, class AActor* otherActor) {
 	if (otherActor && otherActor != this) {
@@ -193,6 +209,11 @@ void AEnemy::ExitEvent(class AActor* overlappedActor, class AActor* otherActor) 
 	}
 }
 
+/*
+GetEndPosition gets back different end position for enemy movement, when it's for normal enemy, and for bossenemy. 
+enemy will stop at the creature position, BossEnemy will stop above the creature. 
+*/
+
 FVector AEnemy::GetEndPosition() {
 	return creature->GetActorLocation();
 }
@@ -206,6 +227,11 @@ void AEnemy::DecreaseLife() {
 
 	canPlayerDamageMe = false;
 }
+
+/*
+spline gets destroyed, because enemy is not eating anymore (no more blood transfusion between creature and enemy)
+stopping audios, saving values for lerps
+*/
 
 void AEnemy::RemoveEnemy() {
 
@@ -225,7 +251,7 @@ void AEnemy::DoAfterDead() {
 
 void AEnemy::DestroySpline() {
 	if (prevSplineMeshComp != nullptr) {
-		UE_LOG(LogTemp, Warning, TEXT("spline torles"));
+		UE_LOG(LogTemp, Warning, TEXT("spline removal"));
 		prevSplineMeshComp->DestroyComponent();
 	}
 }

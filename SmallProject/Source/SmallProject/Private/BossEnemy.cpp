@@ -11,11 +11,9 @@ ABossEnemy::ABossEnemy(const FObjectInitializer& ObjectInitializer)
 	OnActorBeginOverlap.AddDynamic(this, &AEnemy::EnterEvent);
 }
 
-void ABossEnemy::BeginPlay() {
-	Super::BeginPlay();	
-
-	
-}
+/*
+overriding MoveToCreature(), because we need to setup values to step into Moving state (that happens in the parent), but we also need to add boss lifebar widget to viewport (the boss is coming and fight gets started)
+*/
 
 void ABossEnemy::MoveToCreature() {
 
@@ -38,24 +36,9 @@ void ABossEnemy::MoveToCreature() {
 	}
 }
 
-void ABossEnemy::Tick(float DeltaTime) {
-	Super::Tick(DeltaTime);
-
-	if (actualStatus == EnemyStatus::SpecialDying) {
-		currentTime = GetWorld()->GetTimeSeconds() - startTime;
-
-		currentTime /= dyingTime;
-
-		if (currentTime >= 1.f)
-			currentTime = 1.f;
-
-		SetActorScale3D(FMath::Lerp(startScale, endScale, currentTime));
-
-		if (currentTime >= 1.f) {
-			DoAfterDead();
-		}
-	}
-}
+/*
+after ending movement state, bossenemy will be above the player vertically, not around the player. 
+*/
 
 FVector ABossEnemy::GetEndPosition() {
 	FVector vec = creature->GetActorLocation();
@@ -64,6 +47,10 @@ FVector ABossEnemy::GetEndPosition() {
 	return vec;
 }
 
+/*
+extra methods for boss life bar
+*/
+
 float ABossEnemy::GetLife() {
 	return actualLife;
 }
@@ -71,6 +58,10 @@ float ABossEnemy::GetLife() {
 float ABossEnemy::GetMaxLife() {
 	return maxLife;
 }
+
+/*
+when boss dies, boss itself doesn't need to be destroyed, because level replacement will destroy that. We remove all widgets from viewport and open the new level
+*/
 
 void ABossEnemy::DoAfterDead() {
 
