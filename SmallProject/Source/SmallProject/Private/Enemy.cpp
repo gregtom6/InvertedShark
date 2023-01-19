@@ -159,7 +159,6 @@ void AEnemy::Tick(float DeltaTime)
 	}
 
 	if (overlappingGameCharacter != nullptr) {
-		UE_LOG(LogTemp, Warning, TEXT("player inside"));
 
 		if (overlappingGameCharacter->GetStatus() == GameCharacterStatus::Attack && overlappingGameCharacter->GetPrevStatus() == GameCharacterStatus::Calm) {
 			canPlayerDamageMe = true;
@@ -170,9 +169,6 @@ void AEnemy::Tick(float DeltaTime)
 			DecreaseLife();
 			canPlayerDamageMe = false;
 		}
-	}
-	else {
-		UE_LOG(LogTemp, Warning, TEXT("player outside"));
 	}
 }
 

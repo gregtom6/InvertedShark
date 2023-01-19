@@ -27,6 +27,28 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	bool isCharInFur;
+
+	void StepTargetIndex();
+
+	void SwitchingToMovingFast();
+
+
+	Status actualStatus;
+
+	FVector actualStartPosition;
+	FVector actualEndPosition;
+
+	double startTime;
+
+
+	float Health;
+	float MaxHealth = 120;
+
+	int actualTargetIndex = 0;
+
+	TArray<AActor*> enemiesActuallyAttacking;
+
 public:	
 	
 	UFUNCTION()
@@ -80,33 +102,11 @@ public:
 	UPROPERTY(EditAnywhere)
 		float waitTimeAfterHuggedToMoveForward;
 
-	void StepTargetIndex();
-
-	void GetHugged();
-
-	void SwitchingToMovingFast();
-
-	bool IsCharacterInFur();
-
-	bool isCharInFur;
-
-	Status actualStatus;
-
-	FVector actualStartPosition;
-	FVector actualEndPosition;
-
-	double startTime;
-
 	float GetHealth() const { return Health; }
 	float GetMaxHealth() const { return MaxHealth; }
 	FVector GetLocation() const { return GetActorLocation(); }
-
-	float Health;
-	float MaxHealth = 120;
-
-	int actualTargetIndex = 0;
-
-	TArray<AActor*> enemiesActuallyAttacking;
+	bool IsCharacterInFur();
+	void GetHugged();
 };
 
 UENUM()

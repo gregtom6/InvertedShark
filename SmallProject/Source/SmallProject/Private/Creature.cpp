@@ -10,7 +10,6 @@
 #include "Enemy.h"
 #include <Kismet/KismetMathLibrary.h>
 
-// Sets default values
 ACreature::ACreature(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
@@ -25,13 +24,19 @@ ACreature::ACreature(const FObjectInitializer& ObjectInitializer)
 	Health = MaxHealth;
 }
 
-// Called when the game starts or when spawned
+/*
+setting up whale sound and playing it
+setting up initial status. While on initial status, creature goes slowly to the destination. 
+We adds creature life to viewport, setting creature reference inside it. 
+we rotates the creature to face towards his destination, and subscribing to events.
+*/
+
 void ACreature::BeginPlay()
 {
 	Super::BeginPlay();
 
 	if (WhaleAudioComp && whaleSound) {
-		UE_LOG(LogTemp, Warning, TEXT("hang jo"));
+		UE_LOG(LogTemp, Warning, TEXT("whale sound setted up"));
 		WhaleAudioComp->SetSound(whaleSound);
 	}
 
@@ -62,7 +67,6 @@ void ACreature::BeginPlay()
 
 		SetActorRotation(PlayerRot);
 	}
-	
 
 	OnActorBeginOverlap.AddDynamic(this, &ACreature::EnterEvent);
 	OnActorEndOverlap.AddDynamic(this, &ACreature::ExitEvent);
@@ -70,6 +74,10 @@ void ACreature::BeginPlay()
 	huggableComp->OnComponentBeginOverlap.AddDynamic(this, &ACreature::TriggerEnter);
 	huggableComp->OnComponentEndOverlap.AddDynamic(this, &ACreature::TriggerExit);
 }
+
+/*
+if there is still a new location, where the creature can move, then we set that up. 
+*/
 
 void ACreature::StepTargetIndex() {
 	if (actualTargetIndex < positionsToMove.Num()) {
@@ -80,11 +88,19 @@ void ACreature::StepTargetIndex() {
 	}
 }
 
-// Called every frame
+/*
+managing different states in Tick. 
+initial status: basically waiting a bit to make player realize where he is at the moment. 
+moving status: this state is only for the first initial movement. It's a slow movement, only for entering the triggerbox, where enemies will arrive. 
+WaitBeforeMoveFast status: when a group of enemies have been defeated, the creature gives a whale sound, and waits a bit before fast traveling to a new location. 
+WaitAfterHuggedByPlayer status: this is only when creature is ready to travel forward. If player hugs the creature, it will still wait a bit before moving.
+MovingFast status: the fast travel status of the creature. Player can survive only if hugs the creature during WaitBeforeMoveFast status
+
+creature health is also managed in here. Decrease depends on the currently attacking enemy count. Restarting level, when creature died. 
+*/
 void ACreature::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 	
 	if (actualStatus == Status::Initial) {
 		float currentTime = GetWorld()->GetTimeSeconds() - startTime;
@@ -101,9 +117,6 @@ void ACreature::Tick(float DeltaTime)
 			actualStatus = Status::Stopped;
 			currentTime = 1.f;
 		}
-
-		UE_LOG(LogTemp, Warning, TEXT("%lf"), currentTime);
-
 
 		FRotator PlayerRot = UKismetMathLibrary::FindLookAtRotation(this->GetActorLocation(), actualEndPosition);
 
@@ -138,12 +151,8 @@ void ACreature::Tick(float DeltaTime)
 
 		SetActorRotation(PlayerRot);
 
-		UE_LOG(LogTemp, Warning, TEXT("%lf"), currentTime);
-
 		SetActorLocation(FMath::Lerp(actualStartPosition, actualEndPosition, currentTime));
 	}
-
-	UE_LOG(LogTemp, Warning, TEXT("attacking enemies: %d"), enemiesActuallyAttacking.Num());
 
 	Health = Health > 0 ? Health - (deltaDamage * DeltaTime * enemiesActuallyAttacking.Num()) : 0;
 
@@ -152,10 +161,15 @@ void ACreature::Tick(float DeltaTime)
 	}
 }
 
+/*
+detecting enemy attacking (detecting the spline created between enemy and creature) 
+we detect the attack in the whole creature actor and setting enemy count and states based on this. 
+*/
+
 void ACreature::EnterEvent(class AActor* overlappedActor, class AActor* otherActor) {
-	UE_LOG(LogTemp, Warning, TEXT("enemy lefut"));
+	UE_LOG(LogTemp, Warning, TEXT("enemy attacking1"));
 	if (otherActor && otherActor != this) {
-		UE_LOG(LogTemp, Warning, TEXT("enemy lef2"));
+		UE_LOG(LogTemp, Warning, TEXT("enemy attacking2"));
 		if (otherActor->IsA(AEnemy::StaticClass())) {
 
 			AEnemy* attackingEnemy = Cast<AEnemy>(otherActor);
@@ -167,9 +181,9 @@ void ACreature::EnterEvent(class AActor* overlappedActor, class AActor* otherAct
 }
 
 void ACreature::ExitEvent(class AActor* overlappedActor, class AActor* otherActor) {
-	UE_LOG(LogTemp, Warning, TEXT("enemy lefut"));
+	UE_LOG(LogTemp, Warning, TEXT("enemy leaving1"));
 	if (otherActor && otherActor != this) {
-		UE_LOG(LogTemp, Warning, TEXT("enemy lef2"));
+		UE_LOG(LogTemp, Warning, TEXT("enemy leaving2"));
 		if (otherActor->IsA(AEnemy::StaticClass())) {
 
 			AEnemy* attackingEnemy = Cast<AEnemy>(otherActor);
@@ -185,37 +199,42 @@ void ACreature::ExitEvent(class AActor* overlappedActor, class AActor* otherActo
 	}
 }
 
+/*
+when player is inside the UBoxComponent or leaves that, then we set the boolean status. It is used for making player to hug the creature.
+hugging is good for staying alive, when creature does fast traveling, and that regenerates enery of player. 
+*/
+
 void ACreature::TriggerEnter(class UPrimitiveComponent* HitComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) {
-	UE_LOG(LogTemp, Warning, TEXT("enemy lefut"));
+	UE_LOG(LogTemp, Warning, TEXT("getting inside fur1"));
 	if (OtherActor && OtherActor != this) {
-		UE_LOG(LogTemp, Warning, TEXT("enemy lef2"));
+		UE_LOG(LogTemp, Warning, TEXT("getting inside fur2"));
 		if (OtherActor->IsA(AEnemy::StaticClass())) {
-			UE_LOG(LogTemp, Warning, TEXT("enemy megtamadott"));
-
-
+			UE_LOG(LogTemp, Warning, TEXT("getting inside fur3"));
 		}
 		else if (OtherActor->IsA(AGameCharacter::StaticClass())) {
-			UE_LOG(LogTemp, Warning, TEXT("fur be"));
+			UE_LOG(LogTemp, Warning, TEXT("getting inside fur4"));
 			isCharInFur = true;
 		}
 	}
 }
 
 void ACreature::TriggerExit(class UPrimitiveComponent* HitComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) {
-	UE_LOG(LogTemp, Warning, TEXT("fur ki1"));
+	UE_LOG(LogTemp, Warning, TEXT("away from fur1"));
 	if (OtherActor && OtherActor != this) {
-		UE_LOG(LogTemp, Warning, TEXT("fur ki2"));
+		UE_LOG(LogTemp, Warning, TEXT("away from fur2"));
 		if (OtherActor->IsA(AEnemy::StaticClass())) {
-			UE_LOG(LogTemp, Warning, TEXT("enemy megtamadott"));
-
-
+			UE_LOG(LogTemp, Warning, TEXT("away from fur3"));
 		}
 		else if (OtherActor->IsA(AGameCharacter::StaticClass())) {
-			UE_LOG(LogTemp, Warning, TEXT("fur ki"));
+			UE_LOG(LogTemp, Warning, TEXT("away from fur4"));
 			isCharInFur = false;
 		}
 	}
 }
+
+/*
+these methods are for setting values for state changes
+*/
 
 void ACreature::GetHugged() {
 
@@ -230,6 +249,10 @@ void ACreature::SwitchingToMovingFast() {
 	StepTargetIndex();
 	actualStatus = Status::MovingFast;
 }
+
+/*
+isCharInFur state can be asked from creature
+*/
 
 bool ACreature::IsCharacterInFur() {
 	return isCharInFur;
