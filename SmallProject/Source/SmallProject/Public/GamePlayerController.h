@@ -14,6 +14,6 @@ class SMALLPROJECT_API AGamePlayerController : public APlayerController
 {
 	GENERATED_BODY()
 	
-public:
+private:
 	AGamePlayerController();
 };

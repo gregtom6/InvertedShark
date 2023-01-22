@@ -16,9 +16,9 @@ class SMALLPROJECT_API UPauseUserWidget : public UUserWidget
 
 		AGameCharacter* gameChar;
 
+	virtual void NativeConstruct() override;
 public:
 
-	virtual void NativeConstruct() override;
 
 	UPROPERTY(meta = (BindWidget))
 		class UButton* ResumeButton;

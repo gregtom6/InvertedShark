@@ -18,7 +18,7 @@ class SMALLPROJECT_API AGameCharacter : public APawn
 {
 	GENERATED_BODY()
 
-public:
+private:
 	// Sets default values for this pawn's properties
 	AGameCharacter(const FObjectInitializer& ObjectInitializer);
 
@@ -32,11 +32,30 @@ public:
 
 	void Attack();
 
-	void Pause();
+	virtual void BeginPlay() override;
+
+	FVector startPos;
+
+	float time;
+
+	bool isHugging;
+
+	GameCharacterStatus actualStatus;
+	GameCharacterStatus prevStatus;
+
+	PauseStatus pauseStatus;
+
+	float startTime;
+
+	float actualEnergy;
+
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
+
+	// Called to bind functionality to input
+	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
 
 	//main pawn camera
 	UPROPERTY(EditAnywhere)
@@ -87,11 +106,8 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "character settings")
 		float restingMultiplier = 5.f;
 
-	FVector startPos;
-
-	float time;
-
-public:
+	UPROPERTY(EditAnywhere, Category = "character settings")
+		float restVelocity = 0.3f;
 
 	UPROPERTY(EditAnywhere)
 		UStaticMeshComponent* leftHandVisual;
@@ -120,33 +136,19 @@ public:
 	UPROPERTY(EditAnywhere) TSubclassOf<UPauseUserWidget> widgetPauseMenu;
 	UPauseUserWidget* widgetPauseMenuInstance;
 
+public:
+
 	GameCharacterStatus GetStatus();
 
 	GameCharacterStatus GetPrevStatus();
-
-	void SetPrevStatusToActualStatus();
-
-	bool isHugging;
-
-	GameCharacterStatus actualStatus;
-	GameCharacterStatus prevStatus;
-
-	PauseStatus pauseStatus;
-
-	float startTime;
-
-	float actualEnergy;
 
 	float GetEnergy();
 
 	float GetMaxEnergy();
 
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+	void SetPrevStatusToActualStatus();
 
-	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
+	void Pause();
 };
 
 UENUM()

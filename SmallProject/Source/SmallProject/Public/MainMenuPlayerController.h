@@ -14,6 +14,6 @@ class SMALLPROJECT_API AMainMenuPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 	
-public:
+private:
 	AMainMenuPlayerController();
 };

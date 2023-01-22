@@ -61,7 +61,6 @@ void AGameCharacter::StrafeLR(float movementDelta) {
 	FVector forwardVector = GetActorForwardVector();
 
 	FVector newLocation = GetActorLocation();
-	//rightVector.Y += movementDelta * MovementSpeed;
 
 	SetActorLocation(newLocation + (rightVector * movementDelta * MovementSpeed));
 }
@@ -81,10 +80,8 @@ void AGameCharacter::WingBeat() {
 	actualEnergy -= energyDecreaseAfterWingBeat;
 
 	if (AudioComp && wingBeat) {
-		UE_LOG(LogTemp, Warning, TEXT("hang jo"));
+		AudioComp->Play(0.f);
 	}
-
-	AudioComp->Play(0.f);
 }
 
 void AGameCharacter::HugCreature() {
@@ -97,10 +94,8 @@ void AGameCharacter::HugCreature() {
 			ACreature* creature = Cast<ACreature>(FoundActors[0]);
 
 			if (creature != nullptr && creature->IsCharacterInFur()) {
-				UE_LOG(LogTemp, Warning, TEXT("creature fizikahoz megkapva"));
 
 				creature->GetHugged();
-
 
 				RightArm->ConstraintActor1 = this;
 				FConstrainComponentPropName name1;
@@ -136,7 +131,7 @@ void AGameCharacter::Attack() {
 
 	if (actualStatus == GameCharacterStatus::Attack) { return; }
 
-	UE_LOG(LogTemp, Warning, TEXT("attack tortent"));
+	UE_LOG(LogTemp, Warning, TEXT("attack happened"));
 
 	Tongue->SetVisibility(true);
 	startTime = GetWorld()->GetTimeSeconds();
@@ -149,7 +144,7 @@ void AGameCharacter::Attack() {
 void AGameCharacter::Pause() {
 
 	if (pauseStatus == PauseStatus::Played) {
-		UE_LOG(LogTemp, Warning, TEXT("pause aktivalas"));
+		UE_LOG(LogTemp, Warning, TEXT("pause activate"));
 		UGameplayStatics::SetGamePaused(GetWorld(), true);
 		pauseStatus = PauseStatus::Paused;
 
@@ -165,7 +160,7 @@ void AGameCharacter::Pause() {
 		widgetPauseMenuInstance->AddToViewport();
 	}
 	else if (pauseStatus == PauseStatus::Paused) {
-		UE_LOG(LogTemp, Warning, TEXT("pause deaktivalas"));
+		UE_LOG(LogTemp, Warning, TEXT("pause deactivate"));
 		UGameplayStatics::SetGamePaused(GetWorld(), false);
 		pauseStatus = PauseStatus::Played;
 
@@ -188,7 +183,6 @@ void AGameCharacter::BeginPlay()
 	Super::BeginPlay();
 
 	if (AudioComp && wingBeat) {
-		UE_LOG(LogTemp, Warning, TEXT("hang jo"));
 		AudioComp->SetSound(wingBeat);
 	}
 
@@ -237,7 +231,6 @@ void AGameCharacter::Tick(float DeltaTime)
 	CameraMesh->SetPhysicsLinearVelocity(clampedVelocity);
 
 	FVector actorLocation = GetActorLocation();
-	//UE_LOG(LogTemp, Log, TEXT("height %lf"), actorLocation.Z);
 
 	if (actualStatus == GameCharacterStatus::Attack) {
 
@@ -253,9 +246,7 @@ void AGameCharacter::Tick(float DeltaTime)
 	float newEnergy = actualEnergy + energyRegeneration * DeltaTime;
 	float restMult = 1.f;
 
-	UE_LOG(LogTemp, Warning, TEXT("veloc %lf"),currentVelocity.X);
-
-	if (isHugging || (currentVelocity.X<0.3f && currentVelocity.Y<0.3f && currentVelocity.Z<0.3f)) {
+	if (isHugging || (currentVelocity.X < restVelocity && currentVelocity.Y < restVelocity && currentVelocity.Z < restVelocity)) {
 		restMult = restingMultiplier;
 	}
 
@@ -263,7 +254,6 @@ void AGameCharacter::Tick(float DeltaTime)
 		actualEnergy += energyRegeneration * restMult * DeltaTime;
 
 	if (actorLocation.Z <= heightToDie) {
-		//SetActorLocation(startPos);
 		UGameplayStatics::OpenLevel(this, FName(*GetWorld()->GetName()), false);
 	}
 }

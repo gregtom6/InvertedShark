@@ -15,16 +15,8 @@ class SMALLPROJECT_API UMainMenu : public UUserWidget
 {
 	GENERATED_BODY()
 
+	virtual void NativeConstruct() override; 
 public:
-
-	virtual void NativeConstruct() override;
-
-	//UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		//USoundCue* ambientSound;
-
-
-	//UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		//UAudioComponent* AudioComp;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Sounds") 
 		USoundBase* ButtonClickSound;
