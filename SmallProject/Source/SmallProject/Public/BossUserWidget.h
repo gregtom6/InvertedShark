@@ -8,9 +8,6 @@
 #include "Components/ProgressBar.h"
 #include "BossUserWidget.generated.h"
 
-/**
- * 
- */
 UCLASS()
 class SMALLPROJECT_API UBossUserWidget : public UUserWidget
 {

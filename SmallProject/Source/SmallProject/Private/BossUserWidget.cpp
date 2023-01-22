@@ -6,8 +6,6 @@
 void UBossUserWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
-
-	//AddToPlayerScreen();
 }
 
 void UBossUserWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
