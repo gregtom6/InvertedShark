@@ -90,13 +90,7 @@ void AGameCharacter::HugCreature() {
 
 		if (creature!=nullptr && creature->IsCharacterInFur()) {
 
-			if (CameraMesh->GetBodyInstance())
-			{
-				CameraMesh->GetBodyInstance()->bLockXRotation = false;
-				CameraMesh->GetBodyInstance()->bLockYRotation = false;
-				CameraMesh->GetBodyInstance()->bLockZRotation = false;
-				CameraMesh->GetBodyInstance()->SetDOFLock(EDOFMode::SixDOF);
-			}
+			SetRotationLocks(false, false, false);
 
 			creature->GetHugged();
 
@@ -133,13 +127,7 @@ void AGameCharacter::HugCreature() {
 		rotation.Pitch = 0.f;
 		SetActorRotation(rotation);
 
-		if (CameraMesh->GetBodyInstance())
-		{
-			CameraMesh->GetBodyInstance()->bLockXRotation = true;
-			CameraMesh->GetBodyInstance()->bLockYRotation = true;
-			CameraMesh->GetBodyInstance()->bLockZRotation = false;
-			CameraMesh->GetBodyInstance()->SetDOFLock(EDOFMode::SixDOF);
-		}
+		SetRotationLocks(true, true, false);
 
 		CameraMesh->SetAllPhysicsLinearVelocity(FVector::ZeroVector);
 		CameraMesh->SetAllPhysicsAngularVelocityInDegrees(FVector::ZeroVector);
@@ -149,6 +137,16 @@ void AGameCharacter::HugCreature() {
 		isHugging = false;
 	}
 
+}
+
+void AGameCharacter::SetRotationLocks(bool X, bool Y, bool Z) {
+	if (CameraMesh->GetBodyInstance())
+	{
+		CameraMesh->GetBodyInstance()->bLockXRotation = X;
+		CameraMesh->GetBodyInstance()->bLockYRotation = Y;
+		CameraMesh->GetBodyInstance()->bLockZRotation = Z;
+		CameraMesh->GetBodyInstance()->SetDOFLock(EDOFMode::SixDOF);
+	}
 }
 
 void AGameCharacter::Attack() {

@@ -32,6 +32,8 @@ private:
 
 	void Attack();
 
+	void SetRotationLocks(bool X, bool Y, bool Z);
+
 	virtual void BeginPlay() override;
 
 	FVector startPos;
