@@ -87,40 +87,64 @@ void AGameCharacter::WingBeat() {
 void AGameCharacter::HugCreature() {
 
 	if (!isHugging) {
-		TArray<AActor*> FoundActors;
-		UGameplayStatics::GetAllActorsOfClass(GetWorld(), ACreature::StaticClass(), FoundActors);
 
-		if (FoundActors.Num() > 0) {
-			ACreature* creature = Cast<ACreature>(FoundActors[0]);
+		if (creature!=nullptr && creature->IsCharacterInFur()) {
 
-			if (creature != nullptr && creature->IsCharacterInFur()) {
-
-				creature->GetHugged();
-
-				RightArm->ConstraintActor1 = this;
-				FConstrainComponentPropName name1;
-				name1.ComponentName = CameraMesh->GetFName();
-				RightArm->ComponentName1 = name1;
-
-				RightArm->ConstraintActor2 = creature;
-				FConstrainComponentPropName name2;
-				name2.ComponentName = "StaticMesh";
-				RightArm->ComponentName2 = name2;
-
-				CameraMesh->SetAllPhysicsLinearVelocity(FVector::ZeroVector);
-				CameraMesh->SetAllPhysicsAngularVelocityInDegrees(FVector::ZeroVector);
-
-				RightArm->SetWorldLocation(creature->GetLocation());
-
-				RightArm->InitComponentConstraint();
-
-				isHugging = true;
+			if (CameraMesh->GetBodyInstance())
+			{
+				CameraMesh->GetBodyInstance()->bLockXRotation = false;
+				CameraMesh->GetBodyInstance()->bLockYRotation = false;
+				CameraMesh->GetBodyInstance()->bLockZRotation = false;
+				CameraMesh->GetBodyInstance()->SetDOFLock(EDOFMode::SixDOF);
 			}
+
+			creature->GetHugged();
+
+			RightArm->ConstraintActor1 = this;
+			FConstrainComponentPropName name1;
+			name1.ComponentName = CameraMesh->GetFName();
+			RightArm->ComponentName1 = name1;
+
+			RightArm->ConstraintActor2 = creature;
+			FConstrainComponentPropName name2;
+			name2.ComponentName = "StaticMesh";
+			RightArm->ComponentName2 = name2;
+
+			RightArm->SetWorldLocation(creature->GetLocation());
+
+			RightArm->InitComponentConstraint();
+
+			CameraMesh->SetAngularDamping(10.f);
+			FVector actorForwardVector = GetActorForwardVector() * ForwardFlyStrength;
+			FVector actorUpVector = GetActorUpVector() * WingStrength;
+			FVector impulseDirection = actorUpVector + actorForwardVector;
+
+			CameraMesh->AddImpulse(impulseDirection);
+
+			isHugging = true;
 		}
 	}
 	else {
 
 		RightArm->BreakConstraint();
+
+		FRotator rotation = GetActorRotation();
+		rotation.Roll = 0.f;
+		rotation.Pitch = 0.f;
+		SetActorRotation(rotation);
+
+		if (CameraMesh->GetBodyInstance())
+		{
+			CameraMesh->GetBodyInstance()->bLockXRotation = true;
+			CameraMesh->GetBodyInstance()->bLockYRotation = true;
+			CameraMesh->GetBodyInstance()->bLockZRotation = false;
+			CameraMesh->GetBodyInstance()->SetDOFLock(EDOFMode::SixDOF);
+		}
+
+		CameraMesh->SetAllPhysicsLinearVelocity(FVector::ZeroVector);
+		CameraMesh->SetAllPhysicsAngularVelocityInDegrees(FVector::ZeroVector);
+
+		CameraMesh->SetAngularDamping(50.f);
 
 		isHugging = false;
 	}
@@ -217,6 +241,17 @@ void AGameCharacter::BeginPlay()
 
 			UE_LOG(LogTemp, Warning, TEXT("energy2"));
 			energyuserwidget->AddToViewport(0);
+		}
+	}
+
+	TArray<AActor*> FoundActors;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ACreature::StaticClass(), FoundActors);
+
+	if (FoundActors.Num() > 0) {
+		ACreature* crea = Cast<ACreature>(FoundActors[0]);
+
+		if (crea != nullptr) {
+			creature = crea;
 		}
 	}
 }

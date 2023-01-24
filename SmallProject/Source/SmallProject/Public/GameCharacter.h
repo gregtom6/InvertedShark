@@ -40,6 +40,8 @@ private:
 
 	bool isHugging;
 
+	ACreature* creature;
+
 	GameCharacterStatus actualStatus;
 	GameCharacterStatus prevStatus;
 
