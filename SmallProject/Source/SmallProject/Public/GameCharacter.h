@@ -111,6 +111,12 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "character settings")
 		float restVelocity = 0.3f;
 
+	UPROPERTY(EditAnywhere, Category = "character settings")
+		float angularDamplingWhenHuggingFur = 10.0f;
+
+	UPROPERTY(EditAnywhere, Category = "character settings")
+		float normalAngularDampling = 50.0f;
+
 	UPROPERTY(EditAnywhere)
 		UStaticMeshComponent* leftHandVisual;
 

@@ -114,7 +114,7 @@ void AGameCharacter::HugCreature() {
 
 			RightArm->InitComponentConstraint();
 
-			CameraMesh->SetAngularDamping(10.f);
+			CameraMesh->SetAngularDamping(angularDamplingWhenHuggingFur);
 			FVector actorForwardVector = GetActorForwardVector() * ForwardFlyStrength;
 			FVector actorUpVector = GetActorUpVector() * WingStrength;
 			FVector impulseDirection = actorUpVector + actorForwardVector;
@@ -144,7 +144,7 @@ void AGameCharacter::HugCreature() {
 		CameraMesh->SetAllPhysicsLinearVelocity(FVector::ZeroVector);
 		CameraMesh->SetAllPhysicsAngularVelocityInDegrees(FVector::ZeroVector);
 
-		CameraMesh->SetAngularDamping(50.f);
+		CameraMesh->SetAngularDamping(normalAngularDampling);
 
 		isHugging = false;
 	}
