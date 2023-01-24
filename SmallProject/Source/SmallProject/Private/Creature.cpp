@@ -257,3 +257,7 @@ isCharInFur state can be asked from creature
 bool ACreature::IsCharacterInFur() {
 	return isCharInFur;
 }
+
+Status ACreature::GetStatus() {
+	return actualStatus;
+}

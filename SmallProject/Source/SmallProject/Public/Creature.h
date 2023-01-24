@@ -107,6 +107,7 @@ public:
 	FVector GetLocation() const { return GetActorLocation(); }
 	bool IsCharacterInFur();
 	void GetHugged();
+	Status GetStatus();
 };
 
 UENUM()
