@@ -7,6 +7,7 @@
 #include "Camera/CameraComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Components/AudioComponent.h"
+#include "GameFramework/SpringArmComponent.h"
 #include "PhysicsEngine/PhysicsConstraintComponent.h"
 #include "Creature.h"
 #include <Sound/SoundCue.h >
@@ -70,6 +71,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		UStaticMeshComponent* Tongue;
+
+	UPROPERTY(EditAnywhere)
+		USpringArmComponent* SpringArm;
 
 	UPROPERTY(EditAnywhere)
 		TSubclassOf<UUserWidget> widgetclass;

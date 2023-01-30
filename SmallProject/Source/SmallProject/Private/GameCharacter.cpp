@@ -14,7 +14,8 @@ AGameCharacter::AGameCharacter(const FObjectInitializer& ObjectInitializer)
 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	//create components
+	SpringArm= CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
+
 	CameraMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("CameraMesh"));
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 
@@ -27,11 +28,13 @@ AGameCharacter::AGameCharacter(const FObjectInitializer& ObjectInitializer)
 
 	TongueAudio = CreateDefaultSubobject<UAudioComponent>(TEXT("TongueAudio"));
 
+	SpringArm->SetupAttachment(CameraMesh);
+
 	Tongue->SetupAttachment(CameraMesh);
 
 	Camera->FieldOfView = 120.f;
-	Camera->SetupAttachment(CameraMesh);
-	Camera->SetRelativeLocation(FVector(-100.0f, 0.0f, 50.0f));
+	Camera->SetupAttachment(SpringArm);
+	//Camera->SetRelativeLocation(FVector(-100.0f, 0.0f, 50.0f));
 
 	LeftLeft->SetupAttachment(CameraMesh);
 	RightArm->SetupAttachment(CameraMesh);
@@ -50,6 +53,8 @@ void AGameCharacter::RotateLR(float rotateDelta) {
 	FRotator actualRotation = GetActorRotation();
 	actualRotation.Yaw += rotateDelta * RotateSpeed;
 	SetActorRotation(actualRotation);
+
+	SpringArm->SetWorldRotation(actualRotation);
 }
 
 void AGameCharacter::StrafeLR(float movementDelta) {
