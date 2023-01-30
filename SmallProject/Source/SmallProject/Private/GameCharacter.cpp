@@ -34,7 +34,6 @@ AGameCharacter::AGameCharacter(const FObjectInitializer& ObjectInitializer)
 
 	Camera->FieldOfView = 120.f;
 	Camera->SetupAttachment(SpringArm);
-	//Camera->SetRelativeLocation(FVector(-100.0f, 0.0f, 50.0f));
 
 	LeftLeft->SetupAttachment(CameraMesh);
 	RightArm->SetupAttachment(CameraMesh);
