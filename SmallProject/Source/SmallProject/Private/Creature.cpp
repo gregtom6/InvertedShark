@@ -151,7 +151,7 @@ void ACreature::Tick(float DeltaTime)
 
 		SetActorRotation(PlayerRot);
 
-		SetActorLocation(FMath::Lerp(actualStartPosition, actualEndPosition, currentTime));
+		SetActorLocation(FMath::Lerp(actualStartPosition, actualEndPosition, CurveFloat->GetFloatValue(currentTime)));
 	}
 
 	Health = Health > 0 ? Health - (deltaDamage * DeltaTime * enemiesActuallyAttacking.Num()) : 0;

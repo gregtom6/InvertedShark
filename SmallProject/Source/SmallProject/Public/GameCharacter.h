@@ -54,6 +54,10 @@ private:
 
 	float actualEnergy;
 
+	float startArmLength;
+	float targetArmLength;
+	float startTimeForSpringArm;
+
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
@@ -122,6 +126,15 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "character settings")
 		float normalAngularDampling = 50.0f;
+
+	UPROPERTY(EditAnywhere, Category = "character settings")
+		float defaultArmLength = 20.f;
+
+	UPROPERTY(EditAnywhere, Category = "character settings")
+		float zoomedOutArmLength = 70.f;
+
+	UPROPERTY(EditAnywhere, Category = "character settings")
+		float springArmLengthSpeed = 0.5f;
 
 	UPROPERTY(EditAnywhere)
 		UStaticMeshComponent* leftHandVisual;

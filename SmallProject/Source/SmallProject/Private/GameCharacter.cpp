@@ -120,6 +120,10 @@ void AGameCharacter::HugCreature() {
 			CameraMesh->AddImpulse(impulseDirection);
 
 			isHugging = true;
+
+			startArmLength = SpringArm->TargetArmLength;
+			targetArmLength = zoomedOutArmLength;
+			startTimeForSpringArm = GetWorld()->GetTimeSeconds();
 		}
 	}
 	else {
@@ -139,6 +143,10 @@ void AGameCharacter::HugCreature() {
 		CameraMesh->SetAngularDamping(normalAngularDampling);
 
 		isHugging = false;
+
+		startArmLength = SpringArm->TargetArmLength;
+		targetArmLength = defaultArmLength;
+		startTimeForSpringArm = GetWorld()->GetTimeSeconds();
 	}
 
 }
@@ -289,6 +297,13 @@ void AGameCharacter::Tick(float DeltaTime)
 
 	if (newEnergy <= maxEnergy)
 		actualEnergy += energyRegeneration * restMult * DeltaTime;
+
+	float currentTimeForSpringArm= GetWorld()->GetTimeSeconds() - startTimeForSpringArm;
+	currentTimeForSpringArm *= springArmLengthSpeed;
+	if (currentTimeForSpringArm > 1.f)
+		currentTimeForSpringArm = 1.f;
+
+	SpringArm->TargetArmLength = FMath::Lerp(startArmLength, targetArmLength, currentTimeForSpringArm);
 
 	if (actorLocation.Z <= heightToDie) {
 		UGameplayStatics::OpenLevel(this, FName(*GetWorld()->GetName()), false);

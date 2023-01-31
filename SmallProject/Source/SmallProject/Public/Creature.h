@@ -88,6 +88,9 @@ public:
 		UBoxComponent* huggableComp;
 
 	UPROPERTY(EditAnywhere)
+		UCurveFloat* CurveFloat;
+
+	UPROPERTY(EditAnywhere)
 		float movementSpeed;
 
 	UPROPERTY(EditAnywhere)
