@@ -14,11 +14,12 @@
 #include <PauseUserWidget.h>
 #include "GameCharacter.generated.h"
 
+DECLARE_DELEGATE(FOnScoreChangedSignature);
+
 UCLASS(BlueprintType)
 class SMALLPROJECT_API AGameCharacter : public APawn
 {
 	GENERATED_BODY()
-
 private:
 	// Sets default values for this pawn's properties
 	AGameCharacter(const FObjectInitializer& ObjectInitializer);
@@ -176,6 +177,8 @@ public:
 	void SetPrevStatusToActualStatus();
 
 	void Pause();
+
+	FOnScoreChangedSignature OnScoreChangedDelegate;
 };
 
 UENUM()
@@ -183,6 +186,7 @@ enum class GameCharacterStatus : uint8
 {
 	Calm,
 	Attack,
+	Dead,
 };
 
 UENUM()

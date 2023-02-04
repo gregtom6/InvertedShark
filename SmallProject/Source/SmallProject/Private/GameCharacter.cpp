@@ -14,7 +14,7 @@ AGameCharacter::AGameCharacter(const FObjectInitializer& ObjectInitializer)
 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	SpringArm= CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
+	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
 
 	CameraMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("CameraMesh"));
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
@@ -42,12 +42,14 @@ AGameCharacter::AGameCharacter(const FObjectInitializer& ObjectInitializer)
 
 	TongueAudio->SetupAttachment(CameraMesh);
 
+	Camera->Deactivate();
+
 	isHugging = false;
 }
 
 void AGameCharacter::RotateLR(float rotateDelta) {
 
-	if (isHugging) { return; }
+	if (isHugging || actualStatus == GameCharacterStatus::Dead) { return; }
 
 	FRotator actualRotation = GetActorRotation();
 	actualRotation.Yaw += rotateDelta * RotateSpeed;
@@ -58,7 +60,7 @@ void AGameCharacter::RotateLR(float rotateDelta) {
 
 void AGameCharacter::StrafeLR(float movementDelta) {
 
-	if (isHugging) { return; }
+	if (isHugging || actualStatus == GameCharacterStatus::Dead) { return; }
 
 	FVector rightVector = GetActorRightVector();
 	FVector upVector = GetActorUpVector();
@@ -71,7 +73,7 @@ void AGameCharacter::StrafeLR(float movementDelta) {
 
 void AGameCharacter::WingBeat() {
 
-	if (isHugging) { return; }
+	if (isHugging || actualStatus == GameCharacterStatus::Dead) { return; }
 
 	if (actualEnergy < energyDecreaseAfterWingBeat) { return; }
 
@@ -92,7 +94,7 @@ void AGameCharacter::HugCreature() {
 
 	if (!isHugging) {
 
-		if (creature!=nullptr && creature->IsCharacterInFur()) {
+		if (creature != nullptr && creature->IsCharacterInFur()) {
 
 			SetRotationLocks(false, false, false);
 
@@ -163,7 +165,7 @@ void AGameCharacter::SetRotationLocks(bool X, bool Y, bool Z) {
 
 void AGameCharacter::Attack() {
 
-	if (actualStatus == GameCharacterStatus::Attack) { return; }
+	if (actualStatus == GameCharacterStatus::Attack || isHugging || actualStatus == GameCharacterStatus::Dead) { return; }
 
 	UE_LOG(LogTemp, Warning, TEXT("attack happened"));
 
@@ -271,9 +273,12 @@ void AGameCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	FVector currentVelocity = CameraMesh->GetPhysicsLinearVelocity();
-	FVector clampedVelocity = currentVelocity.GetClampedToMaxSize(velocityLimit);
-	CameraMesh->SetPhysicsLinearVelocity(clampedVelocity);
+	FVector currentVelocity = FVector::ZeroVector;
+	if (actualStatus != GameCharacterStatus::Dead) {
+		currentVelocity = CameraMesh->GetPhysicsLinearVelocity();
+		FVector clampedVelocity = currentVelocity.GetClampedToMaxSize(velocityLimit);
+		CameraMesh->SetPhysicsLinearVelocity(clampedVelocity);
+	}
 
 	FVector actorLocation = GetActorLocation();
 
@@ -298,15 +303,20 @@ void AGameCharacter::Tick(float DeltaTime)
 	if (newEnergy <= maxEnergy)
 		actualEnergy += energyRegeneration * restMult * DeltaTime;
 
-	float currentTimeForSpringArm= GetWorld()->GetTimeSeconds() - startTimeForSpringArm;
+	float currentTimeForSpringArm = GetWorld()->GetTimeSeconds() - startTimeForSpringArm;
 	currentTimeForSpringArm *= springArmLengthSpeed;
 	if (currentTimeForSpringArm > 1.f)
 		currentTimeForSpringArm = 1.f;
 
 	SpringArm->TargetArmLength = FMath::Lerp(startArmLength, targetArmLength, currentTimeForSpringArm);
 
-	if (actorLocation.Z <= heightToDie) {
-		UGameplayStatics::OpenLevel(this, FName(*GetWorld()->GetName()), false);
+	if (actualStatus != GameCharacterStatus::Dead && actorLocation.Z <= heightToDie) {
+		//UGameplayStatics::OpenLevel(this, FName(*GetWorld()->GetName()), false);
+		CameraMesh->SetAllPhysicsLinearVelocity(FVector::ZeroVector);
+		CameraMesh->SetAllPhysicsAngularVelocityInDegrees(FVector::ZeroVector);
+		actualStatus = GameCharacterStatus::Dead;
+
+		OnScoreChangedDelegate.ExecuteIfBound();
 	}
 }
 
