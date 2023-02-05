@@ -21,13 +21,20 @@ ACreature::ACreature(const FObjectInitializer& ObjectInitializer)
 	huggableComp = CreateDefaultSubobject<UBoxComponent>(TEXT("huggableComp"));
 	huggableComp->SetupAttachment(WhaleAudioComp);
 
+	headMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("headMesh"));
+	headMesh->SetupAttachment(WhaleAudioComp);
+	LeftEye = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("LeftEye"));
+	LeftEye->SetupAttachment(WhaleAudioComp);
+	RightEye = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RightEye"));
+	RightEye->SetupAttachment(WhaleAudioComp);
+
 	Health = MaxHealth;
 }
 
 /*
 setting up whale sound and playing it
-setting up initial status. While on initial status, creature goes slowly to the destination. 
-We adds creature life to viewport, setting creature reference inside it. 
+setting up initial status. While on initial status, creature goes slowly to the destination.
+We adds creature life to viewport, setting creature reference inside it.
 we rotates the creature to face towards his destination, and subscribing to events.
 */
 
@@ -62,6 +69,9 @@ void ACreature::BeginPlay()
 
 	actualStatus = Status::Initial;
 
+	prevHeadState = HeadState::ForwardLooking;
+	headState = HeadState::ForwardLooking;
+
 	if (actualTargetIndex < positionsToMove.Num()) {
 		FRotator PlayerRot = UKismetMathLibrary::FindLookAtRotation(this->GetActorLocation(), positionsToMove[actualTargetIndex]->GetActorLocation());
 
@@ -76,7 +86,7 @@ void ACreature::BeginPlay()
 }
 
 /*
-if there is still a new location, where the creature can move, then we set that up. 
+if there is still a new location, where the creature can move, then we set that up.
 */
 
 void ACreature::StepTargetIndex() {
@@ -89,19 +99,19 @@ void ACreature::StepTargetIndex() {
 }
 
 /*
-managing different states in Tick. 
-initial status: basically waiting a bit to make player realize where he is at the moment. 
-moving status: this state is only for the first initial movement. It's a slow movement, only for entering the triggerbox, where enemies will arrive. 
-WaitBeforeMoveFast status: when a group of enemies have been defeated, the creature gives a whale sound, and waits a bit before fast traveling to a new location. 
+managing different states in Tick.
+initial status: basically waiting a bit to make player realize where he is at the moment.
+moving status: this state is only for the first initial movement. It's a slow movement, only for entering the triggerbox, where enemies will arrive.
+WaitBeforeMoveFast status: when a group of enemies have been defeated, the creature gives a whale sound, and waits a bit before fast traveling to a new location.
 WaitAfterHuggedByPlayer status: this is only when creature is ready to travel forward. If player hugs the creature, it will still wait a bit before moving.
 MovingFast status: the fast travel status of the creature. Player can survive only if hugs the creature during WaitBeforeMoveFast status
 
-creature health is also managed in here. Decrease depends on the currently attacking enemy count. Restarting level, when creature died. 
+creature health is also managed in here. Decrease depends on the currently attacking enemy count. Restarting level, when creature died.
 */
 void ACreature::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	
+
 	if (actualStatus == Status::Initial) {
 		float currentTime = GetWorld()->GetTimeSeconds() - startTime;
 		if (currentTime >= waitTimeBeforeFirstMove) {
@@ -154,6 +164,64 @@ void ACreature::Tick(float DeltaTime)
 		SetActorLocation(FMath::Lerp(actualStartPosition, actualEndPosition, CurveFloat->GetFloatValue(currentTime)));
 	}
 
+	APlayerController* OurPlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+
+	APawn* pawn = OurPlayerController->GetPawn();
+
+	AGameCharacter* gameCharacter = Cast<AGameCharacter, APawn>(pawn);
+	if (gameCharacter != nullptr && prevHeadState == headState) {
+		FRotator HeadRot = UKismetMathLibrary::FindLookAtRotation(this->GetActorLocation(), gameCharacter->GetActorLocation());
+
+		if (HeadRot.Yaw >= yawMinBorder && HeadRot.Yaw <= yawMaxBorder && HeadRot.Pitch >= pitchMinBorder && HeadRot.Pitch <= pitchMaxBorder) {
+
+			if (headState == HeadState::ForwardLooking) {
+				startHeadRotation = UKismetMathLibrary::FindLookAtRotation(this->GetActorLocation(), actualEndPosition);
+				targetHeadRotation = HeadRot;
+
+				prevHeadState = headState;
+				headState = HeadState::FollowingPlayer;
+				headRotationStartTime = GetWorld()->GetTimeSeconds();
+			}
+		}
+		else {
+			if (headState == HeadState::FollowingPlayer) {
+				startHeadRotation = HeadRot;
+				targetHeadRotation = UKismetMathLibrary::FindLookAtRotation(this->GetActorLocation(), actualEndPosition);
+
+				prevHeadState = headState;
+				headState = HeadState::ForwardLooking;
+				headRotationStartTime = GetWorld()->GetTimeSeconds();
+			}
+		}
+	}
+
+	if (prevHeadState == headState) {
+		if (headState == HeadState::FollowingPlayer) {
+			FRotator HeadRot = UKismetMathLibrary::FindLookAtRotation(this->GetActorLocation(), gameCharacter->GetActorLocation());
+
+			headMesh->SetWorldRotation(HeadRot);
+			LeftEye->SetWorldRotation(HeadRot);
+			RightEye->SetWorldRotation(HeadRot);
+		}
+	}
+	else{
+
+		float currentTime = GetWorld()->GetTimeSeconds() - headRotationStartTime;
+
+		FQuat newRot = FQuat::Slerp(startHeadRotation.Quaternion(), targetHeadRotation.Quaternion(), currentTime);
+		FRotator rotator = newRot.Rotator();
+
+		headMesh->SetWorldRotation(rotator);
+		LeftEye->SetWorldRotation(rotator);
+		RightEye->SetWorldRotation(rotator);
+
+		if (currentTime >= 1.f) {
+			prevHeadState = headState;
+		}
+
+		//UE_LOG(LogTemp, Warning, TEXT("fejforgatas %f %f %f"), HeadRot.Pitch, HeadRot.Yaw, HeadRot.Roll);
+	}
+
 	Health = Health > 0 ? Health - (deltaDamage * DeltaTime * enemiesActuallyAttacking.Num()) : 0;
 
 	if (Health <= 0) {
@@ -162,8 +230,8 @@ void ACreature::Tick(float DeltaTime)
 }
 
 /*
-detecting enemy attacking (detecting the spline created between enemy and creature) 
-we detect the attack in the whole creature actor and setting enemy count and states based on this. 
+detecting enemy attacking (detecting the spline created between enemy and creature)
+we detect the attack in the whole creature actor and setting enemy count and states based on this.
 */
 
 void ACreature::EnterEvent(class AActor* overlappedActor, class AActor* otherActor) {
@@ -201,7 +269,7 @@ void ACreature::ExitEvent(class AActor* overlappedActor, class AActor* otherActo
 
 /*
 when player is inside the UBoxComponent or leaves that, then we set the boolean status. It is used for making player to hug the creature.
-hugging is good for staying alive, when creature does fast traveling, and that regenerates enery of player. 
+hugging is good for staying alive, when creature does fast traveling, and that regenerates enery of player.
 */
 
 void ACreature::TriggerEnter(class UPrimitiveComponent* HitComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) {

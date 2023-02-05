@@ -33,6 +33,12 @@ protected:
 
 	void SwitchingToMovingFast();
 
+	FRotator startHeadRotation;
+	FRotator targetHeadRotation;
+
+	HeadState prevHeadState;
+	HeadState headState;
+	float headRotationStartTime;
 
 	Status actualStatus;
 
@@ -85,6 +91,15 @@ public:
 		TArray<AActor*> positionsToMove;
 
 	UPROPERTY(EditAnywhere)
+		USkeletalMeshComponent* headMesh;
+
+	UPROPERTY(EditAnywhere)
+		UStaticMeshComponent* LeftEye;
+
+	UPROPERTY(EditAnywhere)
+		UStaticMeshComponent* RightEye;
+
+	UPROPERTY(EditAnywhere)
 		UBoxComponent* huggableComp;
 
 	UPROPERTY(EditAnywhere)
@@ -105,6 +120,18 @@ public:
 	UPROPERTY(EditAnywhere)
 		float waitTimeAfterHuggedToMoveForward;
 
+	UPROPERTY(EditAnywhere)
+		float yawMinBorder = -15.f;
+
+	UPROPERTY(EditAnywhere)
+		float yawMaxBorder = 40.f;
+
+	UPROPERTY(EditAnywhere)
+		float pitchMinBorder = -25.f;
+
+	UPROPERTY(EditAnywhere)
+		float pitchMaxBorder = 25.f;
+
 	float GetHealth() const { return Health; }
 	float GetMaxHealth() const { return MaxHealth; }
 	FVector GetLocation() const { return GetActorLocation(); }
@@ -123,4 +150,11 @@ enum class Status : uint8
 	MovingFast,
 	WaitBeforeMoveFast,
 	WaitAfterHuggedByPlayer,
+};
+
+UENUM()
+enum class HeadState : uint8
+{
+	ForwardLooking,
+	FollowingPlayer,
 };
