@@ -206,6 +206,10 @@ void ACreature::Tick(float DeltaTime)
 	}
 	else{
 
+		if (headState == HeadState::FollowingPlayer) {
+			targetHeadRotation = UKismetMathLibrary::FindLookAtRotation(this->GetActorLocation(), gameCharacter->GetActorLocation());
+		}
+
 		float currentTime = GetWorld()->GetTimeSeconds() - headRotationStartTime;
 
 		FQuat newRot = FQuat::Slerp(startHeadRotation.Quaternion(), targetHeadRotation.Quaternion(), currentTime);
