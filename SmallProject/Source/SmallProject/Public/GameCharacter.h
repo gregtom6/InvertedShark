@@ -12,6 +12,8 @@
 #include "Creature.h"
 #include <Sound/SoundCue.h >
 #include <PauseUserWidget.h>
+#include "NiagaraFunctionLibrary.h"
+#include "NiagaraComponent.h"
 #include "GameCharacter.generated.h"
 
 DECLARE_DELEGATE(FOnScoreChangedSignature);
@@ -85,6 +87,9 @@ protected:
 
 	UPROPERTY(VisibleInstanceOnly)
 		class UGameCharacterUserWidget* energyuserwidget;
+
+	UPROPERTY(EditAnywhere)
+		UNiagaraComponent* Spark;
 
 	UPROPERTY(EditAnywhere, Category = "character settings")
 		float MovementSpeed = 1.f;
@@ -163,6 +168,19 @@ protected:
 
 	UPROPERTY(EditAnywhere) TSubclassOf<UPauseUserWidget> widgetPauseMenu;
 	UPauseUserWidget* widgetPauseMenuInstance;
+
+
+	UFUNCTION()
+		void TriggerEnter(class UPrimitiveComponent* HitComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION()
+		void TriggerExit(class UPrimitiveComponent* HitComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+	UFUNCTION()
+	bool GetOverlapInfluenceSphere(UStaticMeshComponent* StaticMeshComponent, UStaticMeshComponent* OtherStaticMeshComponent, FVector& Actor1ClosestPoint, FVector& Actor2ClosestPoint);
+
+	UFUNCTION()
+		TArray<UStaticMeshComponent*> GetStaticMeshComponents(AActor* Actor);
 
 public:
 

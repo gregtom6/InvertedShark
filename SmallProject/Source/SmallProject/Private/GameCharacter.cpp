@@ -5,7 +5,10 @@
 #include <Kismet/GameplayStatics.h>
 #include <GameCharacterUserWidget.h>
 #include "Components/AudioComponent.h"
-
+#include "Enemy.h"
+#include "BossEnemy.h"
+#include "GameFramework/Actor.h"
+#include "Kismet/KismetStringLibrary.h"
 
 // Sets default values
 AGameCharacter::AGameCharacter(const FObjectInitializer& ObjectInitializer)
@@ -27,6 +30,10 @@ AGameCharacter::AGameCharacter(const FObjectInitializer& ObjectInitializer)
 	AudioComp = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComp"));
 
 	TongueAudio = CreateDefaultSubobject<UAudioComponent>(TEXT("TongueAudio"));
+
+	Spark = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Spark"));
+
+	Spark->SetupAttachment(CameraMesh);
 
 	SpringArm->SetupAttachment(CameraMesh);
 
@@ -266,6 +273,25 @@ void AGameCharacter::BeginPlay()
 			creature = crea;
 		}
 	}
+
+	Tongue->OnComponentBeginOverlap.AddDynamic(this, &AGameCharacter::TriggerEnter);
+	Tongue->OnComponentEndOverlap.AddDynamic(this, &AGameCharacter::TriggerExit);
+}
+
+void AGameCharacter::TriggerEnter(class UPrimitiveComponent* HitComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) {
+	UE_LOG(LogTemp, Warning, TEXT("sword inside enemy1"));
+	if (OtherActor && OtherActor != this) {
+		UE_LOG(LogTemp, Warning, TEXT("sword inside enemy2"));
+		if (OtherActor->IsA(AEnemy::StaticClass()) || OtherActor->IsA(ABossEnemy::StaticClass())) {
+			UE_LOG(LogTemp, Warning, TEXT("sword inside enemy3"));
+
+			UE_LOG(LogTemp, Warning, TEXT("sword hit %f %f %f      %f %f %f"), SweepResult.ImpactPoint.X, SweepResult.ImpactPoint.Y, SweepResult.ImpactPoint.Z, SweepResult.Location.X, SweepResult.Location.Y, SweepResult.Location.Z);
+		}
+	}
+}
+
+void AGameCharacter::TriggerExit(class UPrimitiveComponent* HitComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) {
+
 }
 
 // Called every frame
@@ -318,6 +344,130 @@ void AGameCharacter::Tick(float DeltaTime)
 
 		OnScoreChangedDelegate.ExecuteIfBound();
 	}
+
+	FVector Actor1ClosestPoint, Actor2ClosestPoint, OverlapPoint;
+	bool bOverlap = false;
+
+	// Loop through all the static mesh components in Actor1
+	for (UStaticMeshComponent* StaticMeshComponent : GetStaticMeshComponents(this))
+	{
+		// Loop through all the static mesh components in Actor2
+		for (UStaticMeshComponent* OtherStaticMeshComponent : GetStaticMeshComponents(creature))
+		{
+			FVector TempActor1ClosestPoint, TempActor2ClosestPoint;
+			if (GetOverlapInfluenceSphere(StaticMeshComponent, OtherStaticMeshComponent, Actor1ClosestPoint, Actor2ClosestPoint))
+			{
+				if (!bOverlap)
+				{
+					Actor1ClosestPoint = TempActor1ClosestPoint;
+					Actor2ClosestPoint = TempActor2ClosestPoint;
+					bOverlap = true;
+				}
+				else
+				{
+					FVector TempOverlapPoint = (TempActor1ClosestPoint + TempActor2ClosestPoint) / 2.0f;
+					FVector CurrentOverlapPoint = (Actor1ClosestPoint + Actor2ClosestPoint) / 2.0f;
+					if (FVector::DistSquared(TempOverlapPoint, GetActorLocation()) <
+						FVector::DistSquared(CurrentOverlapPoint, creature->GetActorLocation()))
+					{
+						Actor1ClosestPoint = TempActor1ClosestPoint;
+						Actor2ClosestPoint = TempActor2ClosestPoint;
+					}
+				}
+			}
+		}
+	}
+
+	if (bOverlap)
+	{
+		OverlapPoint = (Actor1ClosestPoint + Actor2ClosestPoint) / 2.0f;
+
+		Spark->SetWorldLocation(OverlapPoint);
+		Spark->Activate();
+	}
+	else {
+		Spark->Deactivate();
+	}
+}
+
+/*
+bool AGameCharacter::GetOverlapInfluenceSphere(UStaticMeshComponent* StaticMeshComponent, UStaticMeshComponent* OtherStaticMeshComponent, FVector& Actor1ClosestPoint, FVector& Actor2ClosestPoint)
+{
+	TArray<FOverlapResult> Overlaps;
+	FCollisionQueryParams QueryParams;
+	QueryParams.bTraceComplex = false;
+	QueryParams.bReturnPhysicalMaterial = false;
+	bool bOverlapFound = GetWorld()->OverlapMultiByObjectType(Overlaps, StaticMeshComponent->GetComponentLocation(), FQuat::Identity, FCollisionObjectQueryParams(ECollisionChannel::ECC_PhysicsBody), FCollisionShape::MakeSphere(StaticMeshComponent->GetCollisionShape().GetSphereRadius()), QueryParams);
+	if (bOverlapFound)
+	{
+		float ClosestDistanceSquared = MAX_FLT;
+		for (const FOverlapResult& OverlapResult : Overlaps)
+		{
+			if (OverlapResult.GetActor() == OtherStaticMeshComponent->GetOwner() && OverlapResult.Component == OtherStaticMeshComponent)
+			{
+				float DistanceSquared = (StaticMeshComponent->GetComponentLocation() - OverlapResult.Component->GetComponentLocation()).SizeSquared();
+				if (DistanceSquared < ClosestDistanceSquared)
+				{
+					Actor1ClosestPoint = StaticMeshComponent->GetComponentLocation();
+					Actor2ClosestPoint = OverlapResult.Component->GetComponentLocation();
+					ClosestDistanceSquared = DistanceSquared;
+				}
+			}
+		}
+		bool b = ClosestDistanceSquared != MAX_FLT;
+
+		UE_LOG(LogTemp, Warning, TEXT("teszt1 %s"), *FString(UKismetStringLibrary::Conv_BoolToString(b)));
+
+		return b;
+	}
+	bool c = false;
+	UE_LOG(LogTemp, Warning, TEXT("teszt1 %s"), *FString(UKismetStringLibrary::Conv_BoolToString(c)));
+
+	return false;
+}
+*/
+
+bool AGameCharacter::GetOverlapInfluenceSphere(UStaticMeshComponent* StaticMeshComponent, UStaticMeshComponent* OtherStaticMeshComponent, FVector& OutActor1ClosestPoint, FVector& OutActor2ClosestPoint)
+{
+	FTransform TransformA = StaticMeshComponent->GetComponentTransform();
+	FTransform TransformB = OtherStaticMeshComponent->GetComponentTransform();
+
+	FVector SphereLocationA = TransformA.GetLocation();
+	FVector SphereLocationB = TransformB.GetLocation();
+
+	float SphereRadiusA = StaticMeshComponent->Bounds.SphereRadius;
+	float SphereRadiusB = OtherStaticMeshComponent->Bounds.SphereRadius;
+
+	FVector Difference = SphereLocationB - SphereLocationA;
+	float Distance = Difference.Size();
+
+	if (Distance <= SphereRadiusA + SphereRadiusB)
+	{
+		FVector ClosestPointOnSphereA = SphereLocationA + Difference.GetSafeNormal() * SphereRadiusA;
+		FVector ClosestPointOnSphereB = SphereLocationB - Difference.GetSafeNormal() * SphereRadiusB;
+
+		OutActor1ClosestPoint = ClosestPointOnSphereA;
+		OutActor2ClosestPoint = ClosestPointOnSphereB;
+
+		return true;
+	}
+
+	return false;
+}
+
+
+TArray<UStaticMeshComponent*> AGameCharacter::GetStaticMeshComponents(AActor* Actor)
+{
+	TArray<UStaticMeshComponent*> StaticMeshComponents;
+	TSet<UActorComponent*> Components = Actor->GetComponents();
+	for (UActorComponent* Component : Components)
+	{
+		if (UStaticMeshComponent* StaticMeshComponent = Cast<UStaticMeshComponent>(Component))
+		{
+			StaticMeshComponents.Add(StaticMeshComponent);
+		}
+	}
+	return StaticMeshComponents;
 }
 
 float AGameCharacter::GetEnergy() {
