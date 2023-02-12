@@ -48,6 +48,8 @@ private:
 
 	ACreature* creature;
 
+	AActor* bossEnemy;
+
 	GameCharacterStatus actualStatus;
 	GameCharacterStatus prevStatus;
 
@@ -169,7 +171,6 @@ protected:
 	UPROPERTY(EditAnywhere) TSubclassOf<UPauseUserWidget> widgetPauseMenu;
 	UPauseUserWidget* widgetPauseMenuInstance;
 
-
 	UFUNCTION()
 		void TriggerEnter(class UPrimitiveComponent* HitComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
@@ -177,10 +178,8 @@ protected:
 		void TriggerExit(class UPrimitiveComponent* HitComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
 	UFUNCTION()
-	bool GetOverlapInfluenceSphere(UStaticMeshComponent* StaticMeshComponent, UStaticMeshComponent* OtherStaticMeshComponent, FVector& Actor1ClosestPoint, FVector& Actor2ClosestPoint);
+	bool GetOverlapInfluenceSphere(UStaticMeshComponent* StaticMeshComponent, FVector& Actor1ClosestPoint, FVector& Actor2ClosestPoint);
 
-	UFUNCTION()
-		TArray<UStaticMeshComponent*> GetStaticMeshComponents(AActor* Actor);
 
 public:
 

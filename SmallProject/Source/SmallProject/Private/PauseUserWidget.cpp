@@ -7,12 +7,6 @@
 #include <Kismet/GameplayStatics.h>
 #include <Blueprint/WidgetLayoutLibrary.h>
 
-void UPauseUserWidget::NativeConstruct() {
-	Super::NativeConstruct();
-
-	
-}
-
 void UPauseUserWidget::OnResumeClick() {
 	if (gameChar != nullptr) {
 		UE_LOG(LogTemp, Warning, TEXT("pause hivas"));

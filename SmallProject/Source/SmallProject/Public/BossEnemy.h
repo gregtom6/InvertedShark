@@ -26,6 +26,9 @@ protected:
 		class UBossUserWidget* bossuserwidget;
 
 	UPROPERTY(EditAnywhere)
+		UStaticMeshComponent* bodyMesh;
+
+	UPROPERTY(EditAnywhere)
 		FName levelToLoadAfterDefeat;
 
 	virtual FVector GetEndPosition() override;
@@ -39,4 +42,7 @@ public:
 
 	float GetMaxLife();
 
+	FVector GetPositionOfBodyMesh();
+
+	float GetBodyMeshRadius();
 };

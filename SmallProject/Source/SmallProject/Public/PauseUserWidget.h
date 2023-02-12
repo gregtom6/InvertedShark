@@ -15,8 +15,6 @@ class SMALLPROJECT_API UPauseUserWidget : public UUserWidget
 	GENERATED_BODY()
 
 		AGameCharacter* gameChar;
-
-	virtual void NativeConstruct() override;
 public:
 
 

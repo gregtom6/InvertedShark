@@ -8,6 +8,9 @@
 
 ABossEnemy::ABossEnemy(const FObjectInitializer& ObjectInitializer)
 {
+	bodyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("bodyMesh"));
+	bodyMesh->SetupAttachment(splineComponent);
+
 	OnActorBeginOverlap.AddDynamic(this, &AEnemy::EnterEvent);
 }
 
@@ -45,6 +48,15 @@ FVector ABossEnemy::GetEndPosition() {
 	double z = GetActorLocation().Z;
 	vec.Z = z;
 	return vec;
+}
+
+FVector ABossEnemy::GetPositionOfBodyMesh() {
+	return bodyMesh->GetComponentLocation();
+}
+
+float ABossEnemy::GetBodyMeshRadius() {
+	FCollisionShape shape = bodyMesh->GetCollisionShape();
+	return shape.GetSphereRadius();
 }
 
 /*
