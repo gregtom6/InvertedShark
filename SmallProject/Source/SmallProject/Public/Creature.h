@@ -121,16 +121,7 @@ public:
 		float waitTimeAfterHuggedToMoveForward;
 
 	UPROPERTY(EditAnywhere)
-		float yawMinBorder;
-
-	UPROPERTY(EditAnywhere)
-		float yawMaxBorder;
-
-	UPROPERTY(EditAnywhere)
-		float pitchMinBorder;
-
-	UPROPERTY(EditAnywhere)
-		float pitchMaxBorder;
+		float lookAtPlayerBorder;
 
 	float GetHealth() const { return Health; }
 	float GetMaxHealth() const { return MaxHealth; }

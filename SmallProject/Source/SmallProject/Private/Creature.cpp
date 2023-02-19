@@ -184,7 +184,7 @@ void ACreature::Tick(float DeltaTime)
 
 		FRotator HeadRot = UKismetMathLibrary::FindLookAtRotation(this->GetActorLocation(), gameCharacter->GetActorLocation());
 
-		if (degree>0.8f) {
+		if (degree> lookAtPlayerBorder) {
 
 			if (headState == HeadState::ForwardLooking) {
 				startHeadRotation = UKismetMathLibrary::FindLookAtRotation(WhaleAudioComp->GetComponentLocation(), headMesh->GetComponentLocation());
