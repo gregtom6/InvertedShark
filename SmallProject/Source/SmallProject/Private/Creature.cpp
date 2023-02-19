@@ -170,12 +170,24 @@ void ACreature::Tick(float DeltaTime)
 
 	AGameCharacter* gameCharacter = Cast<AGameCharacter, APawn>(pawn);
 	if (gameCharacter != nullptr && prevHeadState == headState) {
+
+		FVector forwardVector = GetActorForwardVector();
+		forwardVector.Normalize();
+		FVector gameCharDirection = gameCharacter->GetActorLocation() - GetActorLocation();
+		gameCharDirection.Normalize();
+		double degree = FVector::DotProduct(forwardVector, gameCharDirection);
+
+		UE_LOG(LogTemp, Warning, TEXT("degree: %f  %f  %f  %f"),degree, forwardVector.X, forwardVector.Y, forwardVector.Z);
+
+		//DrawDebugLine(GetWorld(), WhaleAudioComp->GetComponentLocation(), FVector(1.f,0.f,0.f),
+			//FColor(255, 0, 0), false, -1, 0, 10);
+
 		FRotator HeadRot = UKismetMathLibrary::FindLookAtRotation(this->GetActorLocation(), gameCharacter->GetActorLocation());
 
-		if (HeadRot.Yaw >= yawMinBorder && HeadRot.Yaw <= yawMaxBorder && HeadRot.Pitch >= pitchMinBorder && HeadRot.Pitch <= pitchMaxBorder) {
+		if (degree>0.8f) {
 
 			if (headState == HeadState::ForwardLooking) {
-				startHeadRotation = UKismetMathLibrary::FindLookAtRotation(this->GetActorLocation(), actualEndPosition);
+				startHeadRotation = UKismetMathLibrary::FindLookAtRotation(WhaleAudioComp->GetComponentLocation(), headMesh->GetComponentLocation());
 				targetHeadRotation = HeadRot;
 
 				prevHeadState = headState;
@@ -186,7 +198,7 @@ void ACreature::Tick(float DeltaTime)
 		else {
 			if (headState == HeadState::FollowingPlayer) {
 				startHeadRotation = HeadRot;
-				targetHeadRotation = UKismetMathLibrary::FindLookAtRotation(this->GetActorLocation(), actualEndPosition);
+				targetHeadRotation = UKismetMathLibrary::FindLookAtRotation(WhaleAudioComp->GetComponentLocation(), headMesh->GetComponentLocation());
 
 				prevHeadState = headState;
 				headState = HeadState::ForwardLooking;
