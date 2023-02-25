@@ -13,6 +13,9 @@ AEnemy::AEnemy()
 	splineComponent = CreateDefaultSubobject<USplineComponent>(TEXT("Spline"));
 	SetRootComponent(splineComponent);
 
+	SMeshComp = CreateDefaultSubobject<USplineMeshComponent>(TEXT("SMeshComp"));
+	SMeshComp->SetupAttachment(RootComponent);
+
 	PopAudioComp=CreateDefaultSubobject<UAudioComponent>(TEXT("PopAudioComp"));
 	PopAudioComp->SetupAttachment(RootComponent);
 
@@ -31,27 +34,34 @@ void AEnemy::SetSpline() {
 	DestroySpline();
 
 	for (int SplineCount = 0; SplineCount < (splineComponent->GetNumberOfSplinePoints() - 1); SplineCount++) {
-		USplineMeshComponent* splineMeshComponent = NewObject<USplineMeshComponent>(this, USplineMeshComponent::StaticClass());
+		//USplineMeshComponent* splineMeshComponent = NewObject<USplineMeshComponent>(this, USplineMeshComponent::StaticClass());
+		/*
 		splineMeshComponent->SetStaticMesh(Mesh);
-		splineMeshComponent->Mobility = EComponentMobility::Movable;
-		splineMeshComponent->CreationMethod = EComponentCreationMethod::UserConstructionScript;
-		splineMeshComponent->RegisterComponentWithWorld(GetWorld());
-		splineMeshComponent->AttachToComponent(splineComponent, FAttachmentTransformRules::KeepRelativeTransform);
+		UMaterial* MyMaterial = LoadObject<UMaterial>(nullptr, TEXT("/Game/Materials/EnemyColor"));
+		if (MyMaterial != nullptr) {
+			splineMeshComponent->SetMaterial(0, MyMaterial);
+			UE_LOG(LogTemp, Warning, TEXT("spline material"));
+		}
+		*/
+		
+		//splineMeshComponent->CreationMethod = EComponentCreationMethod::UserConstructionScript;
+		//splineMeshComponent->RegisterComponentWithWorld(GetWorld());
+		
 
 		const FVector startPoint = splineComponent->GetLocationAtSplinePoint(SplineCount, ESplineCoordinateSpace::Local);
 		const FVector startTangent = splineComponent->GetTangentAtSplinePoint(SplineCount, ESplineCoordinateSpace::Local);
 		const FVector endPoint = splineComponent->GetLocationAtSplinePoint(SplineCount + 1, ESplineCoordinateSpace::Local);
 		const FVector endTangent = splineComponent->GetTangentAtSplinePoint(SplineCount + 1, ESplineCoordinateSpace::Local);
 
-		splineMeshComponent->SetStartAndEnd(startPoint, startTangent, endPoint, endTangent, true);
+		SMeshComp->SetStartAndEnd(startPoint, startTangent, endPoint, endTangent, true);
 
-		splineMeshComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+		SMeshComp->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 
-		splineMeshComponent->SetForwardAxis(forwardAxis);
+		SMeshComp->SetForwardAxis(forwardAxis);
 
-		splineMeshComponent->SetGenerateOverlapEvents(true);
+		SMeshComp->SetGenerateOverlapEvents(true);
 
-		prevSplineMeshComp = splineMeshComponent;
+		prevSplineMeshComp = SMeshComp;
 	}
 }
 
@@ -110,6 +120,9 @@ void AEnemy::BeginPlay()
 		UE_LOG(LogTemp, Warning, TEXT("slurp sound is okay"));
 		SlurpAudioComp->SetSound(slurpSound);
 	}
+
+	SMeshComp->Mobility = EComponentMobility::Movable;
+	SMeshComp->AttachToComponent(splineComponent, FAttachmentTransformRules::KeepRelativeTransform);
 
 	actualLife = maxLife;
 	
