@@ -70,7 +70,16 @@ public:
 		USplineComponent* splineComponent;
 
 	UPROPERTY(EditAnywhere, Category = "Spline")
-		USplineMeshComponent* SMeshComp;
+		USplineMeshComponent* SMeshComp0;
+
+	UPROPERTY(EditAnywhere, Category = "Spline")
+		USplineMeshComponent* SMeshComp1;
+
+	UPROPERTY(EditAnywhere, Category = "Spline")
+		USplineMeshComponent* SMeshComp2;
+
+	UPROPERTY(EditAnywhere, Category = "Spline")
+		USplineMeshComponent* SMeshComp3;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spline")
 		UStaticMesh* Mesh;

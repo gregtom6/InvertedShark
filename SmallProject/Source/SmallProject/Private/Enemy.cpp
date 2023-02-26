@@ -13,10 +13,19 @@ AEnemy::AEnemy()
 	splineComponent = CreateDefaultSubobject<USplineComponent>(TEXT("Spline"));
 	SetRootComponent(splineComponent);
 
-	SMeshComp = CreateDefaultSubobject<USplineMeshComponent>(TEXT("SMeshComp"));
-	SMeshComp->SetupAttachment(RootComponent);
+	SMeshComp0 = CreateDefaultSubobject<USplineMeshComponent>(TEXT("SMeshComp0"));
+	SMeshComp0->SetupAttachment(RootComponent);
 
-	PopAudioComp=CreateDefaultSubobject<UAudioComponent>(TEXT("PopAudioComp"));
+	SMeshComp1 = CreateDefaultSubobject<USplineMeshComponent>(TEXT("SMeshComp1"));
+	SMeshComp1->SetupAttachment(RootComponent);
+
+	SMeshComp2 = CreateDefaultSubobject<USplineMeshComponent>(TEXT("SMeshComp2"));
+	SMeshComp2->SetupAttachment(RootComponent);
+
+	SMeshComp3 = CreateDefaultSubobject<USplineMeshComponent>(TEXT("SMeshComp3"));
+	SMeshComp3->SetupAttachment(RootComponent);
+
+	PopAudioComp = CreateDefaultSubobject<UAudioComponent>(TEXT("PopAudioComp"));
 	PopAudioComp->SetupAttachment(RootComponent);
 
 	SlurpAudioComp = CreateDefaultSubobject<UAudioComponent>(TEXT("SlurpAudioComp"));
@@ -26,43 +35,62 @@ AEnemy::AEnemy()
 }
 
 /*
-this method creates spline between the enemy and the creature. Spline is to show the blood transfusion between the enemy and the fur creature. 
+this method creates spline between the enemy and the creature. Spline is to show the blood transfusion between the enemy and the fur creature.
 */
 
 void AEnemy::SetSpline() {
 
-	DestroySpline();
+	FVector startPoint = splineComponent->GetLocationAtSplinePoint(0, ESplineCoordinateSpace::Local);
+	FVector startTangent = splineComponent->GetTangentAtSplinePoint(0, ESplineCoordinateSpace::Local);
+	FVector endPoint = splineComponent->GetLocationAtSplinePoint(1, ESplineCoordinateSpace::Local);
+	FVector endTangent = splineComponent->GetTangentAtSplinePoint(1, ESplineCoordinateSpace::Local);
 
-	for (int SplineCount = 0; SplineCount < (splineComponent->GetNumberOfSplinePoints() - 1); SplineCount++) {
-		//USplineMeshComponent* splineMeshComponent = NewObject<USplineMeshComponent>(this, USplineMeshComponent::StaticClass());
-		/*
-		splineMeshComponent->SetStaticMesh(Mesh);
-		UMaterial* MyMaterial = LoadObject<UMaterial>(nullptr, TEXT("/Game/Materials/EnemyColor"));
-		if (MyMaterial != nullptr) {
-			splineMeshComponent->SetMaterial(0, MyMaterial);
-			UE_LOG(LogTemp, Warning, TEXT("spline material"));
-		}
-		*/
-		
-		//splineMeshComponent->CreationMethod = EComponentCreationMethod::UserConstructionScript;
-		//splineMeshComponent->RegisterComponentWithWorld(GetWorld());
-		
+	SMeshComp0->SetStartAndEnd(startPoint, startTangent, endPoint, endTangent, true);
 
-		const FVector startPoint = splineComponent->GetLocationAtSplinePoint(SplineCount, ESplineCoordinateSpace::Local);
-		const FVector startTangent = splineComponent->GetTangentAtSplinePoint(SplineCount, ESplineCoordinateSpace::Local);
-		const FVector endPoint = splineComponent->GetLocationAtSplinePoint(SplineCount + 1, ESplineCoordinateSpace::Local);
-		const FVector endTangent = splineComponent->GetTangentAtSplinePoint(SplineCount + 1, ESplineCoordinateSpace::Local);
+	SMeshComp0->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 
-		SMeshComp->SetStartAndEnd(startPoint, startTangent, endPoint, endTangent, true);
+	SMeshComp0->SetForwardAxis(forwardAxis);
 
-		SMeshComp->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	SMeshComp0->SetGenerateOverlapEvents(true);
 
-		SMeshComp->SetForwardAxis(forwardAxis);
+	startPoint = splineComponent->GetLocationAtSplinePoint(1, ESplineCoordinateSpace::Local);
+	startTangent = splineComponent->GetTangentAtSplinePoint(1, ESplineCoordinateSpace::Local);
+	endPoint = splineComponent->GetLocationAtSplinePoint(2, ESplineCoordinateSpace::Local);
+	endTangent = splineComponent->GetTangentAtSplinePoint(2, ESplineCoordinateSpace::Local);
 
-		SMeshComp->SetGenerateOverlapEvents(true);
+	SMeshComp1->SetStartAndEnd(startPoint, startTangent, endPoint, endTangent, true);
 
-		prevSplineMeshComp = SMeshComp;
-	}
+	SMeshComp1->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+
+	SMeshComp1->SetForwardAxis(forwardAxis);
+
+	SMeshComp1->SetGenerateOverlapEvents(true);
+
+	startPoint = splineComponent->GetLocationAtSplinePoint(2, ESplineCoordinateSpace::Local);
+	startTangent = splineComponent->GetTangentAtSplinePoint(2, ESplineCoordinateSpace::Local);
+	endPoint = splineComponent->GetLocationAtSplinePoint(3, ESplineCoordinateSpace::Local);
+	endTangent = splineComponent->GetTangentAtSplinePoint(3, ESplineCoordinateSpace::Local);
+
+	SMeshComp2->SetStartAndEnd(startPoint, startTangent, endPoint, endTangent, true);
+
+	SMeshComp2->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+
+	SMeshComp2->SetForwardAxis(forwardAxis);
+
+	SMeshComp2->SetGenerateOverlapEvents(true);
+
+	startPoint = splineComponent->GetLocationAtSplinePoint(3, ESplineCoordinateSpace::Local);
+	startTangent = splineComponent->GetTangentAtSplinePoint(3, ESplineCoordinateSpace::Local);
+	endPoint = splineComponent->GetLocationAtSplinePoint(4, ESplineCoordinateSpace::Local);
+	endTangent = splineComponent->GetTangentAtSplinePoint(4, ESplineCoordinateSpace::Local);
+
+	SMeshComp3->SetStartAndEnd(startPoint, startTangent, endPoint, endTangent, true);
+
+	SMeshComp3->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+
+	SMeshComp3->SetForwardAxis(forwardAxis);
+
+	SMeshComp3->SetGenerateOverlapEvents(true);
 }
 
 /*
@@ -76,7 +104,7 @@ void AEnemy::MoveToCreature() {
 }
 
 /*
-setting up the Eating state, starting slurp sound. Creating spline between fur creature and enemy to represent blood transfusion. 
+setting up the Eating state, starting slurp sound. Creating spline between fur creature and enemy to represent blood transfusion.
 */
 
 void AEnemy::StartEating() {
@@ -84,7 +112,7 @@ void AEnemy::StartEating() {
 	actualStartPosition = GetActorLocation();
 	actualStatus = EnemyStatus::Eating;
 
-	SlurpAudioComp->Play(FMath::FRandRange(0.f,3.f));
+	SlurpAudioComp->Play(FMath::FRandRange(0.f, 3.f));
 
 
 	FTransform transform = splineComponent->GetTransformAtSplinePoint(1, ESplineCoordinateSpace::World);
@@ -92,6 +120,19 @@ void AEnemy::StartEating() {
 		TArray<FVector> points;
 
 		points.Add(GetActorLocation());
+
+		FVector direction = creature->GetActorLocation() - GetActorLocation();
+		direction.Normalize();
+		double dist = FVector::Distance(creature->GetActorLocation(), GetActorLocation());
+		double oneUnit = dist / 3.f;
+		for (int i = 0; i < 3; i++) {
+			FVector point = GetActorLocation() + direction * oneUnit * (i + 1);
+			point.Z = point.Z + FMath::FRandRange(-100.f, 100.f);
+			point.X = point.X + FMath::FRandRange(-50.f, 50.f);
+			point.Y = point.Y + FMath::FRandRange(-50.f, 50.f);
+			points.Add(point);
+		}
+
 		points.Add(creature->GetActorLocation());
 
 		splineComponent->SetSplinePoints(points, ESplineCoordinateSpace::World, true);
@@ -121,23 +162,29 @@ void AEnemy::BeginPlay()
 		SlurpAudioComp->SetSound(slurpSound);
 	}
 
-	SMeshComp->Mobility = EComponentMobility::Movable;
-	SMeshComp->AttachToComponent(splineComponent, FAttachmentTransformRules::KeepRelativeTransform);
+	SMeshComp0->Mobility = EComponentMobility::Movable;
+	SMeshComp0->AttachToComponent(splineComponent, FAttachmentTransformRules::KeepRelativeTransform);
+	SMeshComp1->Mobility = EComponentMobility::Movable;
+	SMeshComp1->AttachToComponent(splineComponent, FAttachmentTransformRules::KeepRelativeTransform);
+	SMeshComp2->Mobility = EComponentMobility::Movable;
+	SMeshComp2->AttachToComponent(splineComponent, FAttachmentTransformRules::KeepRelativeTransform);
+	SMeshComp3->Mobility = EComponentMobility::Movable;
+	SMeshComp3->AttachToComponent(splineComponent, FAttachmentTransformRules::KeepRelativeTransform);
 
 	actualLife = maxLife;
-	
+
 	OnActorBeginOverlap.AddDynamic(this, &AEnemy::EnterEvent);
 }
 
 /*
-moving state: when enemy is moving, it goes from actualStartPosition to actualEndPosition. actualStartPosition setted by the same way in Enemy.cpp and 
-BossEnemy.cpp, it will always be the enemy's actual position during state switching. 
-actualEndPosition will be different for enemy and bossenemy. For enemy, it will be the creature itself. For the bossenemy, it will be above the creature. 
+moving state: when enemy is moving, it goes from actualStartPosition to actualEndPosition. actualStartPosition setted by the same way in Enemy.cpp and
+BossEnemy.cpp, it will always be the enemy's actual position during state switching.
+actualEndPosition will be different for enemy and bossenemy. For enemy, it will be the creature itself. For the bossenemy, it will be above the creature.
 
 dying state: for enemies, it will mean only to scale down the actor. For the bossenemy, the functionality gets extended, the DoAfterDead will load a new level
-and removes widgets from viewport. 
+and removes widgets from viewport.
 
-Tick method also manages life decrease when getting attacked by player, for both the enemy and the bossenemy. 
+Tick method also manages life decrease when getting attacked by player, for both the enemy and the bossenemy.
 */
 void AEnemy::Tick(float DeltaTime)
 {
@@ -153,7 +200,7 @@ void AEnemy::Tick(float DeltaTime)
 		if (currentTime > 1.f)
 			currentTime = 1.f;
 
-			SetActorLocation(FMath::Lerp(actualStartPosition, actualEndPosition, currentTime));
+		SetActorLocation(FMath::Lerp(actualStartPosition, actualEndPosition, currentTime));
 	}
 
 	else if (actualStatus == EnemyStatus::SpecialDying) {
@@ -212,8 +259,8 @@ void AEnemy::ExitEvent(class AActor* overlappedActor, class AActor* otherActor) 
 }
 
 /*
-GetEndPosition gets back different end position for enemy movement, when it's for normal enemy, and for bossenemy. 
-enemy will stop at the creature position, BossEnemy will stop above the creature. 
+GetEndPosition gets back different end position for enemy movement, when it's for normal enemy, and for bossenemy.
+enemy will stop at the creature position, BossEnemy will stop above the creature.
 */
 
 FVector AEnemy::GetEndPosition() {
@@ -252,8 +299,12 @@ void AEnemy::DoAfterDead() {
 }
 
 void AEnemy::DestroySpline() {
-	if (prevSplineMeshComp != nullptr) {
-		UE_LOG(LogTemp, Warning, TEXT("spline removal"));
-		prevSplineMeshComp->DestroyComponent();
-	}
+	if (SMeshComp0 != nullptr)
+		SMeshComp0->DestroyComponent();
+	if (SMeshComp1 != nullptr)
+		SMeshComp1->DestroyComponent();
+	if (SMeshComp2 != nullptr)
+		SMeshComp2->DestroyComponent();
+	if (SMeshComp3 != nullptr)
+		SMeshComp3->DestroyComponent();
 }
