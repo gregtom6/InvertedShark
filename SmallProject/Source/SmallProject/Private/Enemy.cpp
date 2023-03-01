@@ -174,6 +174,7 @@ void AEnemy::BeginPlay()
 	actualLife = maxLife;
 
 	OnActorBeginOverlap.AddDynamic(this, &AEnemy::EnterEvent);
+	OnActorEndOverlap.AddDynamic(this, &AEnemy::ExitEvent);
 }
 
 /*
@@ -229,6 +230,9 @@ void AEnemy::Tick(float DeltaTime)
 			DecreaseLife();
 			canPlayerDamageMe = false;
 		}
+	}
+	else {
+		canPlayerDamageMe = false;
 	}
 }
 

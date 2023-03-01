@@ -12,6 +12,7 @@ ABossEnemy::ABossEnemy(const FObjectInitializer& ObjectInitializer)
 	bodyMesh->SetupAttachment(splineComponent);
 
 	OnActorBeginOverlap.AddDynamic(this, &AEnemy::EnterEvent);
+	OnActorEndOverlap.AddDynamic(this, &AEnemy::ExitEvent);
 }
 
 /*
