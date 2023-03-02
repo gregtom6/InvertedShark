@@ -45,52 +45,38 @@ void AEnemy::SetSpline() {
 	FVector endPoint = splineComponent->GetLocationAtSplinePoint(1, ESplineCoordinateSpace::Local);
 	FVector endTangent = splineComponent->GetTangentAtSplinePoint(1, ESplineCoordinateSpace::Local);
 
-	SMeshComp0->SetStartAndEnd(startPoint, startTangent, endPoint, endTangent, true);
-
-	SMeshComp0->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-
-	SMeshComp0->SetForwardAxis(forwardAxis);
-
-	SMeshComp0->SetGenerateOverlapEvents(true);
+	SetSplineMeshComponent(SMeshComp0, startPoint, startTangent, endPoint, endTangent);
 
 	startPoint = splineComponent->GetLocationAtSplinePoint(1, ESplineCoordinateSpace::Local);
 	startTangent = splineComponent->GetTangentAtSplinePoint(1, ESplineCoordinateSpace::Local);
 	endPoint = splineComponent->GetLocationAtSplinePoint(2, ESplineCoordinateSpace::Local);
 	endTangent = splineComponent->GetTangentAtSplinePoint(2, ESplineCoordinateSpace::Local);
 
-	SMeshComp1->SetStartAndEnd(startPoint, startTangent, endPoint, endTangent, true);
-
-	SMeshComp1->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-
-	SMeshComp1->SetForwardAxis(forwardAxis);
-
-	SMeshComp1->SetGenerateOverlapEvents(true);
+	SetSplineMeshComponent(SMeshComp1, startPoint, startTangent, endPoint, endTangent);
 
 	startPoint = splineComponent->GetLocationAtSplinePoint(2, ESplineCoordinateSpace::Local);
 	startTangent = splineComponent->GetTangentAtSplinePoint(2, ESplineCoordinateSpace::Local);
 	endPoint = splineComponent->GetLocationAtSplinePoint(3, ESplineCoordinateSpace::Local);
 	endTangent = splineComponent->GetTangentAtSplinePoint(3, ESplineCoordinateSpace::Local);
 
-	SMeshComp2->SetStartAndEnd(startPoint, startTangent, endPoint, endTangent, true);
-
-	SMeshComp2->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-
-	SMeshComp2->SetForwardAxis(forwardAxis);
-
-	SMeshComp2->SetGenerateOverlapEvents(true);
+	SetSplineMeshComponent(SMeshComp2, startPoint, startTangent, endPoint, endTangent);
 
 	startPoint = splineComponent->GetLocationAtSplinePoint(3, ESplineCoordinateSpace::Local);
 	startTangent = splineComponent->GetTangentAtSplinePoint(3, ESplineCoordinateSpace::Local);
 	endPoint = splineComponent->GetLocationAtSplinePoint(4, ESplineCoordinateSpace::Local);
 	endTangent = splineComponent->GetTangentAtSplinePoint(4, ESplineCoordinateSpace::Local);
 
-	SMeshComp3->SetStartAndEnd(startPoint, startTangent, endPoint, endTangent, true);
+	SetSplineMeshComponent(SMeshComp3, startPoint, startTangent, endPoint, endTangent);
+}
 
-	SMeshComp3->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+void AEnemy::SetSplineMeshComponent(USplineMeshComponent* splineMeshComp, FVector startPoint, FVector startTangent, FVector endPoint, FVector endTangent) {
+	splineMeshComp->SetStartAndEnd(startPoint, startTangent, endPoint, endTangent, true);
 
-	SMeshComp3->SetForwardAxis(forwardAxis);
+	splineMeshComp->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 
-	SMeshComp3->SetGenerateOverlapEvents(true);
+	splineMeshComp->SetForwardAxis(forwardAxis);
+
+	splineMeshComp->SetGenerateOverlapEvents(true);
 }
 
 /*
@@ -162,19 +148,20 @@ void AEnemy::BeginPlay()
 		SlurpAudioComp->SetSound(slurpSound);
 	}
 
-	SMeshComp0->Mobility = EComponentMobility::Movable;
-	SMeshComp0->AttachToComponent(splineComponent, FAttachmentTransformRules::KeepRelativeTransform);
-	SMeshComp1->Mobility = EComponentMobility::Movable;
-	SMeshComp1->AttachToComponent(splineComponent, FAttachmentTransformRules::KeepRelativeTransform);
-	SMeshComp2->Mobility = EComponentMobility::Movable;
-	SMeshComp2->AttachToComponent(splineComponent, FAttachmentTransformRules::KeepRelativeTransform);
-	SMeshComp3->Mobility = EComponentMobility::Movable;
-	SMeshComp3->AttachToComponent(splineComponent, FAttachmentTransformRules::KeepRelativeTransform);
+	SplineMeshCompAttach(SMeshComp0);
+	SplineMeshCompAttach(SMeshComp1);
+	SplineMeshCompAttach(SMeshComp2);
+	SplineMeshCompAttach(SMeshComp3);
 
 	actualLife = maxLife;
 
 	OnActorBeginOverlap.AddDynamic(this, &AEnemy::EnterEvent);
 	OnActorEndOverlap.AddDynamic(this, &AEnemy::ExitEvent);
+}
+
+void AEnemy::SplineMeshCompAttach(USplineMeshComponent* splineMeshComp) {
+	splineMeshComp->Mobility = EComponentMobility::Movable;
+	splineMeshComp->AttachToComponent(splineComponent, FAttachmentTransformRules::KeepRelativeTransform);
 }
 
 /*
@@ -303,12 +290,13 @@ void AEnemy::DoAfterDead() {
 }
 
 void AEnemy::DestroySpline() {
-	if (SMeshComp0 != nullptr)
-		SMeshComp0->DestroyComponent();
-	if (SMeshComp1 != nullptr)
-		SMeshComp1->DestroyComponent();
-	if (SMeshComp2 != nullptr)
-		SMeshComp2->DestroyComponent();
-	if (SMeshComp3 != nullptr)
-		SMeshComp3->DestroyComponent();
+	DestroySplineMeshComp(SMeshComp0);
+	DestroySplineMeshComp(SMeshComp1);
+	DestroySplineMeshComp(SMeshComp2);
+	DestroySplineMeshComp(SMeshComp3);
+}
+
+void AEnemy::DestroySplineMeshComp(USplineMeshComponent* splineMeshComp) {
+	if (splineMeshComp != nullptr)
+		splineMeshComp->DestroyComponent();
 }

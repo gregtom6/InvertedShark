@@ -27,6 +27,7 @@ protected:
 	virtual void Tick(float DeltaTime) override;
 	void SetSpline();
 
+	void SetSplineMeshComponent(USplineMeshComponent* splineMeshComp, FVector startPoint, FVector startTangent, FVector endPoint, FVector endTangent);
 	
 
 	void DecreaseLife();
@@ -34,6 +35,10 @@ protected:
 	void RemoveEnemy();
 
 	void DestroySpline();
+
+	void DestroySplineMeshComp(USplineMeshComponent* splineMeshComp);
+
+	void SplineMeshCompAttach(USplineMeshComponent* splineMeshComp);
 
 	virtual void DoAfterDead();
 
