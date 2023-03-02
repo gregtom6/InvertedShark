@@ -90,6 +90,9 @@ public:
 		UStaticMesh* Mesh;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spline")
+		UStaticMeshComponent* SwallowSphere;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spline")
 		TEnumAsByte<ESplineMeshAxis::Type> forwardAxis;
 
 	UPROPERTY(EditAnywhere)

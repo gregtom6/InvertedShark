@@ -31,6 +31,9 @@ AEnemy::AEnemy()
 	SlurpAudioComp = CreateDefaultSubobject<UAudioComponent>(TEXT("SlurpAudioComp"));
 	SlurpAudioComp->SetupAttachment(RootComponent);
 
+	SwallowSphere = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SwallowSphere"));
+	SwallowSphere->SetupAttachment(RootComponent);
+
 	actualStatus = EnemyStatus::Initial;
 }
 
@@ -189,6 +192,19 @@ void AEnemy::Tick(float DeltaTime)
 			currentTime = 1.f;
 
 		SetActorLocation(FMath::Lerp(actualStartPosition, actualEndPosition, currentTime));
+	}
+
+	else if (actualStatus == EnemyStatus::Eating) {
+
+		currentTime = GetWorld()->GetTimeSeconds() - startTime;
+		if (currentTime >= 1.f)
+			startTime = GetWorld()->GetTimeSeconds();
+
+		float SplineLength = splineComponent->GetSplineLength();
+		float SplineDistance = SplineLength * (1.f-currentTime);
+		FVector Position = splineComponent->GetLocationAtDistanceAlongSpline(SplineDistance, ESplineCoordinateSpace::World);
+
+		SwallowSphere->SetWorldLocation(Position);
 	}
 
 	else if (actualStatus == EnemyStatus::SpecialDying) {
