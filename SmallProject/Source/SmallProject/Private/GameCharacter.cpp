@@ -84,7 +84,7 @@ void AGameCharacter::StrafeLR(float movementDelta) {
 
 void AGameCharacter::WingBeat() {
 
-	if (isHugging || actualStatus == GameCharacterStatus::Dead) { return; }
+	if (isHugging || actualStatus == GameCharacterStatus::Dead || actualStatus==GameCharacterStatus::Dash) { return; }
 
 	if (actualEnergy < energyDecreaseAfterWingBeat) { return; }
 
@@ -176,7 +176,7 @@ void AGameCharacter::SetRotationLocks(bool X, bool Y, bool Z) {
 
 void AGameCharacter::Attack() {
 
-	if (actualStatus == GameCharacterStatus::Attack || isHugging || actualStatus == GameCharacterStatus::Dead) { return; }
+	if (actualStatus == GameCharacterStatus::Attack || isHugging || actualStatus == GameCharacterStatus::Dead || actualStatus==GameCharacterStatus::Dash) { return; }
 
 	UE_LOG(LogTemp, Warning, TEXT("attack happened"));
 
@@ -186,6 +186,29 @@ void AGameCharacter::Attack() {
 	actualStatus = GameCharacterStatus::Attack;
 
 	TongueAudio->Play(0.f);
+}
+
+void AGameCharacter::Dash() {
+	if (isHugging || actualStatus == GameCharacterStatus::Dead || actualStatus==GameCharacterStatus::Dash || actualStatus == GameCharacterStatus::Attack) { return; }
+
+	if (actualEnergy < energyDecreaseAfterDash) { return; }
+
+	actualStatus = GameCharacterStatus::Dash;
+
+	FVector actorUpVector = GetActorUpVector() * dashStrength;
+	FVector impulseDirection = actorUpVector;
+
+	CameraMesh->SetAllPhysicsLinearVelocity(FVector::ZeroVector);
+
+	CameraMesh->AddImpulse(impulseDirection);
+
+	actualEnergy -= energyDecreaseAfterDash;
+
+	startTime = GetWorld()->GetTimeSeconds();
+
+	if (AudioComp && wingBeat) {
+		AudioComp->Play(0.f);
+	}
 }
 
 void AGameCharacter::Pause() {
@@ -314,9 +337,8 @@ void AGameCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	FVector currentVelocity = FVector::ZeroVector;
-	if (actualStatus != GameCharacterStatus::Dead) {
-		currentVelocity = CameraMesh->GetPhysicsLinearVelocity();
+	FVector currentVelocity = CameraMesh->GetPhysicsLinearVelocity();
+	if (actualStatus != GameCharacterStatus::Dead && actualStatus!=GameCharacterStatus::Dash) {
 		FVector clampedVelocity = currentVelocity.GetClampedToMaxSize(velocityLimit);
 		CameraMesh->SetPhysicsLinearVelocity(clampedVelocity);
 	}
@@ -334,10 +356,19 @@ void AGameCharacter::Tick(float DeltaTime)
 		}
 	}
 
+	else if (actualStatus == GameCharacterStatus::Dash) {
+
+		float currentTime = GetWorld()->GetTimeSeconds() - startTime;
+
+		if (currentTime >= dashCooldownTime) {
+			actualStatus = GameCharacterStatus::Calm;
+		}
+	}
+
 	float newEnergy = actualEnergy + energyRegeneration * DeltaTime;
 	float restMult = 1.f;
 
-	if (isHugging || (currentVelocity.X < restVelocity && currentVelocity.Y < restVelocity && currentVelocity.Z < restVelocity)) {
+	if (isHugging || (FMath::Abs(currentVelocity.X) < restVelocity && FMath::Abs(currentVelocity.Y) < restVelocity && FMath::Abs(currentVelocity.Z) < restVelocity)) {
 		restMult = restingMultiplier;
 	}
 
@@ -491,6 +522,8 @@ void AGameCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	PlayerInputComponent->BindAction(TEXT("HugCreature"), IE_Pressed, this, &AGameCharacter::HugCreature);
 
 	PlayerInputComponent->BindAction(TEXT("Attack"), IE_Pressed, this, &AGameCharacter::Attack);
+
+	PlayerInputComponent->BindAction(TEXT("Dash"), IE_Pressed, this, &AGameCharacter::Dash);
 
 	FInputActionBinding& toggle = PlayerInputComponent->BindAction(TEXT("Pause"), IE_Pressed, this, &AGameCharacter::Pause);
 	toggle.bExecuteWhenPaused = true;

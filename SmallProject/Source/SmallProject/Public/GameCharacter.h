@@ -36,6 +36,8 @@ private:
 
 	void Attack();
 
+	void Dash();
+
 	void SetRotationLocks(bool X, bool Y, bool Z);
 
 	virtual void BeginPlay() override;
@@ -144,6 +146,15 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "character settings")
 		float springArmLengthSpeed = 0.5f;
 
+	UPROPERTY(EditAnywhere, Category = "character settings")
+		float energyDecreaseAfterDash;
+
+	UPROPERTY(EditAnywhere, Category = "character settings")
+		float dashStrength;
+
+	UPROPERTY(EditAnywhere, Category = "character settings")
+		float dashCooldownTime;
+
 	UPROPERTY(EditAnywhere)
 		UStaticMeshComponent* leftHandVisual;
 
@@ -209,6 +220,7 @@ enum class GameCharacterStatus : uint8
 {
 	Calm,
 	Attack,
+	Dash,
 	Dead,
 };
 
