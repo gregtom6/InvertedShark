@@ -177,6 +177,9 @@ protected:
 		UAudioComponent* MetalScratchAudio;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		UAudioComponent* DashAudio;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		USoundCue* wingBeat;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -184,6 +187,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		USoundCue* metalScratchSound;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		USoundCue* dashSound;
 
 	UPROPERTY(EditAnywhere) TSubclassOf<UPauseUserWidget> widgetPauseMenu;
 	UPauseUserWidget* widgetPauseMenuInstance;

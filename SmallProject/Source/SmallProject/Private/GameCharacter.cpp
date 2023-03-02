@@ -33,6 +33,8 @@ AGameCharacter::AGameCharacter(const FObjectInitializer& ObjectInitializer)
 
 	MetalScratchAudio= CreateDefaultSubobject<UAudioComponent>(TEXT("MetalScratchAudio"));
 
+	DashAudio = CreateDefaultSubobject<UAudioComponent>(TEXT("DashAudio"));
+
 	Spark = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Spark"));
 
 	Spark->SetupAttachment(CameraMesh);
@@ -52,6 +54,8 @@ AGameCharacter::AGameCharacter(const FObjectInitializer& ObjectInitializer)
 	TongueAudio->SetupAttachment(CameraMesh);
 
 	MetalScratchAudio->SetupAttachment(CameraMesh);
+
+	DashAudio->SetupAttachment(CameraMesh);
 
 	Camera->Deactivate();
 
@@ -206,8 +210,8 @@ void AGameCharacter::Dash() {
 
 	startTime = GetWorld()->GetTimeSeconds();
 
-	if (AudioComp && wingBeat) {
-		AudioComp->Play(0.f);
+	if (DashAudio && dashSound) {
+		DashAudio->Play(0.f);
 	}
 }
 
