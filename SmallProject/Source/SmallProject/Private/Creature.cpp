@@ -157,10 +157,6 @@ void ACreature::Tick(float DeltaTime)
 			currentTime = 1.f;
 		}
 
-		FRotator PlayerRot = UKismetMathLibrary::FindLookAtRotation(this->GetActorLocation(), actualEndPosition);
-
-		SetActorRotation(PlayerRot);
-
 		SetActorLocation(FMath::Lerp(actualStartPosition, actualEndPosition, CurveFloat->GetFloatValue(currentTime)));
 	}
 
@@ -332,6 +328,10 @@ void ACreature::SwitchingToMovingFast() {
 	startTime = GetWorld()->GetTimeSeconds();
 	StepTargetIndex();
 	actualStatus = Status::MovingFast;
+
+	FRotator PlayerRot = UKismetMathLibrary::FindLookAtRotation(this->GetActorLocation(), actualEndPosition);
+
+	SetActorRotation(PlayerRot);
 }
 
 /*
