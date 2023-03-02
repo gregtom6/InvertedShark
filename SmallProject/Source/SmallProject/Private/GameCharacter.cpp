@@ -31,6 +31,8 @@ AGameCharacter::AGameCharacter(const FObjectInitializer& ObjectInitializer)
 
 	TongueAudio = CreateDefaultSubobject<UAudioComponent>(TEXT("TongueAudio"));
 
+	MetalScratchAudio= CreateDefaultSubobject<UAudioComponent>(TEXT("MetalScratchAudio"));
+
 	Spark = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Spark"));
 
 	Spark->SetupAttachment(CameraMesh);
@@ -48,6 +50,8 @@ AGameCharacter::AGameCharacter(const FObjectInitializer& ObjectInitializer)
 	AudioComp->SetupAttachment(CameraMesh);
 
 	TongueAudio->SetupAttachment(CameraMesh);
+
+	MetalScratchAudio->SetupAttachment(CameraMesh);
 
 	Camera->Deactivate();
 
@@ -216,7 +220,7 @@ void AGameCharacter::Pause() {
 			PC->bEnableMouseOverEvents = false;
 		}
 
-		widgetPauseMenuInstance->RemoveFromViewport();
+		widgetPauseMenuInstance->RemoveFromParent();
 	}
 }
 
@@ -362,7 +366,8 @@ void AGameCharacter::Tick(float DeltaTime)
 	if (bossEnemy != nullptr) {
 
 		FVector TempActor1ClosestPoint, TempActor2ClosestPoint;
-		if (GetOverlapInfluenceSphere(Tongue, Actor1ClosestPoint, Actor2ClosestPoint))
+		bool checkMe = GetOverlapInfluenceSphere(Tongue, Actor1ClosestPoint, Actor2ClosestPoint);
+		if (checkMe)
 		{
 			if (!bOverlap)
 			{
@@ -403,9 +408,21 @@ void AGameCharacter::Tick(float DeltaTime)
 
 		Spark->SetWorldLocation(Actor1ClosestPoint);
 		Spark->Activate();
+
+ 		if (MetalScratchAudio && metalScratchSound && !MetalScratchAudio->IsPlaying()) {
+
+			// Get a random playback time
+			float RandomTime = FMath::FRandRange(0.0f, 15.f);
+
+			MetalScratchAudio->Play(RandomTime);
+			UE_LOG(LogTemp, Warning, TEXT("bools: play"));
+		}
 	}
 	else {
+		UE_LOG(LogTemp, Warning, TEXT("bools: %f  %f"), bOverlap, Tongue->GetVisibleFlag());
+
 		Spark->Deactivate();
+		MetalScratchAudio->Stop();
 	}
 }
 

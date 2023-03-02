@@ -163,10 +163,16 @@ protected:
 		UAudioComponent* TongueAudio;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		UAudioComponent* MetalScratchAudio;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		USoundCue* wingBeat;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		USoundCue* tongueSound;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		USoundCue* metalScratchSound;
 
 	UPROPERTY(EditAnywhere) TSubclassOf<UPauseUserWidget> widgetPauseMenu;
 	UPauseUserWidget* widgetPauseMenuInstance;
