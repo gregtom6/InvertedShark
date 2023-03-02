@@ -36,6 +36,9 @@ protected:
 	FRotator startHeadRotation;
 	FRotator targetHeadRotation;
 
+	FRotator startActorRotation;
+	FRotator targetActorRotation;
+
 	HeadState prevHeadState;
 	HeadState headState;
 	float headRotationStartTime;
@@ -141,6 +144,7 @@ enum class Status : uint8
 	MovingFast,
 	WaitBeforeMoveFast,
 	WaitAfterHuggedByPlayer,
+	RotatingTowardsTarget,
 };
 
 UENUM()

@@ -73,7 +73,7 @@ void ACreature::BeginPlay()
 	headState = HeadState::ForwardLooking;
 
 	if (actualTargetIndex < positionsToMove.Num()) {
-		FRotator PlayerRot = UKismetMathLibrary::FindLookAtRotation(this->GetActorLocation(), positionsToMove[actualTargetIndex]->GetActorLocation());
+		FRotator PlayerRot = UKismetMathLibrary::FindLookAtRotation(this->GetActorLocation(), positionsToMove[0]->GetActorLocation());
 
 		SetActorRotation(PlayerRot);
 	}
@@ -147,6 +147,21 @@ void ACreature::Tick(float DeltaTime)
 		if (currentTime > waitTimeAfterHuggedToMoveForward) {
 			SwitchingToMovingFast();
 		}
+	}
+	else if (actualStatus == Status::RotatingTowardsTarget) {
+
+		float currentTime = GetWorld()->GetTimeSeconds() - startTime;
+		if (currentTime > 1.f) {
+
+			actualStatus = Status::MovingFast;
+			currentTime = 1.f;
+		}
+
+		FQuat newRot = FQuat::Slerp(startActorRotation.Quaternion(), targetActorRotation.Quaternion(), currentTime);
+		FRotator rotator = newRot.Rotator();
+
+		SetActorRotation(rotator);
+
 	}
 	else if (actualStatus == Status::MovingFast) {
 		float currentTime = GetWorld()->GetTimeSeconds() - startTime;
@@ -327,11 +342,10 @@ void ACreature::GetHugged() {
 void ACreature::SwitchingToMovingFast() {
 	startTime = GetWorld()->GetTimeSeconds();
 	StepTargetIndex();
-	actualStatus = Status::MovingFast;
+	actualStatus = Status::RotatingTowardsTarget;
 
-	FRotator PlayerRot = UKismetMathLibrary::FindLookAtRotation(this->GetActorLocation(), actualEndPosition);
-
-	SetActorRotation(PlayerRot);
+	startActorRotation = UKismetMathLibrary::FindLookAtRotation(WhaleAudioComp->GetComponentLocation(), headMesh->GetComponentLocation());
+	targetActorRotation = UKismetMathLibrary::FindLookAtRotation(WhaleAudioComp->GetComponentLocation(), actualEndPosition);
 }
 
 /*
