@@ -42,7 +42,7 @@ private:
 
 	void EnergyManagement(float DeltaTime, FVector& currentVelocity);
 
-	void VelocityManagement();
+	void VelocityManagement(FVector& currentVelocity);
 
 	void CameraManagement();
 

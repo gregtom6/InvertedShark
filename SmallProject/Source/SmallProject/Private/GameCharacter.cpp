@@ -351,9 +351,9 @@ void AGameCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	FVector currentVelocity = FVector::ZeroVector;
+	FVector currentVelocity = CameraMesh->GetPhysicsLinearVelocity();
 
-	VelocityManagement();
+	VelocityManagement(currentVelocity);
 
 	StateManagement();
 
@@ -385,8 +385,7 @@ void AGameCharacter::DeadManagement() {
 /*
 slowing down velocity of player, when it needs
 */
-void AGameCharacter::VelocityManagement() {
-	FVector currentVelocity = CameraMesh->GetPhysicsLinearVelocity();
+void AGameCharacter::VelocityManagement(FVector& currentVelocity) {
 	if (actualStatus != GameCharacterStatus::Dead && actualStatus != GameCharacterStatus::Dash) {
 		FVector clampedVelocity = currentVelocity.GetClampedToMaxSize(velocityLimit);
 		CameraMesh->SetPhysicsLinearVelocity(clampedVelocity);
