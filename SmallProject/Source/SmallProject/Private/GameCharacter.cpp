@@ -33,7 +33,7 @@ AGameCharacter::AGameCharacter(const FObjectInitializer& ObjectInitializer)
 
 	TongueAudio = CreateDefaultSubobject<UAudioComponent>(TEXT("TongueAudio"));
 
-	MetalScratchAudio= CreateDefaultSubobject<UAudioComponent>(TEXT("MetalScratchAudio"));
+	MetalScratchAudio = CreateDefaultSubobject<UAudioComponent>(TEXT("MetalScratchAudio"));
 
 	DashAudio = CreateDefaultSubobject<UAudioComponent>(TEXT("DashAudio"));
 
@@ -64,6 +64,9 @@ AGameCharacter::AGameCharacter(const FObjectInitializer& ObjectInitializer)
 	isHugging = false;
 }
 
+/*
+left right rotations of game character
+*/
 void AGameCharacter::RotateLR(float rotateDelta) {
 
 	if (isHugging || actualStatus == GameCharacterStatus::Dead) { return; }
@@ -75,6 +78,9 @@ void AGameCharacter::RotateLR(float rotateDelta) {
 	SpringArm->SetWorldRotation(actualRotation);
 }
 
+/*
+left right strafe movement of game character
+*/
 void AGameCharacter::StrafeLR(float movementDelta) {
 
 	if (isHugging || actualStatus == GameCharacterStatus::Dead) { return; }
@@ -88,9 +94,12 @@ void AGameCharacter::StrafeLR(float movementDelta) {
 	SetActorLocation(newLocation + (rightVector * movementDelta * MovementSpeed));
 }
 
+/*
+wing beat movement of game character
+*/
 void AGameCharacter::WingBeat() {
 
-	if (isHugging || actualStatus == GameCharacterStatus::Dead || actualStatus==GameCharacterStatus::Dash) { return; }
+	if (isHugging || actualStatus == GameCharacterStatus::Dead || actualStatus == GameCharacterStatus::Dash) { return; }
 
 	if (actualEnergy < energyDecreaseAfterWingBeat) { return; }
 
@@ -107,6 +116,9 @@ void AGameCharacter::WingBeat() {
 	}
 }
 
+/*
+creature fur hugging ability. When under the creature, player can hug its fur for faster energy reloading
+*/
 void AGameCharacter::HugCreature() {
 
 	if (!isHugging) {
@@ -170,6 +182,9 @@ void AGameCharacter::HugCreature() {
 
 }
 
+/*
+helper method for hugging action
+*/
 void AGameCharacter::SetRotationLocks(bool X, bool Y, bool Z) {
 	if (CameraMesh->GetBodyInstance())
 	{
@@ -180,9 +195,12 @@ void AGameCharacter::SetRotationLocks(bool X, bool Y, bool Z) {
 	}
 }
 
+/*
+attack ability
+*/
 void AGameCharacter::Attack() {
 
-	if (actualStatus == GameCharacterStatus::Attack || isHugging || actualStatus == GameCharacterStatus::Dead || actualStatus==GameCharacterStatus::Dash) { return; }
+	if (actualStatus == GameCharacterStatus::Attack || isHugging || actualStatus == GameCharacterStatus::Dead || actualStatus == GameCharacterStatus::Dash) { return; }
 
 	UE_LOG(LogTemp, Warning, TEXT("attack happened"));
 
@@ -194,8 +212,11 @@ void AGameCharacter::Attack() {
 	TongueAudio->Play(0.f);
 }
 
+/*
+dash ability
+*/
 void AGameCharacter::Dash() {
-	if (isHugging || actualStatus == GameCharacterStatus::Dead || actualStatus==GameCharacterStatus::Dash || actualStatus == GameCharacterStatus::Attack) { return; }
+	if (isHugging || actualStatus == GameCharacterStatus::Dead || actualStatus == GameCharacterStatus::Dash || actualStatus == GameCharacterStatus::Attack) { return; }
 
 	if (actualEnergy < energyDecreaseAfterDash) { return; }
 
@@ -217,6 +238,10 @@ void AGameCharacter::Dash() {
 	}
 }
 
+
+/*
+game can be paused with this function. Managing cursor state and adding or removing pause widget to viewport
+*/
 void AGameCharacter::Pause() {
 
 	if (pauseStatus == PauseStatus::Played) {
@@ -253,7 +278,9 @@ void AGameCharacter::Pause() {
 	}
 }
 
-// Called when the game starts or when spawned
+/*
+initializing audios, pause widget, energy, status, position, etc.
+*/
 void AGameCharacter::BeginPlay()
 {
 	Super::BeginPlay();
@@ -324,14 +351,54 @@ void AGameCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	FVector currentVelocity = FVector::ZeroVector;
+
+	VelocityManagement();
+
+	StateManagement();
+
+	EnergyManagement(DeltaTime, currentVelocity);
+
+	CameraManagement();
+
+	DeadManagement();
+
+	MetalScratchManagement();
+}
+
+/*
+calling delegate, when death happened, setting velocity and state
+*/
+void AGameCharacter::DeadManagement() {
+	FVector actorLocation = GetActorLocation();
+
+	if (actualStatus != GameCharacterStatus::Dead && actorLocation.Z <= heightToDie) {
+		//UGameplayStatics::OpenLevel(this, FName(*GetWorld()->GetName()), false);
+		CameraMesh->SetAllPhysicsLinearVelocity(FVector::ZeroVector);
+		CameraMesh->SetAllPhysicsAngularVelocityInDegrees(FVector::ZeroVector);
+		actualStatus = GameCharacterStatus::Dead;
+
+		OnDieHappenedDelegate.ExecuteIfBound();
+	}
+}
+
+/*
+slowing down velocity of player, when it needs
+*/
+void AGameCharacter::VelocityManagement() {
 	FVector currentVelocity = CameraMesh->GetPhysicsLinearVelocity();
-	if (actualStatus != GameCharacterStatus::Dead && actualStatus!=GameCharacterStatus::Dash) {
+	if (actualStatus != GameCharacterStatus::Dead && actualStatus != GameCharacterStatus::Dash) {
 		FVector clampedVelocity = currentVelocity.GetClampedToMaxSize(velocityLimit);
 		CameraMesh->SetPhysicsLinearVelocity(clampedVelocity);
 	}
+}
 
-	FVector actorLocation = GetActorLocation();
-
+/*
+attack: when player draws sword
+calm: when player is just flying around
+dash: when player dashes upwards
+*/
+void AGameCharacter::StateManagement() {
 	if (actualStatus == GameCharacterStatus::Attack) {
 
 		float currentTime = GetWorld()->GetTimeSeconds() - startTime;
@@ -351,7 +418,12 @@ void AGameCharacter::Tick(float DeltaTime)
 			actualStatus = GameCharacterStatus::Calm;
 		}
 	}
+}
 
+/*
+energy management of player, based on current restmultiplier 
+*/
+void AGameCharacter::EnergyManagement(float DeltaTime, FVector& currentVelocity) {
 	float newEnergy = actualEnergy + energyRegeneration * DeltaTime;
 	float restMult = 1.f;
 
@@ -361,23 +433,24 @@ void AGameCharacter::Tick(float DeltaTime)
 
 	if (newEnergy <= maxEnergy)
 		actualEnergy += energyRegeneration * restMult * DeltaTime;
+}
 
+/*
+lerping camera between two spring arm lengths
+*/
+void AGameCharacter::CameraManagement() {
 	float currentTimeForSpringArm = GetWorld()->GetTimeSeconds() - startTimeForSpringArm;
 	currentTimeForSpringArm *= springArmLengthSpeed;
 	if (currentTimeForSpringArm > 1.f)
 		currentTimeForSpringArm = 1.f;
 
 	SpringArm->TargetArmLength = FMath::Lerp(startArmLength, targetArmLength, currentTimeForSpringArm);
+}
 
-	if (actualStatus != GameCharacterStatus::Dead && actorLocation.Z <= heightToDie) {
-		//UGameplayStatics::OpenLevel(this, FName(*GetWorld()->GetName()), false);
-		CameraMesh->SetAllPhysicsLinearVelocity(FVector::ZeroVector);
-		CameraMesh->SetAllPhysicsAngularVelocityInDegrees(FVector::ZeroVector);
-		actualStatus = GameCharacterStatus::Dead;
-
-		OnDieHappenedDelegate.ExecuteIfBound();
-	}
-
+/*
+when player sword (tongue) and boss enemy overlaps with each other, we find the intersecting points and placing spark particle to there
+*/
+void AGameCharacter::MetalScratchManagement() {
 	FVector Actor1ClosestPoint, Actor2ClosestPoint, OverlapPoint;
 	bool bOverlap = false;
 
@@ -418,16 +491,12 @@ void AGameCharacter::Tick(float DeltaTime)
 
 		ABossEnemy* boss = Cast<ABossEnemy>(bossEnemy);
 
-		//DrawDebugSphere(GetWorld(), Actor1ClosestPoint, Radius, Segments, LineColor, false, Duration);
-		//DrawDebugSphere(GetWorld(), boss->GetPositionOfBodyMesh(), boss->GetBodyMeshRadius(), Segments, LineColor2, false, Duration);
-
-
 		OverlapPoint = (Actor1ClosestPoint + Actor2ClosestPoint) / 2.0f;
 
 		Spark->SetWorldLocation(Actor1ClosestPoint);
 		Spark->Activate();
 
- 		if (MetalScratchAudio && metalScratchSound && !MetalScratchAudio->IsPlaying()) {
+		if (MetalScratchAudio && metalScratchSound && !MetalScratchAudio->IsPlaying()) {
 
 			// Get a random playback time
 			float RandomTime = FMath::FRandRange(0.0f, 15.f);
@@ -444,6 +513,9 @@ void AGameCharacter::Tick(float DeltaTime)
 	}
 }
 
+/*
+helper function for detecting the closest intersecting point between the closest static mesh components of two actors
+*/
 bool AGameCharacter::GetOverlapInfluenceSphere(UStaticMeshComponent* StaticMeshComponent, FVector& OutActor1ClosestPoint, FVector& OutActor2ClosestPoint)
 {
 	FTransform TransformA = StaticMeshComponent->GetComponentTransform();
@@ -474,6 +546,9 @@ bool AGameCharacter::GetOverlapInfluenceSphere(UStaticMeshComponent* StaticMeshC
 	return false;
 }
 
+/*
+getter, setter functions
+*/
 float AGameCharacter::GetEnergy() {
 	return actualEnergy;
 }
@@ -494,7 +569,9 @@ void AGameCharacter::SetPrevStatusToActualStatus() {
 	prevStatus = actualStatus;
 }
 
-// Called to bind functionality to input
+/*
+subscribing to controls
+*/
 void AGameCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);

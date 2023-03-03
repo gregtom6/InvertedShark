@@ -16,7 +16,7 @@ class SMALLPROJECT_API UMainMenu : public UUserWidget
 	GENERATED_BODY()
 
 	virtual void NativeConstruct() override; 
-public:
+protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Sounds") 
 		USoundBase* ButtonClickSound;

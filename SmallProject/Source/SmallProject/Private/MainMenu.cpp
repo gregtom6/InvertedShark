@@ -23,6 +23,9 @@ void UMainMenu::NativeConstruct() {
 	BackToMainMenuButton->OnClicked.AddUniqueDynamic(this, &UMainMenu::OnBackClick);
 }
 
+/*
+button click event management
+*/
 void UMainMenu::OnStartClick() {
 	UGameplayStatics::PlaySound2D(this, ButtonClickSound);
 

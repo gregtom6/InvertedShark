@@ -16,7 +16,7 @@ class SMALLPROJECT_API UVictoryScreenUserWidget : public UUserWidget
 	
 private:
 	virtual void NativeConstruct() override;
-public:
+protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Sounds")
 		USoundBase* ButtonClickSound;

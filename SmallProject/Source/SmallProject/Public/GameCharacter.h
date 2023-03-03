@@ -38,6 +38,18 @@ private:
 
 	void Dash();
 
+	void StateManagement();
+
+	void EnergyManagement(float DeltaTime, FVector& currentVelocity);
+
+	void VelocityManagement();
+
+	void CameraManagement();
+
+	void MetalScratchManagement();
+
+	void DeadManagement();
+
 	void SetRotationLocks(bool X, bool Y, bool Z);
 
 	virtual void BeginPlay() override;

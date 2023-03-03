@@ -15,7 +15,7 @@ class SMALLPROJECT_API UPauseUserWidget : public UUserWidget
 	GENERATED_BODY()
 
 		AGameCharacter* gameChar;
-public:
+protected:
 
 
 	UPROPERTY(meta = (BindWidget))
@@ -32,7 +32,7 @@ public:
 
 	UFUNCTION()
 		void OnQuitToMainMenuClick();
-
+public:
 	UFUNCTION()
 		void SetGameCharacter(AGameCharacter* gameCharacter);
 };

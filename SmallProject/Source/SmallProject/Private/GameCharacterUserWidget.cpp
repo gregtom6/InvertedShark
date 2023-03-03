@@ -9,6 +9,9 @@ void UGameCharacterUserWidget::NativeConstruct() {
 	AddToPlayerScreen();
 }
 
+/*
+reading player energy and setting visuals
+*/
 void UGameCharacterUserWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime) {
 	Super::NativeTick(MyGeometry, InDeltaTime);
 

@@ -7,6 +7,9 @@
 #include <Kismet/GameplayStatics.h>
 #include <Blueprint/WidgetLayoutLibrary.h>
 
+/*
+pause management methods
+*/
 void UPauseUserWidget::OnResumeClick() {
 	if (gameChar != nullptr) {
 		UE_LOG(LogTemp, Warning, TEXT("pause hivas"));
@@ -24,6 +27,9 @@ void UPauseUserWidget::OnQuitToMainMenuClick() {
 	UGameplayStatics::OpenLevel(this, levelToLoad, true);
 }
 
+/*
+setting player reference
+*/
 void UPauseUserWidget::SetGameCharacter(AGameCharacter* gameCharacter) {
 
 	UE_LOG(LogTemp, Warning, TEXT("pause setgamechar"));
