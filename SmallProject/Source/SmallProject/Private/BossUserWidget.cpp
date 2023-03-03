@@ -8,6 +8,10 @@ void UBossUserWidget::NativeConstruct()
 	Super::NativeConstruct();
 }
 
+/*
+setting boss life visuals based on boss life
+*/
+
 void UBossUserWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 {
 	Super::NativeTick(MyGeometry, InDeltaTime);

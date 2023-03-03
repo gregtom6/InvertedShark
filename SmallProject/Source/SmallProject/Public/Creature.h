@@ -26,12 +26,19 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 	bool isCharInFur;
 
 	void StepTargetIndex();
 
 	void SwitchingToMovingFast();
+
+	void HeadStateManagement();
+
+	void HealthManagement(float DeltaTime);
+
+	void StateManagement();
 
 	FRotator startHeadRotation;
 	FRotator targetHeadRotation;
@@ -58,8 +65,6 @@ protected:
 
 	TArray<AActor*> enemiesActuallyAttacking;
 
-public:	
-	
 	UFUNCTION()
 		void EnterEvent(class AActor* overlappedActor, class AActor* otherActor);
 
@@ -125,6 +130,8 @@ public:
 
 	UPROPERTY(EditAnywhere)
 		float lookAtPlayerBorder;
+public:	
+	
 
 	float GetHealth() const { return Health; }
 	float GetMaxHealth() const { return MaxHealth; }

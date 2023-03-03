@@ -18,13 +18,14 @@ class SMALLPROJECT_API AEnemyTriggerBox : public ATriggerBox
 	
 protected:
 	virtual void BeginPlay();
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
+	UPROPERTY(EditAnywhere)
+		TArray<AEnemy*> enemiesToCome;
 public:
 	AEnemyTriggerBox();
 
 	UFUNCTION()
 		void Event(class AActor* overlappedActor, class AActor* otherActor);
 
-	UPROPERTY(EditAnywhere)
-		TArray<AEnemy*> enemiesToCome;
 };

@@ -24,11 +24,17 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+
 	virtual void Tick(float DeltaTime) override;
 	void SetSpline();
 
 	void SetSplineMeshComponent(USplineMeshComponent* splineMeshComp, FVector startPoint, FVector startTangent, FVector endPoint, FVector endTangent);
 	
+
+	void StateManagement();
+
+	void LifeManagement();
 
 	void DecreaseLife();
 
@@ -66,10 +72,6 @@ protected:
 
 	FVector startScale;
 	FVector endScale;
-
-public:	
-	// Called every frame
-
 
 	UPROPERTY(EditAnywhere, Category = "Spline")
 		USplineComponent* splineComponent;
@@ -124,11 +126,13 @@ public:
 	UPROPERTY(EditAnywhere)
 		float dyingTime;
 
+public:	
 	UFUNCTION()
 		void EnterEvent(class AActor* overlappedActor, class AActor* otherActor);
 
 	UFUNCTION()
 		void ExitEvent(class AActor* overlappedActor, class AActor* otherActor);
+	// Called every frame
 
 	virtual void MoveToCreature();
 

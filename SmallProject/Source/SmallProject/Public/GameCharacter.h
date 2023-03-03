@@ -16,7 +16,7 @@
 #include "NiagaraComponent.h"
 #include "GameCharacter.generated.h"
 
-DECLARE_DELEGATE(FOnScoreChangedSignature);
+DECLARE_DELEGATE(FOnDieHappenedSignature);
 
 UCLASS(BlueprintType)
 class SMALLPROJECT_API AGameCharacter : public APawn
@@ -195,12 +195,6 @@ protected:
 	UPauseUserWidget* widgetPauseMenuInstance;
 
 	UFUNCTION()
-		void TriggerEnter(class UPrimitiveComponent* HitComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-
-	UFUNCTION()
-		void TriggerExit(class UPrimitiveComponent* HitComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
-
-	UFUNCTION()
 	bool GetOverlapInfluenceSphere(UStaticMeshComponent* StaticMeshComponent, FVector& Actor1ClosestPoint, FVector& Actor2ClosestPoint);
 
 
@@ -218,7 +212,7 @@ public:
 
 	void Pause();
 
-	FOnScoreChangedSignature OnScoreChangedDelegate;
+	FOnDieHappenedSignature OnDieHappenedDelegate;
 };
 
 UENUM()

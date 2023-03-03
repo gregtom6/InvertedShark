@@ -8,14 +8,16 @@
 // Sets default values
 AFallCamera::AFallCamera()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
+
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	Camera->SetupAttachment(Mesh);
 }
 
-// Called when the game starts or when spawned
+/*
+subscribing to gamecharacter's delegate, creating widget
+*/
 void AFallCamera::BeginPlay()
 {
 	Super::BeginPlay();
@@ -27,7 +29,7 @@ void AFallCamera::BeginPlay()
 	if (gameCharacter != nullptr) {
 		UE_LOG(LogTemp, Warning, TEXT("game char nem null"));
 
-		gameCharacter->OnScoreChangedDelegate.BindUObject(this, &AFallCamera::DieHappened);
+		gameCharacter->OnDieHappenedDelegate.BindUObject(this, &AFallCamera::DieHappened);
 	}
 
 	if (IsValid(widgetclass)) {
@@ -37,13 +39,9 @@ void AFallCamera::BeginPlay()
 	}
 }
 
-// Called every frame
-void AFallCamera::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-}
-
+/*
+adding widget to viewport, when player dies
+*/
 void AFallCamera::DieHappened() 
 {
 	UE_LOG(LogTemp, Warning, TEXT("delegate !!!!"));

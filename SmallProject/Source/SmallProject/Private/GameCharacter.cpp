@@ -22,6 +22,8 @@ AGameCharacter::AGameCharacter(const FObjectInitializer& ObjectInitializer)
 	CameraMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("CameraMesh"));
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 
+	SetRootComponent(CameraMesh);
+
 	LeftLeft = CreateDefaultSubobject<UPhysicsConstraintComponent>(TEXT("LeftLeft"));
 	RightArm = CreateDefaultSubobject< UPhysicsConstraintComponent>(TEXT("RightArm"));
 
@@ -315,25 +317,6 @@ void AGameCharacter::BeginPlay()
 			bossEnemy = b;
 		}
 	}
-
-	Tongue->OnComponentBeginOverlap.AddDynamic(this, &AGameCharacter::TriggerEnter);
-	Tongue->OnComponentEndOverlap.AddDynamic(this, &AGameCharacter::TriggerExit);
-}
-
-void AGameCharacter::TriggerEnter(class UPrimitiveComponent* HitComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) {
-	UE_LOG(LogTemp, Warning, TEXT("sword inside enemy1"));
-	if (OtherActor && OtherActor != this) {
-		UE_LOG(LogTemp, Warning, TEXT("sword inside enemy2"));
-		if (OtherActor->IsA(AEnemy::StaticClass()) || OtherActor->IsA(ABossEnemy::StaticClass())) {
-			UE_LOG(LogTemp, Warning, TEXT("sword inside enemy3"));
-
-			UE_LOG(LogTemp, Warning, TEXT("sword hit %f %f %f      %f %f %f"), SweepResult.ImpactPoint.X, SweepResult.ImpactPoint.Y, SweepResult.ImpactPoint.Z, SweepResult.Location.X, SweepResult.Location.Y, SweepResult.Location.Z);
-		}
-	}
-}
-
-void AGameCharacter::TriggerExit(class UPrimitiveComponent* HitComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) {
-
 }
 
 // Called every frame
@@ -392,7 +375,7 @@ void AGameCharacter::Tick(float DeltaTime)
 		CameraMesh->SetAllPhysicsAngularVelocityInDegrees(FVector::ZeroVector);
 		actualStatus = GameCharacterStatus::Dead;
 
-		OnScoreChangedDelegate.ExecuteIfBound();
+		OnDieHappenedDelegate.ExecuteIfBound();
 	}
 
 	FVector Actor1ClosestPoint, Actor2ClosestPoint, OverlapPoint;

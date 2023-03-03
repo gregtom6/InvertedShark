@@ -16,7 +16,7 @@ class SMALLPROJECT_API UDeadUserWidget : public UUserWidget
 	
 		virtual void NativeConstruct() override;
 
-public:
+protected:
 
 	UPROPERTY(meta = (BindWidget))
 		class UButton* ResurrectButton;

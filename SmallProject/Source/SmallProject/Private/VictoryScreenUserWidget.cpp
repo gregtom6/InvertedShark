@@ -8,7 +8,7 @@
 void UVictoryScreenUserWidget::NativeConstruct() {
 	Super::NativeConstruct();
 
-	ReturnToMenuButton->OnClicked.AddDynamic(this, &UVictoryScreenUserWidget::OnReturnMenuClick);
+	ReturnToMenuButton->OnClicked.AddUniqueDynamic(this, &UVictoryScreenUserWidget::OnReturnMenuClick);
 }
 
 void UVictoryScreenUserWidget::OnReturnMenuClick() {

@@ -4,13 +4,24 @@
 #include "GameCharacter.h"
 
 AEnemyTriggerBox::AEnemyTriggerBox() {
-	OnActorBeginOverlap.AddDynamic(this, &AEnemyTriggerBox::Event);
+	
 }
 
 void AEnemyTriggerBox::BeginPlay() {
 	Super::BeginPlay();
+
+	OnActorBeginOverlap.AddUniqueDynamic(this, &AEnemyTriggerBox::Event);
 }
 
+void AEnemyTriggerBox::EndPlay(const EEndPlayReason::Type EndPlayReason) {
+	Super::EndPlay(EndPlayReason);
+
+	OnActorBeginOverlap.RemoveDynamic(this, &AEnemyTriggerBox::Event);
+}
+
+/*
+telling the enemies to attack creature, when this trigger box has been reached by creature
+*/
 void AEnemyTriggerBox::Event(class AActor* overlappedActor, class AActor* otherActor) {
 	if (otherActor && otherActor != this) {
 

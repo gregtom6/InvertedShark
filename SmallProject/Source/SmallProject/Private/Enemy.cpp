@@ -72,6 +72,9 @@ void AEnemy::SetSpline() {
 	SetSplineMeshComponent(SMeshComp3, startPoint, startTangent, endPoint, endTangent);
 }
 
+/*
+this method creates spline between the enemy and the creature. Spline is to show the blood transfusion between the enemy and the fur creature.
+*/
 void AEnemy::SetSplineMeshComponent(USplineMeshComponent* splineMeshComp, FVector startPoint, FVector startTangent, FVector endPoint, FVector endTangent) {
 	splineMeshComp->SetStartAndEnd(startPoint, startTangent, endPoint, endTangent, true);
 
@@ -85,7 +88,6 @@ void AEnemy::SetSplineMeshComponent(USplineMeshComponent* splineMeshComp, FVecto
 /*
 setting up the Moving state
 */
-
 void AEnemy::MoveToCreature() {
 	startTime = GetWorld()->GetTimeSeconds();
 	actualStartPosition = GetActorLocation();
@@ -95,14 +97,12 @@ void AEnemy::MoveToCreature() {
 /*
 setting up the Eating state, starting slurp sound. Creating spline between fur creature and enemy to represent blood transfusion.
 */
-
 void AEnemy::StartEating() {
 	startTime = GetWorld()->GetTimeSeconds();
 	actualStartPosition = GetActorLocation();
 	actualStatus = EnemyStatus::Eating;
 
 	SlurpAudioComp->Play(FMath::FRandRange(0.f, 3.f));
-
 
 	FTransform transform = splineComponent->GetTransformAtSplinePoint(1, ESplineCoordinateSpace::World);
 	if (transform.GetLocation() != lastCurveEndPosition) {
@@ -136,7 +136,9 @@ void AEnemy::StartEating() {
 	}
 }
 
-// Called when the game starts or when spawned
+/*
+initializing components and subscribing to events
+*/
 void AEnemy::BeginPlay()
 {
 	Super::BeginPlay();
@@ -158,29 +160,45 @@ void AEnemy::BeginPlay()
 
 	actualLife = maxLife;
 
-	OnActorBeginOverlap.AddDynamic(this, &AEnemy::EnterEvent);
-	OnActorEndOverlap.AddDynamic(this, &AEnemy::ExitEvent);
+	OnActorBeginOverlap.AddUniqueDynamic(this, &AEnemy::EnterEvent);
+	OnActorEndOverlap.AddUniqueDynamic(this, &AEnemy::ExitEvent);
 }
 
+void AEnemy::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	Super::EndPlay(EndPlayReason);
+
+	OnActorBeginOverlap.RemoveDynamic(this, &AEnemy::EnterEvent);
+	OnActorEndOverlap.RemoveDynamic(this, &AEnemy::ExitEvent);
+}
+
+/*
+setting up received spline mesh component
+*/
 void AEnemy::SplineMeshCompAttach(USplineMeshComponent* splineMeshComp) {
 	splineMeshComp->Mobility = EComponentMobility::Movable;
 	splineMeshComp->AttachToComponent(splineComponent, FAttachmentTransformRules::KeepRelativeTransform);
 }
 
-/*
-moving state: when enemy is moving, it goes from actualStartPosition to actualEndPosition. actualStartPosition setted by the same way in Enemy.cpp and
-BossEnemy.cpp, it will always be the enemy's actual position during state switching.
-actualEndPosition will be different for enemy and bossenemy. For enemy, it will be the creature itself. For the bossenemy, it will be above the creature.
-
-dying state: for enemies, it will mean only to scale down the actor. For the bossenemy, the functionality gets extended, the DoAfterDead will load a new level
-and removes widgets from viewport.
-
-Tick method also manages life decrease when getting attacked by player, for both the enemy and the bossenemy.
-*/
 void AEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	StateManagement();
+
+	LifeManagement();
+}
+/*
+moving state : when enemy is moving, it goes from actualStartPosition to actualEndPosition.actualStartPosition setted by the same way in Enemy.cpp and
+BossEnemy.cpp, it will always be the enemy's actual position during state switching.
+actualEndPosition will be different for enemyand bossenemy. For enemy, it will be the creature itself.For the bossenemy, it will be above the creature.
+
+eating state: managing swallow sphere to create an illusion of eating
+
+dying state : for enemies, it will mean only to scale down the actor. For the bossenemy, the functionality gets extended.
+Removes widgets from viewport.
+*/
+void AEnemy::StateManagement() {
 	if (actualStatus == EnemyStatus::Moving && creature != nullptr) {
 		currentTime = GetWorld()->GetTimeSeconds() - startTime;
 
@@ -201,7 +219,7 @@ void AEnemy::Tick(float DeltaTime)
 			startTime = GetWorld()->GetTimeSeconds();
 
 		float SplineLength = splineComponent->GetSplineLength();
-		float SplineDistance = SplineLength * (1.f-currentTime);
+		float SplineDistance = SplineLength * (1.f - currentTime);
 		FVector Position = splineComponent->GetLocationAtDistanceAlongSpline(SplineDistance, ESplineCoordinateSpace::World);
 
 		SwallowSphere->SetWorldLocation(Position);
@@ -221,7 +239,12 @@ void AEnemy::Tick(float DeltaTime)
 			DoAfterDead();
 		}
 	}
+}
 
+/*
+manages life decrease when getting attacked by player, for both the enemy and the bossenemy.
+*/
+void AEnemy::LifeManagement() {
 	if (overlappingGameCharacter != nullptr) {
 
 		if (overlappingGameCharacter->GetStatus() == GameCharacterStatus::Attack && overlappingGameCharacter->GetPrevStatus() == GameCharacterStatus::Calm) {
@@ -274,6 +297,9 @@ FVector AEnemy::GetEndPosition() {
 	return creature->GetActorLocation();
 }
 
+/*
+managing life decrease for both enemy and bossenemy.
+*/
 void AEnemy::DecreaseLife() {
 	actualLife -= lifeDecreaseAfterAttack;
 
@@ -285,11 +311,13 @@ void AEnemy::DecreaseLife() {
 }
 
 /*
-spline gets destroyed, because enemy is not eating anymore (no more blood transfusion between creature and enemy)
+spline and swallow sphere gets destroyed, because enemy is not eating anymore (no more blood transfusion between creature and enemy)
 stopping audios, saving values for lerps
 */
-
 void AEnemy::RemoveEnemy() {
+	
+	if (SwallowSphere != nullptr)
+		SwallowSphere->DestroyComponent();
 
 	DestroySpline();
 	startTime = GetWorld()->GetTimeSeconds();
@@ -301,10 +329,16 @@ void AEnemy::RemoveEnemy() {
 	PopAudioComp->Play(0.f);
 }
 
+/*
+normal enemies just get destroyed, this is overriden in the bossenemy
+*/
 void AEnemy::DoAfterDead() {
 	Destroy();
 }
 
+/*
+destroying certain components upon death
+*/
 void AEnemy::DestroySpline() {
 	DestroySplineMeshComp(SMeshComp0);
 	DestroySplineMeshComp(SMeshComp1);
@@ -312,6 +346,9 @@ void AEnemy::DestroySpline() {
 	DestroySplineMeshComp(SMeshComp3);
 }
 
+/*
+destroying certain components upon death
+*/
 void AEnemy::DestroySplineMeshComp(USplineMeshComponent* splineMeshComp) {
 	if (splineMeshComp != nullptr)
 		splineMeshComp->DestroyComponent();

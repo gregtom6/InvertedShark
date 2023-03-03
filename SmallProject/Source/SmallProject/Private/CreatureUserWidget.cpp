@@ -8,6 +8,9 @@ void UCreatureUserWidget::NativeConstruct() {
 	
 }
 
+/*
+showing health of creature
+*/
 void UCreatureUserWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 {
 	Super::NativeTick(MyGeometry, InDeltaTime);

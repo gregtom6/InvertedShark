@@ -10,17 +10,17 @@
 void UMainMenu::NativeConstruct() {
 	Super::NativeConstruct();
 
-	StartButton->OnClicked.AddDynamic(this, &UMainMenu::OnStartClick);
+	StartButton->OnClicked.AddUniqueDynamic(this, &UMainMenu::OnStartClick);
 
-	ControlsButton->OnClicked.AddDynamic(this, &UMainMenu::OnControlsClick);
+	ControlsButton->OnClicked.AddUniqueDynamic(this, &UMainMenu::OnControlsClick);
 
-	QuitButton->OnClicked.AddDynamic(this, &UMainMenu::OnQuitClick);
+	QuitButton->OnClicked.AddUniqueDynamic(this, &UMainMenu::OnQuitClick);
 
-	BackButton->OnClicked.AddDynamic(this, &UMainMenu::OnBackClick);
+	BackButton->OnClicked.AddUniqueDynamic(this, &UMainMenu::OnBackClick);
 
-	HowToPlayButton->OnClicked.AddDynamic(this, &UMainMenu::OnHowToPlayClick);
+	HowToPlayButton->OnClicked.AddUniqueDynamic(this, &UMainMenu::OnHowToPlayClick);
 
-	BackToMainMenuButton->OnClicked.AddDynamic(this, &UMainMenu::OnBackClick);
+	BackToMainMenuButton->OnClicked.AddUniqueDynamic(this, &UMainMenu::OnBackClick);
 }
 
 void UMainMenu::OnStartClick() {

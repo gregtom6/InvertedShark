@@ -30,7 +30,7 @@ void UPauseUserWidget::SetGameCharacter(AGameCharacter* gameCharacter) {
 
 	gameChar = gameCharacter;
 
-	ResumeButton->OnClicked.AddDynamic(this, &UPauseUserWidget::OnResumeClick);
+	ResumeButton->OnClicked.AddUniqueDynamic(this, &UPauseUserWidget::OnResumeClick);
 
-	QuitToMainMenuButton->OnClicked.AddDynamic(this, &UPauseUserWidget::OnQuitToMainMenuClick);
+	QuitToMainMenuButton->OnClicked.AddUniqueDynamic(this, &UPauseUserWidget::OnQuitToMainMenuClick);
 }

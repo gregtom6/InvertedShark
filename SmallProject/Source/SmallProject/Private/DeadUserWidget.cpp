@@ -8,11 +8,14 @@
 void UDeadUserWidget::NativeConstruct() {
 	Super::NativeConstruct();
 
-	ResurrectButton->OnClicked.AddDynamic(this, &UDeadUserWidget::OnResurrectClick);
+	ResurrectButton->OnClicked.AddUniqueDynamic(this, &UDeadUserWidget::OnResurrectClick);
 
-	BackToMenuButton->OnClicked.AddDynamic(this, &UDeadUserWidget::OnBackToMenuClick);
+	BackToMenuButton->OnClicked.AddUniqueDynamic(this, &UDeadUserWidget::OnBackToMenuClick);
 }
 
+/*
+death screen (player felt down) button clickevents
+*/
 void UDeadUserWidget::OnResurrectClick() {
 	UE_LOG(LogTemp, Warning, TEXT("pause gamechar null"));
 

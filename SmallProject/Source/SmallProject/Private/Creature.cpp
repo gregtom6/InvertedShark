@@ -45,9 +45,9 @@ void ACreature::BeginPlay()
 	if (WhaleAudioComp && whaleSound) {
 		UE_LOG(LogTemp, Warning, TEXT("whale sound setted up"));
 		WhaleAudioComp->SetSound(whaleSound);
+		WhaleAudioComp->Play(0.f);
 	}
 
-	WhaleAudioComp->Play(0.f);
 
 	if (IsValid(widgetclass)) {
 
@@ -72,17 +72,23 @@ void ACreature::BeginPlay()
 	prevHeadState = HeadState::ForwardLooking;
 	headState = HeadState::ForwardLooking;
 
-	if (actualTargetIndex < positionsToMove.Num()) {
-		FRotator PlayerRot = UKismetMathLibrary::FindLookAtRotation(this->GetActorLocation(), positionsToMove[0]->GetActorLocation());
+	FRotator PlayerRot = UKismetMathLibrary::FindLookAtRotation(this->GetActorLocation(), positionsToMove[0]->GetActorLocation());
 
-		SetActorRotation(PlayerRot);
-	}
+	SetActorRotation(PlayerRot);
 
 	OnActorBeginOverlap.AddDynamic(this, &ACreature::EnterEvent);
 	OnActorEndOverlap.AddDynamic(this, &ACreature::ExitEvent);
 
-	huggableComp->OnComponentBeginOverlap.AddDynamic(this, &ACreature::TriggerEnter);
-	huggableComp->OnComponentEndOverlap.AddDynamic(this, &ACreature::TriggerExit);
+	huggableComp->OnComponentBeginOverlap.AddUniqueDynamic(this, &ACreature::TriggerEnter);
+	huggableComp->OnComponentEndOverlap.AddUniqueDynamic(this, &ACreature::TriggerExit);
+}
+
+void ACreature::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	Super::EndPlay(EndPlayReason);
+
+	huggableComp->OnComponentBeginOverlap.RemoveDynamic(this, &ACreature::TriggerEnter);
+	huggableComp->OnComponentEndOverlap.RemoveDynamic(this, &ACreature::TriggerExit);
 }
 
 /*
@@ -98,20 +104,30 @@ void ACreature::StepTargetIndex() {
 	}
 }
 
-/*
-managing different states in Tick.
-initial status: basically waiting a bit to make player realize where he is at the moment.
-moving status: this state is only for the first initial movement. It's a slow movement, only for entering the triggerbox, where enemies will arrive.
-WaitBeforeMoveFast status: when a group of enemies have been defeated, the creature gives a whale sound, and waits a bit before fast traveling to a new location.
-WaitAfterHuggedByPlayer status: this is only when creature is ready to travel forward. If player hugs the creature, it will still wait a bit before moving.
-MovingFast status: the fast travel status of the creature. Player can survive only if hugs the creature during WaitBeforeMoveFast status
 
-creature health is also managed in here. Decrease depends on the currently attacking enemy count. Restarting level, when creature died.
-*/
 void ACreature::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	StateManagement();
+
+	HeadStateManagement();
+
+	HealthManagement(DeltaTime);
+}
+
+/*
+managing different states.
+initial status: basically waiting a bit to make player realize where he is at the moment.
+moving status: this state is only for the first initial movement. It's a slow movement, only for entering the triggerbox, where enemies will arrive.
+stopped status: creature reached its destination, movement can be stopped
+WaitBeforeMoveFast status: when a group of enemies have been defeated, the creature gives a whale sound, and waits a bit before fast traveling to a new location.
+			Player can survive only if hugs the creature during WaitBeforeMoveFast status
+WaitAfterHuggedByPlayer status: this is only when creature is ready to travel forward. If player hugs the creature, it will still wait a bit before moving.
+RotatingTowardsTarget status: before creature would move to its new location, we rotate the whole actor towards destination
+MovingFast status: the fast travel status of the creature.
+*/
+void ACreature::StateManagement() {
 	if (actualStatus == Status::Initial) {
 		float currentTime = GetWorld()->GetTimeSeconds() - startTime;
 		if (currentTime >= waitTimeBeforeFirstMove) {
@@ -174,7 +190,12 @@ void ACreature::Tick(float DeltaTime)
 
 		SetActorLocation(FMath::Lerp(actualStartPosition, actualEndPosition, CurveFloat->GetFloatValue(currentTime)));
 	}
+}
 
+/*
+managing head rotation towards player, when its in the front area. Using dot product to decide if player can be looked at.
+*/
+void ACreature::HeadStateManagement() {
 	APlayerController* OurPlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
 
 	APawn* pawn = OurPlayerController->GetPawn();
@@ -188,14 +209,9 @@ void ACreature::Tick(float DeltaTime)
 		gameCharDirection.Normalize();
 		double degree = FVector::DotProduct(forwardVector, gameCharDirection);
 
-		UE_LOG(LogTemp, Warning, TEXT("degree: %f  %f  %f  %f"),degree, forwardVector.X, forwardVector.Y, forwardVector.Z);
-
-		//DrawDebugLine(GetWorld(), WhaleAudioComp->GetComponentLocation(), FVector(1.f,0.f,0.f),
-			//FColor(255, 0, 0), false, -1, 0, 10);
-
 		FRotator HeadRot = UKismetMathLibrary::FindLookAtRotation(this->GetActorLocation(), gameCharacter->GetActorLocation());
 
-		if (degree> lookAtPlayerBorder) {
+		if (degree > lookAtPlayerBorder) {
 
 			if (headState == HeadState::ForwardLooking) {
 				startHeadRotation = UKismetMathLibrary::FindLookAtRotation(WhaleAudioComp->GetComponentLocation(), headMesh->GetComponentLocation());
@@ -227,7 +243,7 @@ void ACreature::Tick(float DeltaTime)
 			RightEye->SetWorldRotation(HeadRot);
 		}
 	}
-	else{
+	else {
 
 		if (headState == HeadState::FollowingPlayer) {
 			targetHeadRotation = UKismetMathLibrary::FindLookAtRotation(this->GetActorLocation(), gameCharacter->GetActorLocation());
@@ -245,10 +261,12 @@ void ACreature::Tick(float DeltaTime)
 		if (currentTime >= 1.f) {
 			prevHeadState = headState;
 		}
-
-		//UE_LOG(LogTemp, Warning, TEXT("fejforgatas %f %f %f"), HeadRot.Pitch, HeadRot.Yaw, HeadRot.Roll);
 	}
-
+}
+/*
+creature health management. Decrease depends on the currently attacking enemy count. Restarting level, when creature died.
+*/
+void ACreature::HealthManagement(float DeltaTime) {
 	Health = Health > 0 ? Health - (deltaDamage * DeltaTime * enemiesActuallyAttacking.Num()) : 0;
 
 	if (Health <= 0) {
