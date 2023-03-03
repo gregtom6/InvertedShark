@@ -258,7 +258,16 @@ void AGameCharacter::Pause() {
 			PC->bEnableMouseOverEvents = true;
 		}
 
-		widgetPauseMenuInstance->AddToViewport();
+		UE_LOG(LogTemp, Warning, TEXT("pause activate3"));
+
+		InitializePause();
+
+		if (widgetPauseMenuInstance != nullptr) {
+
+			widgetPauseMenuInstance->AddToViewport();
+		}
+
+		UE_LOG(LogTemp, Warning, TEXT("pause activate4"));
 	}
 	else if (pauseStatus == PauseStatus::Paused) {
 		UE_LOG(LogTemp, Warning, TEXT("pause deactivate"));
@@ -293,10 +302,7 @@ void AGameCharacter::BeginPlay()
 		TongueAudio->SetSound(tongueSound);
 	}
 
-	widgetPauseMenuInstance = CreateWidget<UPauseUserWidget>(GetWorld(), widgetPauseMenu);
-
-	if (widgetPauseMenuInstance != nullptr)
-		widgetPauseMenuInstance->SetGameCharacter(this);
+	InitializePause();
 
 	startPos = GetActorLocation();
 
@@ -344,6 +350,13 @@ void AGameCharacter::BeginPlay()
 			bossEnemy = b;
 		}
 	}
+}
+
+void AGameCharacter::InitializePause() {
+	widgetPauseMenuInstance = CreateWidget<UPauseUserWidget>(GetWorld(), widgetPauseMenu);
+
+	if (widgetPauseMenuInstance != nullptr)
+		widgetPauseMenuInstance->SetGameCharacter(this);
 }
 
 // Called every frame
@@ -420,7 +433,7 @@ void AGameCharacter::StateManagement() {
 }
 
 /*
-energy management of player, based on current restmultiplier 
+energy management of player, based on current restmultiplier
 */
 void AGameCharacter::EnergyManagement(float DeltaTime, FVector& currentVelocity) {
 	float newEnergy = actualEnergy + energyRegeneration * DeltaTime;

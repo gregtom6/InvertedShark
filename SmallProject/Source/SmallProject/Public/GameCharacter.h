@@ -52,6 +52,8 @@ private:
 
 	void SetRotationLocks(bool X, bool Y, bool Z);
 
+	void InitializePause();
+
 	virtual void BeginPlay() override;
 
 	FVector startPos;
