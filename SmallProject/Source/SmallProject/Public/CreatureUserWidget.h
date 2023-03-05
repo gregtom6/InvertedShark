@@ -3,14 +3,9 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Creature.h"
 #include "Blueprint/UserWidget.h"
-#include "Components/ProgressBar.h"
 #include "CreatureUserWidget.generated.h"
 
-/**
- * 
- */
 UCLASS(Abstract)
 class SMALLPROJECT_API UCreatureUserWidget : public UUserWidget
 {
@@ -24,6 +19,6 @@ protected:
 		class UProgressBar* HealthBar;
 		
 public:
-	ACreature* creature;
+	class ACreature* creature;
 	
 };

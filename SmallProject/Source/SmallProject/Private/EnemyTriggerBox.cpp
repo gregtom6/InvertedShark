@@ -2,6 +2,9 @@
 
 #include "EnemyTriggerBox.h"
 #include "GameCharacter.h"
+#include <Enemy.h>
+#include <Creature.h>
+#include "GameFramework/Actor.h"
 
 AEnemyTriggerBox::AEnemyTriggerBox() {
 	

@@ -4,9 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "Camera/CameraComponent.h"
-#include <GameCharacter.h>
-#include "DeadUserWidget.h"
 #include "FallCamera.generated.h"
 
 UCLASS()
@@ -20,16 +17,16 @@ public:
 
 protected:
 
-	AGameCharacter* gameCharacter;
+	class AGameCharacter* gameCharacter;
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 	UPROPERTY(EditAnywhere)
-		UCameraComponent* Camera;
+		class UCameraComponent* Camera;
 
 	UPROPERTY(EditAnywhere)
-		UStaticMeshComponent* Mesh;
+		class UStaticMeshComponent* Mesh;
 
 	UPROPERTY(EditAnywhere)
 		TSubclassOf<UUserWidget> widgetclass;

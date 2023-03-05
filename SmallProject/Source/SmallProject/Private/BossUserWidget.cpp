@@ -2,6 +2,8 @@
 
 
 #include "BossUserWidget.h"
+#include "BossEnemy.h"
+#include "Components/ProgressBar.h"
 
 void UBossUserWidget::NativeConstruct()
 {

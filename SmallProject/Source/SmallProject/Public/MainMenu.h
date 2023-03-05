@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include <Sound/SoundCue.h>
 #include "MainMenu.generated.h"
 
 /**
@@ -19,9 +18,9 @@ class SMALLPROJECT_API UMainMenu : public UUserWidget
 protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Sounds") 
-		USoundBase* ButtonClickSound;
+		class USoundBase* ButtonClickSound;
 
-		UPROPERTY(meta = (BindWidget))
+	UPROPERTY(meta = (BindWidget))
 		class UButton* StartButton;
 	UPROPERTY(meta = (BindWidget))
 		class UButton* ControlsButton;

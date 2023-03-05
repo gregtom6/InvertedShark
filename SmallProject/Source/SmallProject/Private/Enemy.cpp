@@ -5,6 +5,10 @@
 #include <Kismet/GameplayStatics.h>
 #include "Components/AudioComponent.h"
 #include "Math/UnrealMathUtility.h"
+#include "Components/SplineComponent.h"
+#include "Creature.h"
+#include "GameCharacter.h"
+#include <Sound/SoundCue.h >
 
 AEnemy::AEnemy()
 {
@@ -75,7 +79,7 @@ void AEnemy::SetSpline() {
 /*
 this method creates spline between the enemy and the creature. Spline is to show the blood transfusion between the enemy and the fur creature.
 */
-void AEnemy::SetSplineMeshComponent(USplineMeshComponent* splineMeshComp, FVector startPoint, FVector startTangent, FVector endPoint, FVector endTangent) {
+void AEnemy::SetSplineMeshComponent(class USplineMeshComponent* splineMeshComp, FVector startPoint, FVector startTangent, FVector endPoint, FVector endTangent) {
 	splineMeshComp->SetStartAndEnd(startPoint, startTangent, endPoint, endTangent, true);
 
 	splineMeshComp->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
@@ -175,7 +179,7 @@ void AEnemy::EndPlay(const EEndPlayReason::Type EndPlayReason)
 /*
 setting up received spline mesh component
 */
-void AEnemy::SplineMeshCompAttach(USplineMeshComponent* splineMeshComp) {
+void AEnemy::SplineMeshCompAttach(class USplineMeshComponent* splineMeshComp) {
 	splineMeshComp->Mobility = EComponentMobility::Movable;
 	splineMeshComp->AttachToComponent(splineComponent, FAttachmentTransformRules::KeepRelativeTransform);
 }
@@ -349,7 +353,7 @@ void AEnemy::DestroySpline() {
 /*
 destroying certain components upon death
 */
-void AEnemy::DestroySplineMeshComp(USplineMeshComponent* splineMeshComp) {
+void AEnemy::DestroySplineMeshComp(class USplineMeshComponent* splineMeshComp) {
 	if (splineMeshComp != nullptr)
 		splineMeshComp->DestroyComponent();
 }

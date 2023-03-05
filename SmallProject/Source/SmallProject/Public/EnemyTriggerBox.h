@@ -3,9 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
 #include "Engine/TriggerBox.h"
-#include <Enemy.h>
 #include "EnemyTriggerBox.generated.h"
 
 /**
@@ -21,7 +19,7 @@ protected:
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 	UPROPERTY(EditAnywhere)
-		TArray<AEnemy*> enemiesToCome;
+		TArray<class AEnemy*> enemiesToCome;
 public:
 	AEnemyTriggerBox();
 

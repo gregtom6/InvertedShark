@@ -4,11 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "Blueprint/UserWidget.h"
-#include "Components/WidgetComponent.h"
-#include "Components/AudioComponent.h"
-#include "Components/BoxComponent.h"
-#include <Sound/SoundCue.h >
 #include "Creature.generated.h"
 
 UCLASS()
@@ -78,10 +73,10 @@ protected:
 		void TriggerExit(class UPrimitiveComponent* HitComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		USoundCue* whaleSound;
+		class USoundCue* whaleSound;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		UAudioComponent* WhaleAudioComp;
+		class UAudioComponent* WhaleAudioComp;
 
 	UPROPERTY(EditAnywhere)
 		TSubclassOf<UUserWidget> widgetclass;
@@ -93,25 +88,25 @@ protected:
 		float deltaDamage;
 
 	UPROPERTY(EditAnywhere)
-		UStaticMeshComponent* CreatureMesh;
+		class UStaticMeshComponent* CreatureMesh;
 
 	UPROPERTY(EditAnywhere)
 		TArray<AActor*> positionsToMove;
 
 	UPROPERTY(EditAnywhere)
-		USkeletalMeshComponent* headMesh;
+		class USkeletalMeshComponent* headMesh;
 
 	UPROPERTY(EditAnywhere)
-		UStaticMeshComponent* LeftEye;
+		class UStaticMeshComponent* LeftEye;
 
 	UPROPERTY(EditAnywhere)
-		UStaticMeshComponent* RightEye;
+		class UStaticMeshComponent* RightEye;
 
 	UPROPERTY(EditAnywhere)
-		UBoxComponent* huggableComp;
+		class UBoxComponent* huggableComp;
 
 	UPROPERTY(EditAnywhere)
-		UCurveFloat* CurveFloat;
+		class UCurveFloat* CurveFloat;
 
 	UPROPERTY(EditAnywhere)
 		float movementSpeed;

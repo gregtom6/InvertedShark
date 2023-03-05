@@ -4,12 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "Components/SplineComponent.h"
 #include "Components/SplineMeshComponent.h"
-#include "Components/AudioComponent.h"
-#include "Creature.h"
-#include "GameCharacter.h"
-#include <Sound/SoundCue.h >
 #include "Enemy.generated.h"
 
 UCLASS()
@@ -29,7 +24,7 @@ protected:
 	virtual void Tick(float DeltaTime) override;
 	void SetSpline();
 
-	void SetSplineMeshComponent(USplineMeshComponent* splineMeshComp, FVector startPoint, FVector startTangent, FVector endPoint, FVector endTangent);
+	void SetSplineMeshComponent(class USplineMeshComponent* splineMeshComp, FVector startPoint, FVector startTangent, FVector endPoint, FVector endTangent);
 	
 
 	void StateManagement();
@@ -42,9 +37,9 @@ protected:
 
 	void DestroySpline();
 
-	void DestroySplineMeshComp(USplineMeshComponent* splineMeshComp);
+	void DestroySplineMeshComp(class USplineMeshComponent* splineMeshComp);
 
-	void SplineMeshCompAttach(USplineMeshComponent* splineMeshComp);
+	void SplineMeshCompAttach(class USplineMeshComponent* splineMeshComp);
 
 	virtual void DoAfterDead();
 
@@ -52,7 +47,7 @@ protected:
 
 	float actualLife;
 
-	USplineMeshComponent* prevSplineMeshComp;
+	class USplineMeshComponent* prevSplineMeshComp;
 
 	float currentTime;
 
@@ -60,7 +55,7 @@ protected:
 
 	bool canPlayerDamageMe = true;
 
-	AGameCharacter* overlappingGameCharacter;
+	class AGameCharacter* overlappingGameCharacter;
 
 	EnemyStatus actualStatus;
 
@@ -74,45 +69,45 @@ protected:
 	FVector endScale;
 
 	UPROPERTY(EditAnywhere, Category = "Spline")
-		USplineComponent* splineComponent;
+		class USplineComponent* splineComponent;
 
 	UPROPERTY(EditAnywhere, Category = "Spline")
-		USplineMeshComponent* SMeshComp0;
+		class USplineMeshComponent* SMeshComp0;
 
 	UPROPERTY(EditAnywhere, Category = "Spline")
-		USplineMeshComponent* SMeshComp1;
+		class USplineMeshComponent* SMeshComp1;
 
 	UPROPERTY(EditAnywhere, Category = "Spline")
-		USplineMeshComponent* SMeshComp2;
+		class USplineMeshComponent* SMeshComp2;
 
 	UPROPERTY(EditAnywhere, Category = "Spline")
-		USplineMeshComponent* SMeshComp3;
+		class USplineMeshComponent* SMeshComp3;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spline")
-		UStaticMesh* Mesh;
+		class UStaticMesh* Mesh;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spline")
-		UStaticMeshComponent* SwallowSphere;
+		class UStaticMeshComponent* SwallowSphere;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spline")
 		TEnumAsByte<ESplineMeshAxis::Type> forwardAxis;
 
 	UPROPERTY(EditAnywhere)
-		ACreature* creature;
+		class ACreature* creature;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		USoundCue* popSound;
-
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		UAudioComponent* PopAudioComp;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		USoundCue* slurpSound;
+		class USoundCue* popSound;
 
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		UAudioComponent* SlurpAudioComp;
+		class UAudioComponent* PopAudioComp;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		class USoundCue* slurpSound;
+
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		class UAudioComponent* SlurpAudioComp;
 
 	UPROPERTY(EditAnywhere)
 		float movementSpeed;

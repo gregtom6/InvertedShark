@@ -2,6 +2,8 @@
 
 
 #include "CreatureUserWidget.h"
+#include "Components/ProgressBar.h"
+#include "Creature.h"
 
 void UCreatureUserWidget::NativeConstruct() {
 	Super::NativeConstruct();

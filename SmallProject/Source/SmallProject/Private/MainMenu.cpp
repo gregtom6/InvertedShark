@@ -6,6 +6,7 @@
 #include "UMG/Public/Components/WidgetSwitcher.h"
 #include <Kismet/KismetSystemLibrary.h>
 #include <Kismet/GameplayStatics.h>
+#include <Sound/SoundCue.h>
 
 void UMainMenu::NativeConstruct() {
 	Super::NativeConstruct();

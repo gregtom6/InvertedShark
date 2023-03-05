@@ -19,7 +19,7 @@ private:
 protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Sounds")
-		USoundBase* ButtonClickSound;
+		class USoundBase* ButtonClickSound;
 
 	UPROPERTY(meta = (BindWidget))
 		class UButton* ReturnToMenuButton;

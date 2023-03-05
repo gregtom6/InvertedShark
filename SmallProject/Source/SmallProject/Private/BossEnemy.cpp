@@ -5,6 +5,7 @@
 #include "BossUserWidget.h"
 #include <Kismet/GameplayStatics.h>
 #include <Blueprint/WidgetLayoutLibrary.h>
+#include "Creature.h"
 
 ABossEnemy::ABossEnemy(const FObjectInitializer& ObjectInitializer)
 {

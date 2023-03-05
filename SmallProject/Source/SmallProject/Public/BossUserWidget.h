@@ -3,9 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "BossEnemy.h"
 #include "Blueprint/UserWidget.h"
-#include "Components/ProgressBar.h"
 #include "BossUserWidget.generated.h"
 
 UCLASS()
@@ -21,5 +19,5 @@ protected:
 		class UProgressBar* bosslifebar;
 
 public:
-	ABossEnemy* boss;
+	class ABossEnemy* boss;
 };

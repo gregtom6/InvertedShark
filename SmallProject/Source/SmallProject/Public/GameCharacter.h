@@ -4,16 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
-#include "Camera/CameraComponent.h"
-#include "Components/StaticMeshComponent.h"
-#include "Components/AudioComponent.h"
-#include "GameFramework/SpringArmComponent.h"
-#include "PhysicsEngine/PhysicsConstraintComponent.h"
-#include "Creature.h"
-#include <Sound/SoundCue.h >
-#include <PauseUserWidget.h>
-#include "NiagaraFunctionLibrary.h"
-#include "NiagaraComponent.h"
+#include "PauseUserWidget.h"
 #include "GameCharacter.generated.h"
 
 DECLARE_DELEGATE(FOnDieHappenedSignature);
@@ -62,9 +53,9 @@ private:
 
 	bool isHugging;
 
-	ACreature* creature;
+	class ACreature* creature;
 
-	AActor* bossEnemy;
+	class AActor* bossEnemy;
 
 	GameCharacterStatus actualStatus;
 	GameCharacterStatus prevStatus;
@@ -89,16 +80,16 @@ protected:
 
 	//main pawn camera
 	UPROPERTY(EditAnywhere)
-		UCameraComponent* Camera;
+		class UCameraComponent* Camera;
 
 	UPROPERTY(EditAnywhere)
-		UStaticMeshComponent* CameraMesh;
+		class UStaticMeshComponent* CameraMesh;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		UStaticMeshComponent* Tongue;
+		class UStaticMeshComponent* Tongue;
 
 	UPROPERTY(EditAnywhere)
-		USpringArmComponent* SpringArm;
+		class USpringArmComponent* SpringArm;
 
 	UPROPERTY(EditAnywhere)
 		TSubclassOf<UUserWidget> widgetclass;
@@ -107,7 +98,7 @@ protected:
 		class UGameCharacterUserWidget* energyuserwidget;
 
 	UPROPERTY(EditAnywhere)
-		UNiagaraComponent* Spark;
+		class UNiagaraComponent* Spark;
 
 	UPROPERTY(EditAnywhere, Category = "character settings")
 		float MovementSpeed = 1.f;
@@ -170,46 +161,46 @@ protected:
 		float dashCooldownTime;
 
 	UPROPERTY(EditAnywhere)
-		UStaticMeshComponent* leftHandVisual;
+		class UStaticMeshComponent* leftHandVisual;
 
 	UPROPERTY(EditAnywhere)
 		class UStaticMeshComponent* rightHandVisual;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		UPhysicsConstraintComponent* LeftLeft;
+		class UPhysicsConstraintComponent* LeftLeft;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		UPhysicsConstraintComponent* RightArm;
+		class UPhysicsConstraintComponent* RightArm;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		UAudioComponent* AudioComp;
+		class UAudioComponent* AudioComp;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		UAudioComponent* TongueAudio;
+		class UAudioComponent* TongueAudio;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		UAudioComponent* MetalScratchAudio;
+		class UAudioComponent* MetalScratchAudio;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		UAudioComponent* DashAudio;
+		class UAudioComponent* DashAudio;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		USoundCue* wingBeat;
+		class USoundCue* wingBeat;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		USoundCue* tongueSound;
+		class USoundCue* tongueSound;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		USoundCue* metalScratchSound;
+		class USoundCue* metalScratchSound;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		USoundCue* dashSound;
+		class USoundCue* dashSound;
 
 	UPROPERTY(EditAnywhere) TSubclassOf<UPauseUserWidget> widgetPauseMenu;
-	UPauseUserWidget* widgetPauseMenuInstance;
+	class UPauseUserWidget* widgetPauseMenuInstance;
 
 	UFUNCTION()
-	bool GetOverlapInfluenceSphere(UStaticMeshComponent* StaticMeshComponent, FVector& Actor1ClosestPoint, FVector& Actor2ClosestPoint);
+	bool GetOverlapInfluenceSphere(class UStaticMeshComponent* StaticMeshComponent, FVector& Actor1ClosestPoint, FVector& Actor2ClosestPoint);
 
 
 public:

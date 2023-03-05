@@ -3,11 +3,14 @@
 
 #include "Creature.h"
 #include "Components/WidgetComponent.h"
+#include "Blueprint/UserWidget.h"
 #include "CreatureUserWidget.h"
 #include <Kismet/GameplayStatics.h>
 #include "Components/AudioComponent.h"
 #include "Components/BoxComponent.h"
 #include "Enemy.h"
+#include "GameCharacter.h"
+#include <Sound/SoundCue.h >
 #include <Kismet/KismetMathLibrary.h>
 
 ACreature::ACreature(const FObjectInitializer& ObjectInitializer)

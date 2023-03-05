@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Enemy.h"
+#include "Components/SplineComponent.h"
 #include "BossEnemy.generated.h"
 
 /**
@@ -26,7 +27,7 @@ protected:
 		class UBossUserWidget* bossuserwidget;
 
 	UPROPERTY(EditAnywhere)
-		UStaticMeshComponent* bodyMesh;
+		class UStaticMeshComponent* bodyMesh;
 
 	UPROPERTY(EditAnywhere)
 		FName levelToLoadAfterDefeat;

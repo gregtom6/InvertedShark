@@ -9,6 +9,15 @@
 #include "BossEnemy.h"
 #include "GameFramework/Actor.h"
 #include "Kismet/KismetStringLibrary.h"
+#include "Camera/CameraComponent.h"
+#include "Components/StaticMeshComponent.h"
+#include "GameFramework/SpringArmComponent.h"
+#include "PhysicsEngine/PhysicsConstraintComponent.h"
+#include "Creature.h"
+#include <Sound/SoundCue.h >
+#include <PauseUserWidget.h>
+#include "NiagaraFunctionLibrary.h"
+#include "NiagaraComponent.h"
 
 // Sets default values
 AGameCharacter::AGameCharacter(const FObjectInitializer& ObjectInitializer)

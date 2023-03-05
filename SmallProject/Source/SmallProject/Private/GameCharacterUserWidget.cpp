@@ -2,6 +2,8 @@
 
 
 #include "GameCharacterUserWidget.h"
+#include <GameCharacter.h>
+#include "Components/ProgressBar.h"
 
 void UGameCharacterUserWidget::NativeConstruct() {
 	Super::NativeConstruct();

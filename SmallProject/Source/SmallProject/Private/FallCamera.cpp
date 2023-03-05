@@ -4,6 +4,9 @@
 #include "FallCamera.h"
 #include <Kismet/GameplayStatics.h>
 #include <Blueprint/WidgetLayoutLibrary.h>
+#include "Camera/CameraComponent.h"
+#include <GameCharacter.h>
+#include "DeadUserWidget.h"
 
 // Sets default values
 AFallCamera::AFallCamera()

@@ -3,9 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include <GameCharacter.h>
 #include "Blueprint/UserWidget.h"
-#include "Components/ProgressBar.h"
 #include "GameCharacterUserWidget.generated.h"
 
 /**
@@ -24,5 +22,5 @@ protected:
 		class UProgressBar* Energybar;
 
 public:
-	AGameCharacter* player;
+	class AGameCharacter* player;
 };

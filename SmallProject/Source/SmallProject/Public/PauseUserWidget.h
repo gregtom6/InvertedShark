@@ -14,7 +14,7 @@ class SMALLPROJECT_API UPauseUserWidget : public UUserWidget
 {
 	GENERATED_BODY()
 
-		AGameCharacter* gameChar;
+		class AGameCharacter* gameChar;
 protected:
 
 
