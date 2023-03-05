@@ -17,17 +17,12 @@ AEnemy::AEnemy()
 	splineComponent = CreateDefaultSubobject<USplineComponent>(TEXT("Spline"));
 	SetRootComponent(splineComponent);
 
-	SMeshComp0 = CreateDefaultSubobject<USplineMeshComponent>(TEXT("SMeshComp0"));
-	SMeshComp0->SetupAttachment(RootComponent);
-
-	SMeshComp1 = CreateDefaultSubobject<USplineMeshComponent>(TEXT("SMeshComp1"));
-	SMeshComp1->SetupAttachment(RootComponent);
-
-	SMeshComp2 = CreateDefaultSubobject<USplineMeshComponent>(TEXT("SMeshComp2"));
-	SMeshComp2->SetupAttachment(RootComponent);
-
-	SMeshComp3 = CreateDefaultSubobject<USplineMeshComponent>(TEXT("SMeshComp3"));
-	SMeshComp3->SetupAttachment(RootComponent);
+	for (int32 i = 0; i < countOfInnerPointsInSpline + 1; i++)
+	{
+		USplineMeshComponent* SComp = CreateDefaultSubobject<USplineMeshComponent>(*FString::Printf(TEXT("SMeshComp%d"), i));
+		SComp->SetupAttachment(RootComponent);
+		SMeshComps.Add(SComp);
+	}
 
 	PopAudioComp = CreateDefaultSubobject<UAudioComponent>(TEXT("PopAudioComp"));
 	PopAudioComp->SetupAttachment(RootComponent);
@@ -47,33 +42,14 @@ this method creates spline between the enemy and the creature. Spline is to show
 
 void AEnemy::SetSpline() {
 
-	FVector startPoint = splineComponent->GetLocationAtSplinePoint(0, ESplineCoordinateSpace::Local);
-	FVector startTangent = splineComponent->GetTangentAtSplinePoint(0, ESplineCoordinateSpace::Local);
-	FVector endPoint = splineComponent->GetLocationAtSplinePoint(1, ESplineCoordinateSpace::Local);
-	FVector endTangent = splineComponent->GetTangentAtSplinePoint(1, ESplineCoordinateSpace::Local);
+	for (int i = 0; i < SMeshComps.Num(); i++) {
+		FVector startPoint = splineComponent->GetLocationAtSplinePoint(i, ESplineCoordinateSpace::Local);
+		FVector startTangent = splineComponent->GetTangentAtSplinePoint(i, ESplineCoordinateSpace::Local);
+		FVector endPoint = splineComponent->GetLocationAtSplinePoint(i + 1, ESplineCoordinateSpace::Local);
+		FVector endTangent = splineComponent->GetTangentAtSplinePoint(i + 1, ESplineCoordinateSpace::Local);
 
-	SetSplineMeshComponent(SMeshComp0, startPoint, startTangent, endPoint, endTangent);
-
-	startPoint = splineComponent->GetLocationAtSplinePoint(1, ESplineCoordinateSpace::Local);
-	startTangent = splineComponent->GetTangentAtSplinePoint(1, ESplineCoordinateSpace::Local);
-	endPoint = splineComponent->GetLocationAtSplinePoint(2, ESplineCoordinateSpace::Local);
-	endTangent = splineComponent->GetTangentAtSplinePoint(2, ESplineCoordinateSpace::Local);
-
-	SetSplineMeshComponent(SMeshComp1, startPoint, startTangent, endPoint, endTangent);
-
-	startPoint = splineComponent->GetLocationAtSplinePoint(2, ESplineCoordinateSpace::Local);
-	startTangent = splineComponent->GetTangentAtSplinePoint(2, ESplineCoordinateSpace::Local);
-	endPoint = splineComponent->GetLocationAtSplinePoint(3, ESplineCoordinateSpace::Local);
-	endTangent = splineComponent->GetTangentAtSplinePoint(3, ESplineCoordinateSpace::Local);
-
-	SetSplineMeshComponent(SMeshComp2, startPoint, startTangent, endPoint, endTangent);
-
-	startPoint = splineComponent->GetLocationAtSplinePoint(3, ESplineCoordinateSpace::Local);
-	startTangent = splineComponent->GetTangentAtSplinePoint(3, ESplineCoordinateSpace::Local);
-	endPoint = splineComponent->GetLocationAtSplinePoint(4, ESplineCoordinateSpace::Local);
-	endTangent = splineComponent->GetTangentAtSplinePoint(4, ESplineCoordinateSpace::Local);
-
-	SetSplineMeshComponent(SMeshComp3, startPoint, startTangent, endPoint, endTangent);
+		SetSplineMeshComponent(SMeshComps[i], startPoint, startTangent, endPoint, endTangent);
+	}
 }
 
 /*
@@ -117,12 +93,12 @@ void AEnemy::StartEating() {
 		FVector direction = creature->GetActorLocation() - GetActorLocation();
 		direction.Normalize();
 		double dist = FVector::Distance(creature->GetActorLocation(), GetActorLocation());
-		double oneUnit = dist / 3.f;
-		for (int i = 0; i < 3; i++) {
+		double oneUnit = dist / (float)countOfInnerPointsInSpline;
+		for (int i = 0; i < countOfInnerPointsInSpline; i++) {
 			FVector point = GetActorLocation() + direction * oneUnit * (i + 1);
-			point.Z = point.Z + FMath::FRandRange(-100.f, 100.f);
-			point.X = point.X + FMath::FRandRange(-50.f, 50.f);
-			point.Y = point.Y + FMath::FRandRange(-50.f, 50.f);
+			point.Z = point.Z + FMath::FRandRange(-innerSplinePointRangeBorderZ, innerSplinePointRangeBorderZ);
+			point.X = point.X + FMath::FRandRange(-innerSplinePointRangeBorderXY, innerSplinePointRangeBorderXY);
+			point.Y = point.Y + FMath::FRandRange(-innerSplinePointRangeBorderXY, innerSplinePointRangeBorderXY);
 			points.Add(point);
 		}
 
@@ -157,10 +133,9 @@ void AEnemy::BeginPlay()
 		SlurpAudioComp->SetSound(slurpSound);
 	}
 
-	SplineMeshCompAttach(SMeshComp0);
-	SplineMeshCompAttach(SMeshComp1);
-	SplineMeshCompAttach(SMeshComp2);
-	SplineMeshCompAttach(SMeshComp3);
+	for (int i = 0; i < SMeshComps.Num(); i++) {
+		SplineMeshCompAttach(SMeshComps[i]);
+	}
 
 	actualLife = maxLife;
 
@@ -319,7 +294,7 @@ spline and swallow sphere gets destroyed, because enemy is not eating anymore (n
 stopping audios, saving values for lerps
 */
 void AEnemy::RemoveEnemy() {
-	
+
 	if (SwallowSphere != nullptr)
 		SwallowSphere->DestroyComponent();
 
@@ -344,10 +319,10 @@ void AEnemy::DoAfterDead() {
 destroying certain components upon death
 */
 void AEnemy::DestroySpline() {
-	DestroySplineMeshComp(SMeshComp0);
-	DestroySplineMeshComp(SMeshComp1);
-	DestroySplineMeshComp(SMeshComp2);
-	DestroySplineMeshComp(SMeshComp3);
+
+	for (int i = 0; i < SMeshComps.Num(); i++) {
+		DestroySplineMeshComp(SMeshComps[i]);
+	}
 }
 
 /*

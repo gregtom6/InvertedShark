@@ -68,20 +68,12 @@ protected:
 	FVector startScale;
 	FVector endScale;
 
+
 	UPROPERTY(EditAnywhere, Category = "Spline")
 		class USplineComponent* splineComponent;
 
-	UPROPERTY(EditAnywhere, Category = "Spline")
-		class USplineMeshComponent* SMeshComp0;
-
-	UPROPERTY(EditAnywhere, Category = "Spline")
-		class USplineMeshComponent* SMeshComp1;
-
-	UPROPERTY(EditAnywhere, Category = "Spline")
-		class USplineMeshComponent* SMeshComp2;
-
-	UPROPERTY(EditAnywhere, Category = "Spline")
-		class USplineMeshComponent* SMeshComp3;
+	UPROPERTY(EditAnywhere, Category="Spline")
+		TArray<class USplineMeshComponent*> SMeshComps;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spline")
 		class UStaticMesh* Mesh;
@@ -120,6 +112,15 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 		float dyingTime;
+
+	UPROPERTY(EditAnywhere)
+		int countOfInnerPointsInSpline = 3;
+
+	UPROPERTY(EditAnywhere)
+		float innerSplinePointRangeBorderZ = 100.f;
+
+	UPROPERTY(EditAnywhere)
+		float innerSplinePointRangeBorderXY = 50.f;
 
 public:	
 	UFUNCTION()
