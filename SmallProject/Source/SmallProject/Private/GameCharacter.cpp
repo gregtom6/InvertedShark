@@ -245,6 +245,20 @@ void AGameCharacter::Dash() {
 	if (DashAudio && dashSound) {
 		DashAudio->Play(0.f);
 	}
+
+	if (skeletal) {
+		UAnimationAsset* AnimationAsset = skeletal->AnimationData.AnimToPlay;
+
+		if (AnimationAsset) {
+			UAnimSequence* AnimSequence = Cast<UAnimSequence>(AnimationAsset);
+
+			if (AnimSequence)
+			{
+				skeletal->PlayAnimation(AnimSequence, false);
+			}
+		}
+	}
+
 }
 
 
@@ -358,6 +372,14 @@ void AGameCharacter::BeginPlay()
 		if (b != nullptr) {
 			bossEnemy = b;
 		}
+	}
+
+	skeletal = FindComponentByClass<USkeletalMeshComponent>();
+
+	// If the component was found, assign it to the UPROPERTY() variable
+	if (skeletal)
+	{
+		skeletal->SetupAttachment(CameraMesh);
 	}
 }
 

@@ -161,6 +161,9 @@ protected:
 		float dashCooldownTime;
 
 	UPROPERTY(EditAnywhere)
+		class USkeletalMeshComponent* skeletal;
+
+	UPROPERTY(EditAnywhere)
 		class UStaticMeshComponent* leftHandVisual;
 
 	UPROPERTY(EditAnywhere)
