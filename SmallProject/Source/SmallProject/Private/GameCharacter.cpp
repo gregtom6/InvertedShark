@@ -18,6 +18,9 @@
 #include <PauseUserWidget.h>
 #include "NiagaraFunctionLibrary.h"
 #include "NiagaraComponent.h"
+#include "ActorSequenceComponent.h"
+#include "ActorSequencePlayer.h"
+
 
 // Sets default values
 AGameCharacter::AGameCharacter(const FObjectInitializer& ObjectInitializer)
@@ -258,7 +261,13 @@ void AGameCharacter::Dash() {
 			}
 		}
 	}
+	
+	loopedEyePlayer->Stop();
+	loopedEyePlayer->Play();
+	loopedEyePlayer->Stop();
+	sneezeBlinkPlayer->Play();
 
+	
 }
 
 
@@ -381,6 +390,31 @@ void AGameCharacter::BeginPlay()
 	{
 		skeletal->SetupAttachment(CameraMesh);
 	}
+	
+	TArray<UActorSequenceComponent*> ActorSequenceComponents;
+	GetComponents<UActorSequenceComponent>(ActorSequenceComponents);
+
+	for (int i=0;i<ActorSequenceComponents.Num();i++)
+	{
+		if (ActorSequenceComponents[i]->GetFName()==FName("loopedeye"))
+		{
+			loopedEyePlayer = ActorSequenceComponents[i]->GetSequencePlayer();
+		}
+		else if (ActorSequenceComponents[i]->GetFName()==FName("sneezeblink"))
+		{
+			
+			sneezeBlinkPlayer = ActorSequenceComponents[i]->GetSequencePlayer();
+			FScriptDelegate funcDelegate;
+			funcDelegate.BindUFunction(this, FName("SneezeBlinkEnded"));
+			sneezeBlinkPlayer->OnFinished.AddUnique(funcDelegate);
+			
+		}
+	}
+}
+
+void AGameCharacter::SneezeBlinkEnded() {
+	sneezeBlinkPlayer->Stop();
+	loopedEyePlayer->Play();
 }
 
 void AGameCharacter::InitializePause() {

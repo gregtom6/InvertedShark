@@ -199,11 +199,18 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		class USoundCue* dashSound;
 
+
 	UPROPERTY(EditAnywhere) TSubclassOf<UPauseUserWidget> widgetPauseMenu;
 	class UPauseUserWidget* widgetPauseMenuInstance;
 
+	class UActorSequencePlayer* loopedEyePlayer;
+	class UActorSequencePlayer* sneezeBlinkPlayer;
+
 	UFUNCTION()
-	bool GetOverlapInfluenceSphere(class UStaticMeshComponent* StaticMeshComponent, FVector& Actor1ClosestPoint, FVector& Actor2ClosestPoint);
+		bool GetOverlapInfluenceSphere(class UStaticMeshComponent* StaticMeshComponent, FVector& Actor1ClosestPoint, FVector& Actor2ClosestPoint);
+
+	UFUNCTION()
+		void SneezeBlinkEnded();
 
 
 public:
