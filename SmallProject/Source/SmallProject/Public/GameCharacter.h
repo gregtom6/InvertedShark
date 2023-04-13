@@ -74,6 +74,8 @@ private:
 	float targetArmLength;
 	float startTimeForSpringArm;
 
+	float actualSoundPitchMultiplier;
+
 	float attackSlowTimeStart;
 	bool timeManagementForEnemyDefeated;
 
@@ -252,6 +254,8 @@ public:
 	float GetEnergy();
 
 	float GetMaxEnergy();
+
+	float GetCurrentSoundPitchMultiplier();
 
 	void SetPrevStatusToActualStatus();
 

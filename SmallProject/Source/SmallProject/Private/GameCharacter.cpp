@@ -496,11 +496,12 @@ void AGameCharacter::TimeManagement() {
 			percentage = 1.f;
 
 		UGameplayStatics::SetGlobalTimeDilation(GetWorld(), FMath::Lerp(1.f, minSlowdownTimeMultiplier, percentage));
-		AudioComp->SetPitchMultiplier(1.f-percentage);
-		TongueAudio->SetPitchMultiplier(1.f - percentage);
-		MetalScratchAudio->SetPitchMultiplier(1.f - percentage);
-		DashAudio->SetPitchMultiplier(1.f - percentage);
-		SneezeAudio->SetPitchMultiplier(1.f - percentage);
+		actualSoundPitchMultiplier = 1.f - percentage;
+		AudioComp->SetPitchMultiplier(actualSoundPitchMultiplier);
+		TongueAudio->SetPitchMultiplier(actualSoundPitchMultiplier);
+		MetalScratchAudio->SetPitchMultiplier(actualSoundPitchMultiplier);
+		DashAudio->SetPitchMultiplier(actualSoundPitchMultiplier);
+		SneezeAudio->SetPitchMultiplier(actualSoundPitchMultiplier);
 
 		if (percentage >= 1.f) {
 			slowdownStatus = SlowDownStatus::StaySlowedDownTime;
@@ -523,11 +524,12 @@ void AGameCharacter::TimeManagement() {
 			percentage = 1.f;
 
 		UGameplayStatics::SetGlobalTimeDilation(GetWorld(), FMath::Lerp(minSlowdownTimeMultiplier, 1.f, percentage));
-		AudioComp->SetPitchMultiplier(percentage);
-		TongueAudio->SetPitchMultiplier(percentage);
-		MetalScratchAudio->SetPitchMultiplier(percentage);
-		DashAudio->SetPitchMultiplier(percentage);
-		SneezeAudio->SetPitchMultiplier(percentage);
+		actualSoundPitchMultiplier = percentage;
+		AudioComp->SetPitchMultiplier(actualSoundPitchMultiplier);
+		TongueAudio->SetPitchMultiplier(actualSoundPitchMultiplier);
+		MetalScratchAudio->SetPitchMultiplier(actualSoundPitchMultiplier);
+		DashAudio->SetPitchMultiplier(actualSoundPitchMultiplier);
+		SneezeAudio->SetPitchMultiplier(actualSoundPitchMultiplier);
 
 		if (percentage >= 1.f) {
 			slowdownStatus = SlowDownStatus::NormalTime;
@@ -726,6 +728,10 @@ void AGameCharacter::EnemyDefeated() {
 	timeManagementForEnemyDefeated = true;
 	attackSlowTimeStart = GetWorld()->GetTimeSeconds();
 	slowdownStatus = SlowDownStatus::SlowDownTime;
+}
+
+float AGameCharacter::GetCurrentSoundPitchMultiplier() {
+	return actualSoundPitchMultiplier;
 }
 
 /*

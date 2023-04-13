@@ -166,6 +166,8 @@ void AEnemy::Tick(float DeltaTime)
 	StateManagement();
 
 	LifeManagement();
+
+	TimeManagement();
 }
 /*
 moving state : when enemy is moving, it goes from actualStartPosition to actualEndPosition.actualStartPosition setted by the same way in Enemy.cpp and
@@ -239,6 +241,13 @@ void AEnemy::LifeManagement() {
 	else {
 		canPlayerDamageMe = false;
 	}
+}
+
+void AEnemy::TimeManagement() {
+	if (gameCharacter == nullptr) { return; }
+
+	PopAudioComp->SetPitchMultiplier(gameCharacter->GetCurrentSoundPitchMultiplier());
+	SlurpAudioComp->SetPitchMultiplier(gameCharacter->GetCurrentSoundPitchMultiplier());
 }
 
 /*

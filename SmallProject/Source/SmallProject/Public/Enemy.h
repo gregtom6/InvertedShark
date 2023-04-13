@@ -31,6 +31,8 @@ protected:
 
 	void LifeManagement();
 
+	void TimeManagement();
+
 	void DecreaseLife();
 
 	void RemoveEnemy();
