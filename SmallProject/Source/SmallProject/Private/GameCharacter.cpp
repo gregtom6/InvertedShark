@@ -262,12 +262,10 @@ void AGameCharacter::Dash() {
 		}
 	}
 	
-	loopedEyePlayer->Stop();
-	loopedEyePlayer->Play();
+	FFrameTime FirstFrameTime(0);
+	loopedEyePlayer->JumpToFrame(FirstFrameTime);
 	loopedEyePlayer->Stop();
 	sneezeBlinkPlayer->Play();
-
-	
 }
 
 
