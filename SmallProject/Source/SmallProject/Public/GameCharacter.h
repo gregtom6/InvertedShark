@@ -41,6 +41,8 @@ private:
 
 	void DeadManagement();
 
+	void TimeManagement();
+
 	void SetRotationLocks(bool X, bool Y, bool Z);
 
 	void InitializePause();
@@ -62,6 +64,8 @@ private:
 
 	PauseStatus pauseStatus;
 
+	SlowDownStatus slowdownStatus;
+
 	float startTime;
 
 	float actualEnergy;
@@ -69,6 +73,9 @@ private:
 	float startArmLength;
 	float targetArmLength;
 	float startTimeForSpringArm;
+
+	float attackSlowTimeStart;
+	bool timeManagementForEnemyDefeated;
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -160,6 +167,18 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "character settings")
 		float dashCooldownTime;
 
+	UPROPERTY(EditAnywhere, Category = "character settings")
+		float minSlowdownTimeMultiplier;
+
+	UPROPERTY(EditAnywhere, Category = "character settings")
+		float timeOfSlowDown;
+
+	UPROPERTY(EditAnywhere, Category = "character settings")
+		float timeOfStaySlowedDown;
+
+	UPROPERTY(EditAnywhere, Category = "character settings")
+		float timeOfTimeRestore;
+
 	UPROPERTY(EditAnywhere)
 		class USkeletalMeshComponent* skeletal;
 
@@ -221,7 +240,10 @@ protected:
 		void SneezeBlinkEnded();
 
 
+
 public:
+	UFUNCTION()
+		void EnemyDefeated();
 
 	GameCharacterStatus GetStatus();
 
@@ -252,4 +274,12 @@ enum class PauseStatus : uint8
 {
 	Played,
 	Paused,
+};
+
+UENUM()
+enum class SlowDownStatus : uint8 {
+	NormalTime,
+	SlowDownTime,
+	StaySlowedDownTime,
+	RestoreTime,
 };

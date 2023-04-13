@@ -251,6 +251,8 @@ void AEnemy::EnterEvent(class AActor* overlappedActor, class AActor* otherActor)
 
 			overlappingGameCharacter = Cast<AGameCharacter>(otherActor);
 
+			gameCharacter = Cast<AGameCharacter>(otherActor);
+
 			canPlayerDamageMe = true;
 		}
 	}
@@ -306,6 +308,9 @@ void AEnemy::RemoveEnemy() {
 
 	SlurpAudioComp->Stop();
 	PopAudioComp->Play(0.f);
+
+ 	if (gameCharacter != nullptr)
+		gameCharacter->EnemyDefeated();
 }
 
 /*

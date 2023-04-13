@@ -356,6 +356,8 @@ void AGameCharacter::BeginPlay()
 
 	pauseStatus = PauseStatus::Played;
 
+	slowdownStatus = SlowDownStatus::NormalTime;
+
 	if (IsValid(widgetclass)) {
 
 		UE_LOG(LogTemp, Warning, TEXT("energy1"));
@@ -462,6 +464,8 @@ void AGameCharacter::Tick(float DeltaTime)
 	DeadManagement();
 
 	MetalScratchManagement();
+
+	TimeManagement();
 }
 
 /*
@@ -477,6 +481,58 @@ void AGameCharacter::DeadManagement() {
 		actualStatus = GameCharacterStatus::Dead;
 
 		OnDieHappenedDelegate.ExecuteIfBound();
+	}
+}
+
+void AGameCharacter::TimeManagement() {
+	if (!timeManagementForEnemyDefeated) { return; }
+
+	if (slowdownStatus == SlowDownStatus::SlowDownTime) {
+		float currentTime = GetWorld()->GetTimeSeconds() - attackSlowTimeStart;
+
+		float percentage = currentTime / timeOfSlowDown;
+
+		if (percentage > 1.f)
+			percentage = 1.f;
+
+		UGameplayStatics::SetGlobalTimeDilation(GetWorld(), FMath::Lerp(1.f, minSlowdownTimeMultiplier, percentage));
+		AudioComp->SetPitchMultiplier(1.f-percentage);
+		TongueAudio->SetPitchMultiplier(1.f - percentage);
+		MetalScratchAudio->SetPitchMultiplier(1.f - percentage);
+		DashAudio->SetPitchMultiplier(1.f - percentage);
+		SneezeAudio->SetPitchMultiplier(1.f - percentage);
+
+		if (percentage >= 1.f) {
+			slowdownStatus = SlowDownStatus::StaySlowedDownTime;
+			attackSlowTimeStart = GetWorld()->GetTimeSeconds();
+		}
+	}
+	else if (slowdownStatus == SlowDownStatus::StaySlowedDownTime) {
+		float currentTime = GetWorld()->GetTimeSeconds() - attackSlowTimeStart;
+		if (currentTime >= timeOfStaySlowedDown) {
+			slowdownStatus = SlowDownStatus::RestoreTime;
+			attackSlowTimeStart = GetWorld()->GetTimeSeconds();
+		}
+	}
+	else if (slowdownStatus == SlowDownStatus::RestoreTime) {
+		float currentTime = GetWorld()->GetTimeSeconds() - attackSlowTimeStart;
+
+		float percentage = currentTime / timeOfSlowDown;
+
+		if (percentage > 1.f)
+			percentage = 1.f;
+
+		UGameplayStatics::SetGlobalTimeDilation(GetWorld(), FMath::Lerp(minSlowdownTimeMultiplier, 1.f, percentage));
+		AudioComp->SetPitchMultiplier(percentage);
+		TongueAudio->SetPitchMultiplier(percentage);
+		MetalScratchAudio->SetPitchMultiplier(percentage);
+		DashAudio->SetPitchMultiplier(percentage);
+		SneezeAudio->SetPitchMultiplier(percentage);
+
+		if (percentage >= 1.f) {
+			slowdownStatus = SlowDownStatus::NormalTime;
+			timeManagementForEnemyDefeated = false;
+		}
 	}
 }
 
@@ -664,6 +720,12 @@ GameCharacterStatus AGameCharacter::GetPrevStatus() {
 
 void AGameCharacter::SetPrevStatusToActualStatus() {
 	prevStatus = actualStatus;
+}
+
+void AGameCharacter::EnemyDefeated() {
+	timeManagementForEnemyDefeated = true;
+	attackSlowTimeStart = GetWorld()->GetTimeSeconds();
+	slowdownStatus = SlowDownStatus::SlowDownTime;
 }
 
 /*

@@ -55,7 +55,10 @@ protected:
 
 	bool canPlayerDamageMe = true;
 
+	//TODO: merge them, remove nullptr setting
 	class AGameCharacter* overlappingGameCharacter;
+
+	class AGameCharacter* gameCharacter;
 
 	EnemyStatus actualStatus;
 
