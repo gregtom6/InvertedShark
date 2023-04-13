@@ -199,6 +199,8 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		class USoundCue* dashSound;
 
+	class UNiagaraComponent* leftNoseSneezeNiagara;
+	class UNiagaraComponent* rightNoseSneezeNiagara;
 
 	UPROPERTY(EditAnywhere) TSubclassOf<UPauseUserWidget> widgetPauseMenu;
 	class UPauseUserWidget* widgetPauseMenuInstance;

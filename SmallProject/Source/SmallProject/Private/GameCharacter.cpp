@@ -266,6 +266,9 @@ void AGameCharacter::Dash() {
 	loopedEyePlayer->JumpToFrame(FirstFrameTime);
 	loopedEyePlayer->Stop();
 	sneezeBlinkPlayer->Play();
+
+	leftNoseSneezeNiagara->Activate(true);
+	rightNoseSneezeNiagara->Activate(true);
 }
 
 
@@ -400,12 +403,23 @@ void AGameCharacter::BeginPlay()
 		}
 		else if (ActorSequenceComponents[i]->GetFName()==FName("sneezeblink"))
 		{
-			
 			sneezeBlinkPlayer = ActorSequenceComponents[i]->GetSequencePlayer();
 			FScriptDelegate funcDelegate;
 			funcDelegate.BindUFunction(this, FName("SneezeBlinkEnded"));
-			sneezeBlinkPlayer->OnFinished.AddUnique(funcDelegate);
-			
+			sneezeBlinkPlayer->OnFinished.AddUnique(funcDelegate);	
+		}
+	}
+
+	TArray<UNiagaraComponent*> niagaraComponents;
+	GetComponents<UNiagaraComponent>(niagaraComponents);
+
+	for (int i = 0; i < niagaraComponents.Num(); i++) {
+		if (niagaraComponents[i]->GetFName() == FName("LeftNoseSneeze"))
+		{
+			leftNoseSneezeNiagara = niagaraComponents[i];
+		}
+		else if (niagaraComponents[i]->GetFName() == FName("RightNoseSneeze")) {
+			rightNoseSneezeNiagara = niagaraComponents[i];
 		}
 	}
 }
