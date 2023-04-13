@@ -13,7 +13,10 @@ UCLASS(Abstract)
 class SMALLPROJECT_API UGameCharacterUserWidget : public UUserWidget
 {
 	GENERATED_BODY()
-	
+
+private:
+	FadeStatus fadeStatus;
+	float fadeStartTime;
 protected:
 	virtual void NativeConstruct() override;
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
@@ -21,6 +24,18 @@ protected:
 	UPROPERTY(meta = (BindWidget))
 		class UProgressBar* Energybar;
 
+	UPROPERTY(EditAnywhere)
+		float fadeTime;
+
 public:
 	class AGameCharacter* player;
+};
+
+UENUM()
+enum class FadeStatus : uint8
+{
+	Visible,
+	Invisible,
+	InvisibleToVisible,
+	VisibleToInvisible,
 };

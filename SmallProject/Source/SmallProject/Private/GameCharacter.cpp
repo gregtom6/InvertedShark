@@ -588,6 +588,8 @@ void AGameCharacter::EnergyManagement(float DeltaTime, FVector& currentVelocity)
 
 	if (newEnergy <= maxEnergy)
 		actualEnergy += energyRegeneration * restMult * DeltaTime;
+	else
+		actualEnergy = maxEnergy;
 }
 
 /*
