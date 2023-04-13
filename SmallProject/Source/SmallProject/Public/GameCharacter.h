@@ -188,6 +188,9 @@ protected:
 		class UAudioComponent* DashAudio;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		class UAudioComponent* SneezeAudio;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		class USoundCue* wingBeat;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -198,6 +201,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		class USoundCue* dashSound;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		class USoundCue* sneezeSound;
 
 	class UNiagaraComponent* leftNoseSneezeNiagara;
 	class UNiagaraComponent* rightNoseSneezeNiagara;

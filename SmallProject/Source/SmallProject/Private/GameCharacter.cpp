@@ -49,6 +49,8 @@ AGameCharacter::AGameCharacter(const FObjectInitializer& ObjectInitializer)
 
 	DashAudio = CreateDefaultSubobject<UAudioComponent>(TEXT("DashAudio"));
 
+	SneezeAudio= CreateDefaultSubobject<UAudioComponent>(TEXT("SneezeAudio"));
+
 	Spark = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Spark"));
 
 	Spark->SetupAttachment(CameraMesh);
@@ -70,6 +72,8 @@ AGameCharacter::AGameCharacter(const FObjectInitializer& ObjectInitializer)
 	MetalScratchAudio->SetupAttachment(CameraMesh);
 
 	DashAudio->SetupAttachment(CameraMesh);
+
+	SneezeAudio->SetupAttachment(CameraMesh);
 
 	Camera->Deactivate();
 
@@ -247,6 +251,10 @@ void AGameCharacter::Dash() {
 
 	if (DashAudio && dashSound) {
 		DashAudio->Play(0.f);
+	}
+
+	if (SneezeAudio && sneezeSound) {
+		SneezeAudio->Play(0.f);
 	}
 
 	if (skeletal) {
