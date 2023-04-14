@@ -31,7 +31,7 @@ ACreature::ACreature(const FObjectInitializer& ObjectInitializer)
 	RightEye = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RightEye"));
 	RightEye->SetupAttachment(WhaleAudioComp);
 
-	Health = MaxHealth;
+	
 }
 
 /*
@@ -44,6 +44,8 @@ we rotates the creature to face towards his destination, and subscribing to even
 void ACreature::BeginPlay()
 {
 	Super::BeginPlay();
+
+	Health = MaxHealth;
 
 	if (WhaleAudioComp && whaleSound) {
 		UE_LOG(LogTemp, Warning, TEXT("whale sound setted up"));

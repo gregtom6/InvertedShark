@@ -54,7 +54,6 @@ protected:
 
 
 	float Health;
-	float MaxHealth = 120;
 
 	int actualTargetIndex = 0;
 
@@ -86,6 +85,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "settings")
 		float deltaDamage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "settings")
+		float MaxHealth = 120.f;
 
 	UPROPERTY(EditAnywhere)
 		class UStaticMeshComponent* CreatureMesh;
