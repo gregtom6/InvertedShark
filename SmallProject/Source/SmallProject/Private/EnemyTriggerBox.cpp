@@ -31,8 +31,11 @@ void AEnemyTriggerBox::Event(class AActor* overlappedActor, class AActor* otherA
 		if (otherActor->IsA(ACreature::StaticClass())) {
 			UE_LOG(LogTemp, Warning, TEXT("event meghivva"));
 
-			for (int i = 0; i < enemiesToCome.Num(); i++) {
-				enemiesToCome[i]->MoveToCreature();
+			if (enemiesToCome.Num() > 0)
+				enemiesToCome[0]->MoveToCreature(0.f);
+
+			for (int i = 1; i < enemiesToCome.Num(); i++) {
+				enemiesToCome[i]->MoveToCreature(FMath::RandRange(0.f,maxMoveTime));
 			}
 		}
 		if (otherActor->IsA(AEnemy::StaticClass())) {

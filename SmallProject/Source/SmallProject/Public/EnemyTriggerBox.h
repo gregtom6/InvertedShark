@@ -20,6 +20,9 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 		TArray<class AEnemy*> enemiesToCome;
+
+	UPROPERTY(EditAnywhere)
+		float maxMoveTime = 3.f;
 public:
 	AEnemyTriggerBox();
 

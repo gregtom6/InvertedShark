@@ -68,10 +68,11 @@ void AEnemy::SetSplineMeshComponent(class USplineMeshComponent* splineMeshComp, 
 /*
 setting up the Moving state
 */
-void AEnemy::MoveToCreature() {
+void AEnemy::MoveToCreature(float timeToStart) {
+	timeBeforeActualMoving = timeToStart;
 	startTime = GetWorld()->GetTimeSeconds();
 	actualStartPosition = GetActorLocation();
-	actualStatus = EnemyStatus::Moving;
+	actualStatus = EnemyStatus::WaitBeforeMoving;
 }
 
 /*
@@ -180,7 +181,18 @@ dying state : for enemies, it will mean only to scale down the actor. For the bo
 Removes widgets from viewport.
 */
 void AEnemy::StateManagement() {
-	if (actualStatus == EnemyStatus::Moving && creature != nullptr) {
+
+	if (actualStatus == EnemyStatus::WaitBeforeMoving && creature!=nullptr) {
+
+		currentTime = GetWorld()->GetTimeSeconds() - startTime;
+		if (currentTime >= timeBeforeActualMoving) {
+			startTime = GetWorld()->GetTimeSeconds();
+			actualStatus = EnemyStatus::Moving;
+		}
+		
+	}
+
+	else if (actualStatus == EnemyStatus::Moving && creature != nullptr) {
 		currentTime = GetWorld()->GetTimeSeconds() - startTime;
 
 		currentTime *= movementSpeed;

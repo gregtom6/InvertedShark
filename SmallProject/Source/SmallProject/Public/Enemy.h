@@ -55,6 +55,8 @@ protected:
 
 	float startTime;
 
+	float timeBeforeActualMoving;
+
 	bool canPlayerDamageMe = true;
 
 	//TODO: merge them, remove nullptr setting
@@ -135,7 +137,7 @@ public:
 		void ExitEvent(class AActor* overlappedActor, class AActor* otherActor);
 	// Called every frame
 
-	virtual void MoveToCreature();
+	virtual void MoveToCreature(float timeToStart);
 
 	void StartEating();
 };
@@ -144,6 +146,7 @@ UENUM()
 enum class EnemyStatus : uint8
 {
 	Initial,
+	WaitBeforeMoving,
 	Moving,
 	Eating,
 	SpecialDying,

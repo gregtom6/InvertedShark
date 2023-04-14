@@ -36,7 +36,7 @@ protected:
 	virtual void DoAfterDead() override;
 public:
 
-	virtual void MoveToCreature() override;
+	virtual void MoveToCreature(float timeToStart) override;
 
 
 	float GetLife();

@@ -20,9 +20,9 @@ ABossEnemy::ABossEnemy(const FObjectInitializer& ObjectInitializer)
 overriding MoveToCreature(), because we need to setup values to step into Moving state (that happens in the parent), but we also need to add boss lifebar widget to viewport (the boss is coming and fight gets started)
 */
 
-void ABossEnemy::MoveToCreature() {
+void ABossEnemy::MoveToCreature(float timeToStart) {
 
-	Super::MoveToCreature();
+	Super::MoveToCreature(timeToStart);
 
 	UE_LOG(LogTemp, Warning, TEXT("bossenemy1"));
 
