@@ -9,6 +9,8 @@
 #include "Creature.h"
 #include "GameCharacter.h"
 #include <Sound/SoundCue.h >
+#include "NiagaraComponent.h"
+
 
 AEnemy::AEnemy()
 {
@@ -21,7 +23,11 @@ AEnemy::AEnemy()
 	{
 		USplineMeshComponent* SComp = CreateDefaultSubobject<USplineMeshComponent>(*FString::Printf(TEXT("SMeshComp%d"), i));
 		UStaticMeshComponent* SCompContainer=CreateDefaultSubobject<UStaticMeshComponent>(*FString::Printf(TEXT("SMeshCompContainer%d"), i));
-		
+		UNiagaraComponent* NiagaraLeft= CreateDefaultSubobject<UNiagaraComponent>(*FString::Printf(TEXT("NiagaraLeft%d"), i));
+		UNiagaraComponent* NiagaraRight = CreateDefaultSubobject<UNiagaraComponent>(*FString::Printf(TEXT("NiagaraRight%d"), i));
+
+		SplineNiagaras.Add(NiagaraLeft);
+		SplineNiagaras.Add(NiagaraRight);
 		SMeshContainers.Add(SCompContainer);
 		SMeshComps.Add(SComp);
 		SMeshContainers[i]->SetupAttachment(RootComponent);
@@ -49,14 +55,41 @@ this method creates spline between the enemy and the creature. Spline is to show
 
 void AEnemy::SetSpline() {
 
+	FVector startPoint;
+	FVector endPoint;
+
+	int j = 0;
+
 	for (int i = 0; i < SMeshComps.Num(); i++) {
-		FVector startPoint = splineComponent->GetLocationAtSplinePoint(i, ESplineCoordinateSpace::Local);
+		startPoint = splineComponent->GetLocationAtSplinePoint(i, ESplineCoordinateSpace::Local);
 		FVector startTangent = splineComponent->GetTangentAtSplinePoint(i, ESplineCoordinateSpace::Local);
-		FVector endPoint = splineComponent->GetLocationAtSplinePoint(i + 1, ESplineCoordinateSpace::Local);
+		endPoint = splineComponent->GetLocationAtSplinePoint(i + 1, ESplineCoordinateSpace::Local);
 		FVector endTangent = splineComponent->GetTangentAtSplinePoint(i + 1, ESplineCoordinateSpace::Local);
+
+		SplineNiagaras[j]->SetRelativeLocation(startPoint);
+		SplineNiagaras[j+1]->SetRelativeLocation(endPoint);
+		j += 2;
 
 		SetSplineMeshComponent(SMeshComps[i], startPoint, startTangent, endPoint, endTangent);
 	}
+
+	SplineNiagaras[0]->AttachToComponent(SMeshComps[0], FAttachmentTransformRules::KeepRelativeTransform);
+	SplineNiagaras[1]->AttachToComponent(SMeshComps[0], FAttachmentTransformRules::KeepRelativeTransform);
+
+	SplineNiagaras[2]->AttachToComponent(SMeshComps[1], FAttachmentTransformRules::KeepRelativeTransform);
+	//SplineNiagaras[2]->SetRelativeLocation(startPoint);
+	SplineNiagaras[3]->AttachToComponent(SMeshComps[1], FAttachmentTransformRules::KeepRelativeTransform);
+	//SplineNiagaras[3]->SetRelativeLocation(endPoint);
+
+	SplineNiagaras[4]->AttachToComponent(SMeshComps[2], FAttachmentTransformRules::KeepRelativeTransform);
+	//SplineNiagaras[4]->SetRelativeLocation(startPoint);
+	SplineNiagaras[5]->AttachToComponent(SMeshComps[2], FAttachmentTransformRules::KeepRelativeTransform);
+	//SplineNiagaras[5]->SetRelativeLocation(endPoint);
+
+	SplineNiagaras[6]->AttachToComponent(SMeshComps[3], FAttachmentTransformRules::KeepRelativeTransform);
+	//SplineNiagaras[6]->SetRelativeLocation(startPoint);
+	SplineNiagaras[7]->AttachToComponent(SMeshComps[3], FAttachmentTransformRules::KeepRelativeTransform);
+	//SplineNiagaras[7]->SetRelativeLocation(endPoint);
 }
 
 /*
@@ -359,6 +392,10 @@ void AEnemy::RemoveEnemy() {
 
 	for (int i = 0; i < SMeshContainers.Num(); i++) {
 		SMeshContainers[i]->SetSimulatePhysics(true);
+	}
+
+	for (int i = 0; i < SplineNiagaras.Num(); i++) {
+		SplineNiagaras[i]->Activate();
 	}
 
 	SlurpAudioComp->Stop();

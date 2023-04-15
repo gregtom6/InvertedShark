@@ -85,6 +85,9 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Spline")
 		TArray<class UStaticMeshComponent*> SMeshContainers;
 
+	UPROPERTY(EditAnywhere, Category = "Spline")
+		TArray<class UNiagaraComponent*> SplineNiagaras;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spline")
 		class UStaticMesh* Mesh;
 
