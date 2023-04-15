@@ -11,8 +11,8 @@ UCLASS()
 class SMALLPROJECT_API AEnemy : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	// Sets default values for this actor's properties
 	AEnemy();
 
@@ -25,7 +25,7 @@ protected:
 	void SetSpline();
 
 	void SetSplineMeshComponent(class USplineMeshComponent* splineMeshComp, FVector startPoint, FVector startTangent, FVector endPoint, FVector endTangent);
-	
+
 
 	void StateManagement();
 
@@ -79,14 +79,20 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Spline")
 		class USplineComponent* splineComponent;
 
-	UPROPERTY(EditAnywhere, Category="Spline")
+	UPROPERTY(EditAnywhere, Category = "Spline")
 		TArray<class USplineMeshComponent*> SMeshComps;
+
+	UPROPERTY(EditAnywhere, Category = "Spline")
+		TArray<class UStaticMeshComponent*> SMeshContainers;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spline")
 		class UStaticMesh* Mesh;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spline")
 		class UStaticMeshComponent* SwallowSphere;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spline")
+		class UStaticMeshComponent* Body1;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spline")
 		TEnumAsByte<ESplineMeshAxis::Type> forwardAxis;
@@ -129,7 +135,7 @@ protected:
 	UPROPERTY(EditAnywhere)
 		float innerSplinePointRangeBorderXY = 50.f;
 
-public:	
+public:
 	UFUNCTION()
 		void EnterEvent(class AActor* overlappedActor, class AActor* otherActor);
 

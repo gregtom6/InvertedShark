@@ -20,9 +20,16 @@ AEnemy::AEnemy()
 	for (int32 i = 0; i < countOfInnerPointsInSpline + 1; i++)
 	{
 		USplineMeshComponent* SComp = CreateDefaultSubobject<USplineMeshComponent>(*FString::Printf(TEXT("SMeshComp%d"), i));
-		SComp->SetupAttachment(RootComponent);
+		UStaticMeshComponent* SCompContainer=CreateDefaultSubobject<UStaticMeshComponent>(*FString::Printf(TEXT("SMeshCompContainer%d"), i));
+		
+		SMeshContainers.Add(SCompContainer);
 		SMeshComps.Add(SComp);
+		SMeshContainers[i]->SetupAttachment(RootComponent);
+		SMeshContainers[i]->SetSimulatePhysics(false);
+		//SMeshComps[i]->AttachToComponent(SMeshContainers[i], FAttachmentTransformRules::KeepRelativeTransform);
 	}
+
+	
 
 	PopAudioComp = CreateDefaultSubobject<UAudioComponent>(TEXT("PopAudioComp"));
 	PopAudioComp->SetupAttachment(RootComponent);
@@ -140,6 +147,22 @@ void AEnemy::BeginPlay()
 
 	actualLife = maxLife;
 
+	TArray<UStaticMeshComponent*> StaticMeshComponents;
+	GetComponents<UStaticMeshComponent>(StaticMeshComponents);
+
+	for (int i = 0; i < StaticMeshComponents.Num(); i++)
+	{
+		if (StaticMeshComponents[i]->GetFName() == FName("Body"))
+		{
+			Body1 = StaticMeshComponents[i];
+		}
+	}
+
+	SMeshComps[0]->AttachToComponent(SMeshContainers[0], FAttachmentTransformRules::KeepRelativeTransform);
+	SMeshComps[1]->AttachToComponent(SMeshContainers[1], FAttachmentTransformRules::KeepRelativeTransform);
+	SMeshComps[2]->AttachToComponent(SMeshContainers[2], FAttachmentTransformRules::KeepRelativeTransform);
+	SMeshComps[3]->AttachToComponent(SMeshContainers[3], FAttachmentTransformRules::KeepRelativeTransform);
+
 	OnActorBeginOverlap.AddUniqueDynamic(this, &AEnemy::EnterEvent);
 	OnActorEndOverlap.AddUniqueDynamic(this, &AEnemy::ExitEvent);
 }
@@ -226,7 +249,12 @@ void AEnemy::StateManagement() {
 		if (currentTime >= 1.f)
 			currentTime = 1.f;
 
-		SetActorScale3D(FMath::Lerp(startScale, endScale, currentTime));
+		Body1->SetWorldScale3D(FMath::Lerp(startScale, endScale, currentTime));
+		Body1->SetSimulatePhysics(true);
+
+		for (int i = 0; i < SMeshContainers.Num(); i++) {
+			SMeshContainers[i]->SetSimulatePhysics(true);
+		}
 
 		if (currentTime >= 1.f) {
 			DoAfterDead();
@@ -321,9 +349,8 @@ void AEnemy::RemoveEnemy() {
 	if (SwallowSphere != nullptr)
 		SwallowSphere->DestroyComponent();
 
-	DestroySpline();
 	startTime = GetWorld()->GetTimeSeconds();
-	startScale = GetActorScale3D();
+	startScale = Body1->GetComponentScale();
 	endScale = FVector(0.f, 0.f, 0.f);
 	actualStatus = EnemyStatus::SpecialDying;
 
