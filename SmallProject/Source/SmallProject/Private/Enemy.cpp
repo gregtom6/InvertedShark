@@ -249,11 +249,12 @@ void AEnemy::StateManagement() {
 		if (currentTime >= 1.f)
 			currentTime = 1.f;
 
-		Body1->SetWorldScale3D(FMath::Lerp(startScale, endScale, currentTime));
-		Body1->SetSimulatePhysics(true);
+
+		FVector newScale = FMath::Lerp(startScale, endScale, currentTime);
+		Body1->SetWorldScale3D(newScale);
 
 		for (int i = 0; i < SMeshContainers.Num(); i++) {
-			SMeshContainers[i]->SetSimulatePhysics(true);
+			SMeshContainers[i]->SetWorldScale3D(newScale);
 		}
 
 		if (currentTime >= 1.f) {
@@ -354,6 +355,12 @@ void AEnemy::RemoveEnemy() {
 	endScale = FVector(0.f, 0.f, 0.f);
 	actualStatus = EnemyStatus::SpecialDying;
 
+	Body1->SetSimulatePhysics(true);
+
+	for (int i = 0; i < SMeshContainers.Num(); i++) {
+		SMeshContainers[i]->SetSimulatePhysics(true);
+	}
+
 	SlurpAudioComp->Stop();
 	PopAudioComp->Play(0.f);
 
@@ -365,7 +372,7 @@ void AEnemy::RemoveEnemy() {
 normal enemies just get destroyed, this is overriden in the bossenemy
 */
 void AEnemy::DoAfterDead() {
-	Destroy();
+ 	Destroy();
 }
 
 /*
