@@ -22,8 +22,8 @@ AEnemy::AEnemy()
 	for (int32 i = 0; i < countOfInnerPointsInSpline + 1; i++)
 	{
 		USplineMeshComponent* SComp = CreateDefaultSubobject<USplineMeshComponent>(*FString::Printf(TEXT("SMeshComp%d"), i));
-		UStaticMeshComponent* SCompContainer=CreateDefaultSubobject<UStaticMeshComponent>(*FString::Printf(TEXT("SMeshCompContainer%d"), i));
-		UNiagaraComponent* NiagaraLeft= CreateDefaultSubobject<UNiagaraComponent>(*FString::Printf(TEXT("NiagaraLeft%d"), i));
+		UStaticMeshComponent* SCompContainer = CreateDefaultSubobject<UStaticMeshComponent>(*FString::Printf(TEXT("SMeshCompContainer%d"), i));
+		UNiagaraComponent* NiagaraLeft = CreateDefaultSubobject<UNiagaraComponent>(*FString::Printf(TEXT("NiagaraLeft%d"), i));
 		UNiagaraComponent* NiagaraRight = CreateDefaultSubobject<UNiagaraComponent>(*FString::Printf(TEXT("NiagaraRight%d"), i));
 
 		SplineNiagaras.Add(NiagaraLeft);
@@ -35,7 +35,7 @@ AEnemy::AEnemy()
 		//SMeshComps[i]->AttachToComponent(SMeshContainers[i], FAttachmentTransformRules::KeepRelativeTransform);
 	}
 
-	
+
 
 	PopAudioComp = CreateDefaultSubobject<UAudioComponent>(TEXT("PopAudioComp"));
 	PopAudioComp->SetupAttachment(RootComponent);
@@ -67,7 +67,7 @@ void AEnemy::SetSpline() {
 		FVector endTangent = splineComponent->GetTangentAtSplinePoint(i + 1, ESplineCoordinateSpace::Local);
 
 		SplineNiagaras[j]->SetRelativeLocation(startPoint);
-		SplineNiagaras[j+1]->SetRelativeLocation(endPoint);
+		SplineNiagaras[j + 1]->SetRelativeLocation(endPoint);
 		j += 2;
 
 		SetSplineMeshComponent(SMeshComps[i], startPoint, startTangent, endPoint, endTangent);
@@ -241,21 +241,23 @@ Removes widgets from viewport.
 */
 void AEnemy::StateManagement() {
 
-	if (actualStatus == EnemyStatus::WaitBeforeMoving && creature!=nullptr) {
+	if (actualStatus == EnemyStatus::WaitBeforeMoving && creature != nullptr) {
 
 		currentTime = GetWorld()->GetTimeSeconds() - startTime;
 		if (currentTime >= timeBeforeActualMoving) {
 			startTime = GetWorld()->GetTimeSeconds();
 			actualStatus = EnemyStatus::Moving;
 
-			FVector Direction = creature->GetActorLocation() - EyePivot1->GetComponentLocation();
-			Direction.Normalize();
-			FRotator targetRotation = Direction.Rotation();
-			targetRotation.Yaw -= 90.f;
-			EyePivot1->SetWorldRotation(targetRotation);
+			if (EyePivot1 != nullptr) {
+				FVector Direction = creature->GetActorLocation() - EyePivot1->GetComponentLocation();
+				Direction.Normalize();
+				FRotator targetRotation = Direction.Rotation();
+				targetRotation.Yaw -= 90.f;
+				EyePivot1->SetWorldRotation(targetRotation);
+			}
 
 		}
-		
+
 	}
 
 	else if (actualStatus == EnemyStatus::Moving && creature != nullptr) {
@@ -404,7 +406,8 @@ void AEnemy::RemoveEnemy() {
 		SMeshContainers[i]->SetSimulatePhysics(true);
 	}
 
-	EyePivot1->SetSimulatePhysics(true);
+	if (EyePivot1 != nullptr)
+		EyePivot1->SetSimulatePhysics(true);
 
 	for (int i = 0; i < SplineNiagaras.Num(); i++) {
 		SplineNiagaras[i]->Activate();
@@ -413,7 +416,7 @@ void AEnemy::RemoveEnemy() {
 	SlurpAudioComp->Stop();
 	PopAudioComp->Play(0.f);
 
- 	if (gameCharacter != nullptr)
+	if (gameCharacter != nullptr)
 		gameCharacter->EnemyDefeated();
 }
 
@@ -421,7 +424,7 @@ void AEnemy::RemoveEnemy() {
 normal enemies just get destroyed, this is overriden in the bossenemy
 */
 void AEnemy::DoAfterDead() {
- 	Destroy();
+	Destroy();
 }
 
 /*
