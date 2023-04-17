@@ -395,6 +395,8 @@ void AEnemy::RemoveEnemy() {
 	if (SwallowSphere != nullptr)
 		SwallowSphere->DestroyComponent();
 
+	//TODO: body1 es mas komponensek
+
 	startTime = GetWorld()->GetTimeSeconds();
 	startScale = Body1->GetComponentScale();
 	endScale = FVector(0.f, 0.f, 0.f);
