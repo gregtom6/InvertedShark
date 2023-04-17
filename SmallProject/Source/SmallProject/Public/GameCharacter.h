@@ -74,7 +74,7 @@ private:
 	float targetArmLength;
 	float startTimeForSpringArm;
 
-	float actualSoundPitchMultiplier;
+	float actualSoundPitchMultiplier = 1.f;
 
 	float attackSlowTimeStart;
 	bool timeManagementForEnemyDefeated;
