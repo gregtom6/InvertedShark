@@ -189,6 +189,9 @@ void AEnemy::BeginPlay()
 		{
 			Body1 = StaticMeshComponents[i];
 		}
+		else if (StaticMeshComponents[i]->GetFName() == FName("EyePivot")) {
+			EyePivot1 = StaticMeshComponents[i];
+		}
 	}
 
 	SMeshComps[0]->AttachToComponent(SMeshContainers[0], FAttachmentTransformRules::KeepRelativeTransform);
@@ -244,6 +247,13 @@ void AEnemy::StateManagement() {
 		if (currentTime >= timeBeforeActualMoving) {
 			startTime = GetWorld()->GetTimeSeconds();
 			actualStatus = EnemyStatus::Moving;
+
+			FVector Direction = creature->GetActorLocation() - EyePivot1->GetComponentLocation();
+			Direction.Normalize();
+			FRotator targetRotation = Direction.Rotation();
+			targetRotation.Yaw -= 90.f;
+			EyePivot1->SetWorldRotation(targetRotation);
+
 		}
 		
 	}
@@ -393,6 +403,8 @@ void AEnemy::RemoveEnemy() {
 	for (int i = 0; i < SMeshContainers.Num(); i++) {
 		SMeshContainers[i]->SetSimulatePhysics(true);
 	}
+
+	EyePivot1->SetSimulatePhysics(true);
 
 	for (int i = 0; i < SplineNiagaras.Num(); i++) {
 		SplineNiagaras[i]->Activate();

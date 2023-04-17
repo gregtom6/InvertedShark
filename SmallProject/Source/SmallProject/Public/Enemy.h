@@ -79,6 +79,7 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Spline")
 		class USplineComponent* splineComponent;
 
+
 	UPROPERTY(EditAnywhere, Category = "Spline")
 		TArray<class USplineMeshComponent*> SMeshComps;
 
@@ -99,6 +100,8 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spline")
 		TEnumAsByte<ESplineMeshAxis::Type> forwardAxis;
+	UPROPERTY(EditAnywhere)
+		class UStaticMeshComponent* EyePivot1;
 
 	UPROPERTY(EditAnywhere)
 		class ACreature* creature;
