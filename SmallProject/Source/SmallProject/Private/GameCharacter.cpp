@@ -349,6 +349,9 @@ void AGameCharacter::BeginPlay()
 
 	Tongue->SetVisibility(false);
 
+	startArmLength = defaultArmLength;
+	targetArmLength = defaultArmLength;
+
 	actualEnergy = maxEnergy;
 
 	actualStatus = GameCharacterStatus::Calm;
