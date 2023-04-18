@@ -73,6 +73,10 @@ float ABossEnemy::GetMaxLife() {
 	return maxLife;
 }
 
+UStaticMeshComponent* ABossEnemy::GetCurrentBodyMesh() {
+	return bodyMesh;
+}
+
 /*
 when boss dies, boss itself doesn't need to be destroyed, because level replacement will destroy that. We remove all widgets from viewport and open the new level
 */

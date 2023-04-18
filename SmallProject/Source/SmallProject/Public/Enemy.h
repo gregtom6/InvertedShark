@@ -43,6 +43,8 @@ protected:
 
 	void SplineMeshCompAttach(class USplineMeshComponent* splineMeshComp);
 
+	virtual UStaticMeshComponent* GetCurrentBodyMesh();
+	
 	virtual void DoAfterDead();
 
 	virtual FVector GetEndPosition();

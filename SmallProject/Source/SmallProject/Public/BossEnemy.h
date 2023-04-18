@@ -32,6 +32,7 @@ protected:
 	UPROPERTY(EditAnywhere)
 		FName levelToLoadAfterDefeat;
 
+	virtual UStaticMeshComponent* GetCurrentBodyMesh() override;
 	virtual FVector GetEndPosition() override;
 	virtual void DoAfterDead() override;
 public:
