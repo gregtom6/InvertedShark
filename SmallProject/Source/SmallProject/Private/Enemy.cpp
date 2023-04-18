@@ -376,6 +376,9 @@ FVector AEnemy::GetEndPosition() {
 managing life decrease for both enemy and bossenemy.
 */
 void AEnemy::DecreaseLife() {
+
+	if (actualStatus == EnemyStatus::SpecialDying) { return; }
+
 	actualLife -= lifeDecreaseAfterAttack;
 
 	if (actualLife <= 0) {
