@@ -32,10 +32,7 @@ AEnemy::AEnemy()
 		SMeshComps.Add(SComp);
 		SMeshContainers[i]->SetupAttachment(RootComponent);
 		SMeshContainers[i]->SetSimulatePhysics(false);
-		//SMeshComps[i]->AttachToComponent(SMeshContainers[i], FAttachmentTransformRules::KeepRelativeTransform);
 	}
-
-
 
 	PopAudioComp = CreateDefaultSubobject<UAudioComponent>(TEXT("PopAudioComp"));
 	PopAudioComp->SetupAttachment(RootComponent);
@@ -65,29 +62,29 @@ void AEnemy::SetSpline() {
 		FVector startTangent = splineComponent->GetTangentAtSplinePoint(i, ESplineCoordinateSpace::Local);
 		endPoint = splineComponent->GetLocationAtSplinePoint(i + 1, ESplineCoordinateSpace::Local);
 		FVector endTangent = splineComponent->GetTangentAtSplinePoint(i + 1, ESplineCoordinateSpace::Local);
-		if (!SplineNiagaras.IsEmpty()) {
-			SplineNiagaras[j]->SetRelativeLocation(startPoint);
-			SplineNiagaras[j + 1]->SetRelativeLocation(endPoint);
 
-		}
+		SplineNiagaras[j]->SetRelativeLocation(startPoint);
+		SplineNiagaras[j + 1]->SetRelativeLocation(endPoint);
+
+
 		j += 2;
 
 		SetSplineMeshComponent(SMeshComps[i], startPoint, startTangent, endPoint, endTangent);
 	}
 
-	if (!SplineNiagaras.IsEmpty()) {
-		SplineNiagaras[0]->AttachToComponent(SMeshComps[0], FAttachmentTransformRules::KeepRelativeTransform);
-		SplineNiagaras[1]->AttachToComponent(SMeshComps[0], FAttachmentTransformRules::KeepRelativeTransform);
 
-		SplineNiagaras[2]->AttachToComponent(SMeshComps[1], FAttachmentTransformRules::KeepRelativeTransform);
-		SplineNiagaras[3]->AttachToComponent(SMeshComps[1], FAttachmentTransformRules::KeepRelativeTransform);
+	SplineNiagaras[0]->AttachToComponent(SMeshComps[0], FAttachmentTransformRules::KeepRelativeTransform);
+	SplineNiagaras[1]->AttachToComponent(SMeshComps[0], FAttachmentTransformRules::KeepRelativeTransform);
 
-		SplineNiagaras[4]->AttachToComponent(SMeshComps[2], FAttachmentTransformRules::KeepRelativeTransform);
-		SplineNiagaras[5]->AttachToComponent(SMeshComps[2], FAttachmentTransformRules::KeepRelativeTransform);
+	SplineNiagaras[2]->AttachToComponent(SMeshComps[1], FAttachmentTransformRules::KeepRelativeTransform);
+	SplineNiagaras[3]->AttachToComponent(SMeshComps[1], FAttachmentTransformRules::KeepRelativeTransform);
 
-		SplineNiagaras[6]->AttachToComponent(SMeshComps[3], FAttachmentTransformRules::KeepRelativeTransform);
-		SplineNiagaras[7]->AttachToComponent(SMeshComps[3], FAttachmentTransformRules::KeepRelativeTransform);
-	}
+	SplineNiagaras[4]->AttachToComponent(SMeshComps[2], FAttachmentTransformRules::KeepRelativeTransform);
+	SplineNiagaras[5]->AttachToComponent(SMeshComps[2], FAttachmentTransformRules::KeepRelativeTransform);
+
+	SplineNiagaras[6]->AttachToComponent(SMeshComps[3], FAttachmentTransformRules::KeepRelativeTransform);
+	SplineNiagaras[7]->AttachToComponent(SMeshComps[3], FAttachmentTransformRules::KeepRelativeTransform);
+
 }
 
 /*
@@ -192,12 +189,12 @@ void AEnemy::BeginPlay()
 		}
 	}
 
-	if (!SMeshContainers.IsEmpty()) {
-		SMeshComps[0]->AttachToComponent(SMeshContainers[0], FAttachmentTransformRules::KeepRelativeTransform);
-		SMeshComps[1]->AttachToComponent(SMeshContainers[1], FAttachmentTransformRules::KeepRelativeTransform);
-		SMeshComps[2]->AttachToComponent(SMeshContainers[2], FAttachmentTransformRules::KeepRelativeTransform);
-		SMeshComps[3]->AttachToComponent(SMeshContainers[3], FAttachmentTransformRules::KeepRelativeTransform);
-	}
+
+	SMeshComps[0]->AttachToComponent(SMeshContainers[0], FAttachmentTransformRules::KeepRelativeTransform);
+	SMeshComps[1]->AttachToComponent(SMeshContainers[1], FAttachmentTransformRules::KeepRelativeTransform);
+	SMeshComps[2]->AttachToComponent(SMeshContainers[2], FAttachmentTransformRules::KeepRelativeTransform);
+	SMeshComps[3]->AttachToComponent(SMeshContainers[3], FAttachmentTransformRules::KeepRelativeTransform);
+
 
 	OnActorBeginOverlap.AddUniqueDynamic(this, &AEnemy::EnterEvent);
 	OnActorEndOverlap.AddUniqueDynamic(this, &AEnemy::ExitEvent);
@@ -298,12 +295,11 @@ void AEnemy::StateManagement() {
 		FVector newScale = FMath::Lerp(startScale, endScale, currentTime);
 		GetCurrentBodyMesh()->SetWorldScale3D(newScale);
 
-		if (!SMeshContainers.IsEmpty())
-		{
-			for (int i = 0; i < SMeshContainers.Num(); i++) {
-				SMeshContainers[i]->SetWorldScale3D(newScale);
-			}
+
+		for (int i = 0; i < SMeshContainers.Num(); i++) {
+			SMeshContainers[i]->SetWorldScale3D(newScale);
 		}
+
 
 		if (currentTime >= 1.f) {
 			DoAfterDead();
@@ -407,20 +403,20 @@ void AEnemy::RemoveEnemy() {
 
 	GetCurrentBodyMesh()->SetSimulatePhysics(true);
 
-	if (!SMeshContainers.IsEmpty()) {
-		for (int i = 0; i < SMeshContainers.Num(); i++) {
-			SMeshContainers[i]->SetSimulatePhysics(true);
-		}
+
+	for (int i = 0; i < SMeshContainers.Num(); i++) {
+		SMeshContainers[i]->SetSimulatePhysics(true);
 	}
+
 
 	if (EyePivot1 != nullptr)
 		EyePivot1->SetSimulatePhysics(true);
 
-	if (!SplineNiagaras.IsEmpty()) {
-		for (int i = 0; i < SplineNiagaras.Num(); i++) {
-			SplineNiagaras[i]->Activate();
-		}
+
+	for (int i = 0; i < SplineNiagaras.Num(); i++) {
+		SplineNiagaras[i]->Activate();
 	}
+
 
 	SlurpAudioComp->Stop();
 	PopAudioComp->Play(0.f);
