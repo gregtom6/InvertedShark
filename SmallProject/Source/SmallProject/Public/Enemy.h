@@ -145,10 +145,10 @@ protected:
 
 public:
 	UFUNCTION()
-		void EnterEvent(class AActor* overlappedActor, class AActor* otherActor);
+		virtual void EnterEvent(class AActor* overlappedActor, class AActor* otherActor);
 
 	UFUNCTION()
-		void ExitEvent(class AActor* overlappedActor, class AActor* otherActor);
+		virtual void ExitEvent(class AActor* overlappedActor, class AActor* otherActor);
 	// Called every frame
 
 	virtual void MoveToCreature(float timeToStart);
@@ -164,4 +164,5 @@ enum class EnemyStatus : uint8
 	Moving,
 	Eating,
 	SpecialDying,
+	Healing,
 };
