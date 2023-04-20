@@ -25,6 +25,12 @@ protected:
 	UPROPERTY(EditAnywhere)
 		class UMaterialInstanceDynamic* MaterialInstance;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		class UAudioComponent* DeflateAudioComp;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		class USoundCue* deflateSound;
+
 	UPROPERTY(EditAnywhere)
 		FVector defaultBodyScale;
 
@@ -39,8 +45,10 @@ protected:
 
 	FLinearColor defaultColor;
 
+	float startTimeForHealingSphere;
 
 public:
+	AHealerEnemy();
 
 	virtual void EnterEvent(class AActor* overlappedActor, class AActor* otherActor) override;
 

@@ -3,6 +3,14 @@
 
 #include "HealerEnemy.h"
 #include "GameCharacter.h"
+#include "Components/SplineComponent.h"
+#include "Components/AudioComponent.h"
+#include <Sound/SoundCue.h>
+
+AHealerEnemy::AHealerEnemy() {
+	DeflateAudioComp = CreateDefaultSubobject<UAudioComponent>(TEXT("DeflateAudioComp"));
+	DeflateAudioComp->SetupAttachment(RootComponent);
+}
 
 void AHealerEnemy::BeginPlay() {
 	Super::BeginPlay();
@@ -26,6 +34,11 @@ void AHealerEnemy::BeginPlay() {
 
 
 	GetCurrentBodyMesh()->SetRelativeScale3D(defaultBodyScale);
+
+	if (DeflateAudioComp && deflateSound) {
+		UE_LOG(LogTemp, Warning, TEXT("pop sound is okay"));
+		DeflateAudioComp->SetSound(deflateSound);
+	}
 }
 
 void AHealerEnemy::EnterEvent(class AActor* overlappedActor, class AActor* otherActor) {
@@ -33,11 +46,14 @@ void AHealerEnemy::EnterEvent(class AActor* overlappedActor, class AActor* other
 
 	overlappingGameCharacter = Cast<AGameCharacter>(otherActor);
 
-	if (overlappingGameCharacter != nullptr && overlappingGameCharacter->GetStatus() == GameCharacterStatus::Calm) {
+	if (actualStatus != EnemyStatus::Healing && overlappingGameCharacter != nullptr && overlappingGameCharacter->GetStatus() == GameCharacterStatus::Calm) {
 		actualStatus = EnemyStatus::Healing;
 		startTime = GetWorld()->GetTimeSeconds();
 		startScale = GetCurrentBodyMesh()->GetRelativeScale3D();
 		endScale = FVector::OneVector;
+
+
+		DeflateAudioComp->Play(0.f);
 	}
 }
 
@@ -64,12 +80,24 @@ void AHealerEnemy::Tick(float DeltaTime) {
 			currentTime = 1.f;
 			actualStatus = EnemyStatus::Eating;
 		}
-		
+
 
 		FVector newScale = FMath::Lerp(startScale, endScale, currentTime);
- 		GetCurrentBodyMesh()->SetRelativeScale3D(newScale);
+		GetCurrentBodyMesh()->SetRelativeScale3D(newScale);
 		FLinearColor currentColor = FMath::Lerp(defaultColor, targetColor, currentTime);
 		MaterialInstance->SetVectorParameterValue("Color", currentColor);
+
+
+		currentTime = GetWorld()->GetTimeSeconds() - startTimeForHealingSphere;
+		currentTime *= 2.f;
+		if (currentTime >= 1.f)
+			startTimeForHealingSphere = GetWorld()->GetTimeSeconds();
+
+		float SplineLength = splineComponent->GetSplineLength();
+		float SplineDistance = SplineLength * currentTime;
+		FVector Position = splineComponent->GetLocationAtDistanceAlongSpline(SplineDistance, ESplineCoordinateSpace::World);
+
+		SwallowSphere->SetWorldLocation(Position);
 	}
 }
 
