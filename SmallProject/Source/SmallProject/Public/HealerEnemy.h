@@ -20,6 +20,12 @@ protected:
 	virtual void Tick(float DeltaTime) override;
 	virtual UStaticMeshComponent* GetCurrentBodyMesh();
 
+	UFUNCTION()
+		void TriggerEnter(class UPrimitiveComponent* HitComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION()
+		void TriggerExit(class UPrimitiveComponent* HitComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
 	UPROPERTY(EditAnywhere)
 		class UStaticMeshComponent* BodyMesh;
 
@@ -52,11 +58,6 @@ protected:
 
 public:
 	AHealerEnemy();
-
-	virtual void EnterEvent(class AActor* overlappedActor, class AActor* otherActor) override;
-
-
-	virtual void ExitEvent(class AActor* overlappedActor, class AActor* otherActor) override;
 
 	float GetPercentageOfMaxLifeToHealBack();
 

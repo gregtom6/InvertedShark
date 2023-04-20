@@ -40,12 +40,14 @@ void AHealerEnemy::BeginPlay() {
 		UE_LOG(LogTemp, Warning, TEXT("pop sound is okay"));
 		DeflateAudioComp->SetSound(deflateSound);
 	}
+
+	GetCurrentBodyMesh()->OnComponentBeginOverlap.AddUniqueDynamic(this, &AHealerEnemy::TriggerEnter);
+	GetCurrentBodyMesh()->OnComponentEndOverlap.AddUniqueDynamic(this, &AHealerEnemy::TriggerExit);
 }
 
-void AHealerEnemy::EnterEvent(class AActor* overlappedActor, class AActor* otherActor) {
-	Super::EnterEvent(overlappedActor, otherActor);
-
-	overlappingGameCharacter = Cast<AGameCharacter>(otherActor);
+void AHealerEnemy::TriggerEnter(class UPrimitiveComponent* HitComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult){
+	
+	overlappingGameCharacter = Cast<AGameCharacter>(OtherActor);
 
 	if (canHealingStarted && actualStatus != EnemyStatus::Healing && overlappingGameCharacter != nullptr && overlappingGameCharacter->GetStatus() == GameCharacterStatus::Calm) {
 		actualStatus = EnemyStatus::Healing;
@@ -60,9 +62,9 @@ void AHealerEnemy::EnterEvent(class AActor* overlappedActor, class AActor* other
 	}
 }
 
-void AHealerEnemy::ExitEvent(class AActor* overlappedActor, class AActor* otherActor) {
-	if (otherActor && otherActor != this) {
-		if (otherActor->IsA(AGameCharacter::StaticClass())) {
+void AHealerEnemy::TriggerExit(class UPrimitiveComponent* HitComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex){
+	if (OtherActor && OtherActor != this) {
+		if (OtherActor->IsA(AGameCharacter::StaticClass())) {
 
 			overlappingGameCharacter = nullptr;
 
