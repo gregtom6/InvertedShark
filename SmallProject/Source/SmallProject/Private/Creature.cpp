@@ -9,6 +9,7 @@
 #include "Components/AudioComponent.h"
 #include "Components/BoxComponent.h"
 #include "Enemy.h"
+#include "HealerEnemy.h"
 #include "GameCharacter.h"
 #include <Sound/SoundCue.h >
 #include <Kismet/KismetMathLibrary.h>
@@ -31,7 +32,7 @@ ACreature::ACreature(const FObjectInitializer& ObjectInitializer)
 	RightEye = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RightEye"));
 	RightEye->SetupAttachment(WhaleAudioComp);
 
-	
+
 }
 
 /*
@@ -272,7 +273,23 @@ void ACreature::HeadStateManagement() {
 creature health management. Decrease depends on the currently attacking enemy count. Restarting level, when creature died.
 */
 void ACreature::HealthManagement(float DeltaTime) {
-	Health = Health > 0 ? Health - (deltaDamage * DeltaTime * enemiesActuallyAttacking.Num()) : 0;
+
+	if (actualStatus == Status::UnderAttack)
+		Health = Health > 0 ? Health - (deltaDamage * DeltaTime * enemiesActuallyAttacking.Num()) : 0;
+	else if (actualStatus == Status::Healing && attackingHealer != nullptr) {
+
+		float deltaHeal = MaxHealth * attackingHealer->GetPercentageOfMaxLifeToHealBack();
+
+		float currentTime = GetWorld()->GetTimeSeconds() - startTime;
+
+		currentTime /= attackingHealer->GetTimeForHeal();
+
+		Health = Health < MaxHealth ? actualHealthWhenStartedHealing + (deltaHeal * currentTime) : MaxHealth;
+	}
+
+	if (actualStatus == Status::Healing && Health == MaxHealth && enemiesActuallyAttacking.Num() > 0) {
+		actualStatus = Status::UnderAttack;
+	}
 
 	if (Health <= 0) {
 		UGameplayStatics::OpenLevel(this, FName(*GetWorld()->GetName()), false);
@@ -293,6 +310,11 @@ void ACreature::EnterEvent(class AActor* overlappedActor, class AActor* otherAct
 			AEnemy* attackingEnemy = Cast<AEnemy>(otherActor);
 			if (!enemiesActuallyAttacking.Contains(attackingEnemy))
 				enemiesActuallyAttacking.Add(attackingEnemy);
+
+			if (attackingEnemy->IsA(AHealerEnemy::StaticClass())) {
+				attackingHealer = Cast<AHealerEnemy>(attackingEnemy);
+			}
+
 			actualStatus = Status::UnderAttack;
 		}
 	}
@@ -312,6 +334,10 @@ void ACreature::ExitEvent(class AActor* overlappedActor, class AActor* otherActo
 				WhaleAudioComp->Play(0.f);
 				startTime = GetWorld()->GetTimeSeconds();
 				actualStatus = Status::WaitBeforeMoveFast;
+			}
+
+			if (attackingEnemy->IsA(AHealerEnemy::StaticClass())) {
+				attackingHealer = nullptr;
 			}
 		}
 	}
@@ -348,6 +374,12 @@ void ACreature::TriggerExit(class UPrimitiveComponent* HitComp, class AActor* Ot
 			isCharInFur = false;
 		}
 	}
+}
+
+void ACreature::HealingStarted() {
+	actualStatus = Status::Healing;
+	startTime = GetWorld()->GetTimeSeconds();
+	actualHealthWhenStartedHealing = Health;
 }
 
 /*

@@ -6,6 +6,7 @@
 #include "Components/SplineComponent.h"
 #include "Components/AudioComponent.h"
 #include <Sound/SoundCue.h>
+#include "Creature.h"
 
 AHealerEnemy::AHealerEnemy() {
 	DeflateAudioComp = CreateDefaultSubobject<UAudioComponent>(TEXT("DeflateAudioComp"));
@@ -46,14 +47,16 @@ void AHealerEnemy::EnterEvent(class AActor* overlappedActor, class AActor* other
 
 	overlappingGameCharacter = Cast<AGameCharacter>(otherActor);
 
-	if (actualStatus != EnemyStatus::Healing && overlappingGameCharacter != nullptr && overlappingGameCharacter->GetStatus() == GameCharacterStatus::Calm) {
+	if (canHealingStarted && actualStatus != EnemyStatus::Healing && overlappingGameCharacter != nullptr && overlappingGameCharacter->GetStatus() == GameCharacterStatus::Calm) {
 		actualStatus = EnemyStatus::Healing;
 		startTime = GetWorld()->GetTimeSeconds();
 		startScale = GetCurrentBodyMesh()->GetRelativeScale3D();
 		endScale = FVector::OneVector;
-
+		creature->HealingStarted();
 
 		DeflateAudioComp->Play(0.f);
+
+		canHealingStarted = false;
 	}
 }
 
@@ -103,4 +106,12 @@ void AHealerEnemy::Tick(float DeltaTime) {
 
 UStaticMeshComponent* AHealerEnemy::GetCurrentBodyMesh() {
 	return BodyMesh;
+}
+
+float AHealerEnemy::GetPercentageOfMaxLifeToHealBack() {
+	return percentageOfMaxLifeToHealBack;
+}
+
+float AHealerEnemy::GetTimeForHeal() {
+	return timeForHeal;
 }

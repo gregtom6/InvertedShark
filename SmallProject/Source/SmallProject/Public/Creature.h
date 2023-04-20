@@ -35,6 +35,9 @@ protected:
 
 	void StateManagement();
 
+	class AHealerEnemy* attackingHealer;
+	float actualHealthWhenStartedHealing;
+
 	FRotator startHeadRotation;
 	FRotator targetHeadRotation;
 
@@ -135,6 +138,7 @@ public:
 	FVector GetLocation() const { return GetActorLocation(); }
 	bool IsCharacterInFur();
 	void GetHugged();
+	void HealingStarted();
 	Status GetStatus();
 };
 
@@ -149,6 +153,7 @@ enum class Status : uint8
 	WaitBeforeMoveFast,
 	WaitAfterHuggedByPlayer,
 	RotatingTowardsTarget,
+	Healing,
 };
 
 UENUM()

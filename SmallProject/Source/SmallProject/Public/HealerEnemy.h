@@ -15,6 +15,7 @@ class SMALLPROJECT_API AHealerEnemy : public AEnemy
 	GENERATED_BODY()
 
 protected:
+
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 	virtual UStaticMeshComponent* GetCurrentBodyMesh();
@@ -47,6 +48,8 @@ protected:
 
 	float startTimeForHealingSphere;
 
+	bool canHealingStarted = true;
+
 public:
 	AHealerEnemy();
 
@@ -54,4 +57,8 @@ public:
 
 
 	virtual void ExitEvent(class AActor* overlappedActor, class AActor* otherActor) override;
+
+	float GetPercentageOfMaxLifeToHealBack();
+
+	float GetTimeForHeal();
 };
