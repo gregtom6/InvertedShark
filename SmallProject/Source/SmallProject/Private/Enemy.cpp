@@ -65,7 +65,15 @@ AEnemy::AEnemy()
 
 	RightEyeLid22 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RightEyeLid22"));
 
-	
+	EyePivot2->AttachToComponent(Body12, FAttachmentTransformRules::KeepRelativeTransform);
+	LeftEyeWhite2->AttachToComponent(EyePivot2, FAttachmentTransformRules::KeepRelativeTransform);
+	LeftEyeBlack2->AttachToComponent(LeftEyeWhite2, FAttachmentTransformRules::KeepRelativeTransform);
+	LeftEyeLid12->AttachToComponent(LeftEyeWhite2, FAttachmentTransformRules::KeepRelativeTransform);
+	LeftEyeLid22->AttachToComponent(LeftEyeWhite2, FAttachmentTransformRules::KeepRelativeTransform);
+	RightEyeWhite2->AttachToComponent(EyePivot2, FAttachmentTransformRules::KeepRelativeTransform);
+	RightEyeBlack2->AttachToComponent(RightEyeWhite2, FAttachmentTransformRules::KeepRelativeTransform);
+	RightEyeLid22->AttachToComponent(RightEyeWhite2, FAttachmentTransformRules::KeepRelativeTransform);
+	RightEyeLid12->AttachToComponent(RightEyeWhite2, FAttachmentTransformRules::KeepRelativeTransform);
 }
 
 /*
