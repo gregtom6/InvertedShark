@@ -16,18 +16,6 @@ AHealerEnemy::AHealerEnemy() {
 void AHealerEnemy::BeginPlay() {
 	Super::BeginPlay();
 
-	TArray<UStaticMeshComponent*> StaticMeshComponents;
-	GetComponents<UStaticMeshComponent>(StaticMeshComponents);
-
-	for (int i = 0; i < StaticMeshComponents.Num(); i++)
-	{
-		if (StaticMeshComponents[i]->GetFName() == FName("Body"))
-		{
-			BodyMesh = StaticMeshComponents[i];
-			break;
-		}
-	}
-
 	MaterialInstance = GetCurrentBodyMesh()->CreateDynamicMaterialInstance(0);
 
 	FHashedMaterialParameterInfo ParameterInfo("Color");
@@ -107,7 +95,7 @@ void AHealerEnemy::Tick(float DeltaTime) {
 }
 
 UStaticMeshComponent* AHealerEnemy::GetCurrentBodyMesh() {
-	return BodyMesh;
+	return Body12;
 }
 
 float AHealerEnemy::GetPercentageOfMaxLifeToHealBack() {

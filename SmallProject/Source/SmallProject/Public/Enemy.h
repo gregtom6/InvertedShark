@@ -98,12 +98,38 @@ protected:
 		class UStaticMeshComponent* SwallowSphere;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spline")
-		class UStaticMeshComponent* Body1;
+		class UStaticMeshComponent* Body12;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spline")
 		TEnumAsByte<ESplineMeshAxis::Type> forwardAxis;
+
 	UPROPERTY(EditAnywhere)
-		class UStaticMeshComponent* EyePivot1;
+		class UStaticMeshComponent* EyePivot2;
+
+	UPROPERTY(EditAnywhere)
+		class UStaticMeshComponent* LeftEyeWhite2;
+
+	UPROPERTY(EditAnywhere)
+		class UStaticMeshComponent* LeftEyeBlack2;
+
+	UPROPERTY(EditAnywhere)
+		class UStaticMeshComponent* LeftEyeLid12;
+
+	UPROPERTY(EditAnywhere)
+		class UStaticMeshComponent* LeftEyeLid22;
+
+	UPROPERTY(EditAnywhere)
+		class UStaticMeshComponent* RightEyeWhite2;
+
+	UPROPERTY(EditAnywhere)
+		class UStaticMeshComponent* RightEyeBlack2;
+
+	UPROPERTY(EditAnywhere)
+		class UStaticMeshComponent* RightEyeLid12;
+
+	UPROPERTY(EditAnywhere)
+		class UStaticMeshComponent* RightEyeLid22;
+
 
 	UPROPERTY(EditAnywhere)
 		class ACreature* creature;

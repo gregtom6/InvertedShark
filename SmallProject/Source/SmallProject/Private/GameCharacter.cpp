@@ -271,7 +271,8 @@ void AGameCharacter::Dash() {
 	}
 	
 	FFrameTime FirstFrameTime(0);
-	loopedEyePlayer->JumpToFrame(FirstFrameTime);
+	//C:\WORK\Sajat\SmallProject\SmallProject\Source\SmallProject\Private\GameCharacter.cpp(274): warning C4996: 'UMovieSceneSequencePlayer::JumpToFrame': JumpToFrame is deprecated, use SetPlaybackPosition. Please update your code to the new API before upgrading to the next release, otherwise your project will no longer compile.
+	//loopedEyePlayer->JumpToFrame(FirstFrameTime);
 	loopedEyePlayer->Stop();
 	sneezeBlinkPlayer->Play();
 

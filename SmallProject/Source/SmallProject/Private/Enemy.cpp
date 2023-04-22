@@ -11,7 +11,6 @@
 #include <Sound/SoundCue.h >
 #include "NiagaraComponent.h"
 
-
 AEnemy::AEnemy()
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -44,6 +43,29 @@ AEnemy::AEnemy()
 	SwallowSphere->SetupAttachment(RootComponent);
 
 	actualStatus = EnemyStatus::Initial;
+
+	Body12 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Body12"));
+	Body12->SetupAttachment(RootComponent);
+
+	EyePivot2= CreateDefaultSubobject<UStaticMeshComponent>(TEXT("EyePivot2"));
+
+	LeftEyeWhite2 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("LeftEyeWhite2"));
+
+	LeftEyeBlack2 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("LeftEyeBlack2"));
+
+	LeftEyeLid12 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("LeftEyeLid12"));
+
+	LeftEyeLid22 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("LeftEyeLid22"));
+
+	RightEyeWhite2 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RightEyeWhite2"));
+
+	RightEyeBlack2 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RightEyeBlack2"));
+
+	RightEyeLid12 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RightEyeLid12"));
+
+	RightEyeLid22 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RightEyeLid22"));
+
+	
 }
 
 /*
@@ -175,25 +197,23 @@ void AEnemy::BeginPlay()
 
 	actualLife = maxLife;
 
-	TArray<UStaticMeshComponent*> StaticMeshComponents;
-	GetComponents<UStaticMeshComponent>(StaticMeshComponents);
-
-	for (int i = 0; i < StaticMeshComponents.Num(); i++)
-	{
-		if (StaticMeshComponents[i]->GetFName() == FName("Body"))
-		{
-			Body1 = StaticMeshComponents[i];
-		}
-		else if (StaticMeshComponents[i]->GetFName() == FName("EyePivot")) {
-			EyePivot1 = StaticMeshComponents[i];
-		}
-	}
-
 
 	SMeshComps[0]->AttachToComponent(SMeshContainers[0], FAttachmentTransformRules::KeepRelativeTransform);
 	SMeshComps[1]->AttachToComponent(SMeshContainers[1], FAttachmentTransformRules::KeepRelativeTransform);
 	SMeshComps[2]->AttachToComponent(SMeshContainers[2], FAttachmentTransformRules::KeepRelativeTransform);
 	SMeshComps[3]->AttachToComponent(SMeshContainers[3], FAttachmentTransformRules::KeepRelativeTransform);
+
+
+
+	EyePivot2->AttachToComponent(Body12, FAttachmentTransformRules::KeepRelativeTransform);
+	LeftEyeWhite2->AttachToComponent(EyePivot2, FAttachmentTransformRules::KeepRelativeTransform);
+	LeftEyeBlack2->AttachToComponent(LeftEyeWhite2, FAttachmentTransformRules::KeepRelativeTransform);
+	LeftEyeLid12->AttachToComponent(LeftEyeWhite2, FAttachmentTransformRules::KeepRelativeTransform);
+	LeftEyeLid22->AttachToComponent(LeftEyeWhite2, FAttachmentTransformRules::KeepRelativeTransform);
+	RightEyeWhite2->AttachToComponent(EyePivot2, FAttachmentTransformRules::KeepRelativeTransform);
+	RightEyeBlack2->AttachToComponent(RightEyeWhite2, FAttachmentTransformRules::KeepRelativeTransform);
+	RightEyeLid22->AttachToComponent(RightEyeWhite2, FAttachmentTransformRules::KeepRelativeTransform);
+	RightEyeLid12->AttachToComponent(RightEyeWhite2, FAttachmentTransformRules::KeepRelativeTransform);
 
 
 	OnActorBeginOverlap.AddUniqueDynamic(this, &AEnemy::EnterEvent);
@@ -245,12 +265,12 @@ void AEnemy::StateManagement() {
 			startTime = GetWorld()->GetTimeSeconds();
 			actualStatus = EnemyStatus::Moving;
 
-			if (EyePivot1 != nullptr) {
-				FVector Direction = creature->GetActorLocation() - EyePivot1->GetComponentLocation();
+			if (EyePivot2 != nullptr) {
+				FVector Direction = creature->GetActorLocation() - EyePivot2->GetComponentLocation();
 				Direction.Normalize();
 				FRotator targetRotation = Direction.Rotation();
 				targetRotation.Yaw -= 90.f;
-				EyePivot1->SetWorldRotation(targetRotation);
+				EyePivot2->SetWorldRotation(targetRotation);
 			}
 
 		}
@@ -412,8 +432,8 @@ void AEnemy::RemoveEnemy() {
 	}
 
 
-	if (EyePivot1 != nullptr)
-		EyePivot1->SetSimulatePhysics(true);
+	if (EyePivot2 != nullptr)
+		EyePivot2->SetSimulatePhysics(true);
 
 
 	for (int i = 0; i < SplineNiagaras.Num(); i++) {
@@ -429,7 +449,7 @@ void AEnemy::RemoveEnemy() {
 }
 
 UStaticMeshComponent* AEnemy::GetCurrentBodyMesh() {
-	return Body1;
+	return Body12;
 }
 
 /*

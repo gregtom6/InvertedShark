@@ -27,9 +27,6 @@ protected:
 		void TriggerExit(class UPrimitiveComponent* HitComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
 	UPROPERTY(EditAnywhere)
-		class UStaticMeshComponent* BodyMesh;
-
-	UPROPERTY(EditAnywhere)
 		class UMaterialInstanceDynamic* MaterialInstance;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
