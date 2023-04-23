@@ -51,6 +51,8 @@ protected:
 
 	float actualLife;
 
+	float originalLifeBeforeAttack;
+
 	class USplineMeshComponent* prevSplineMeshComp;
 
 	float currentTime;
@@ -180,6 +182,10 @@ public:
 	virtual void MoveToCreature(float timeToStart);
 
 	void StartEating();
+
+	float GetOriginalLifeBeforeAttack();
+
+	void OriginalLifeRepresentationEnded();
 };
 
 UENUM()

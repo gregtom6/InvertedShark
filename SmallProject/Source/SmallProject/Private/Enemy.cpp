@@ -205,6 +205,8 @@ void AEnemy::BeginPlay()
 
 	actualLife = maxLife;
 
+	originalLifeBeforeAttack = actualLife;
+
 
 	SMeshComps[0]->AttachToComponent(SMeshContainers[0], FAttachmentTransformRules::KeepRelativeTransform);
 	SMeshComps[1]->AttachToComponent(SMeshContainers[1], FAttachmentTransformRules::KeepRelativeTransform);
@@ -466,6 +468,14 @@ normal enemies just get destroyed, this is overriden in the bossenemy
 */
 void AEnemy::DoAfterDead() {
 	Destroy();
+}
+
+float AEnemy::GetOriginalLifeBeforeAttack() {
+	return originalLifeBeforeAttack;
+}
+
+void AEnemy::OriginalLifeRepresentationEnded() {
+	originalLifeBeforeAttack = actualLife;
 }
 
 /*

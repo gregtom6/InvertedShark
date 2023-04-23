@@ -18,6 +18,26 @@ protected:
 	UPROPERTY(meta = (BindWidget))
 		class UProgressBar* bosslifebar;
 
+	UPROPERTY(meta = (BindWidget))
+		class UProgressBar* bossdeltadecrease;
+
+	UPROPERTY(EditAnywhere)
+		float timeUntilDeltaDecreaseStartDisappear;
+
+	UPROPERTY(EditAnywhere)
+		float timeForDisappear;
+
+	BossLifeStatus bossLifeStatus;
+	float startTime;
+
 public:
 	class ABossEnemy* boss;
+};
+
+UENUM()
+enum class BossLifeStatus : uint8
+{
+	Normal,
+	WaitUntilDecrease,
+	Decrease,
 };
