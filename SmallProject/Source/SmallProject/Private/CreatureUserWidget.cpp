@@ -7,7 +7,9 @@
 
 void UCreatureUserWidget::NativeConstruct() {
 	Super::NativeConstruct();
-	
+
+	IncreaseDeltaBar->SetPercent(0.f);
+
 }
 
 /*
@@ -19,5 +21,12 @@ void UCreatureUserWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaT
 
 	if (creature != nullptr) {
 		HealthBar->SetPercent(creature->GetHealth() / creature->GetMaxHealth());
+
+		if (creature->GetStatus() == Status::Healing) {
+			IncreaseDeltaBar->SetPercent(creature->GetDeltaIncreaseHealth());
+		}
+		else if (IncreaseDeltaBar->GetPercent() != 0.f) {
+			IncreaseDeltaBar->SetPercent(0.f);
+		}
 	}
 }

@@ -278,7 +278,7 @@ void ACreature::HealthManagement(float DeltaTime) {
 		Health = Health > 0 ? Health - (deltaDamage * DeltaTime * enemiesActuallyAttacking.Num()) : 0;
 	else if (actualStatus == Status::Healing && attackingHealer != nullptr) {
 
-		float deltaHeal = MaxHealth * attackingHealer->GetPercentageOfMaxLifeToHealBack();
+		deltaHeal = MaxHealth * attackingHealer->GetPercentageOfMaxLifeToHealBack();
 
 		float currentTime = GetWorld()->GetTimeSeconds() - startTime;
 

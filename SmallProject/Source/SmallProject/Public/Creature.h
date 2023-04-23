@@ -58,6 +58,8 @@ protected:
 
 	float Health;
 
+	float deltaHeal;
+
 	int actualTargetIndex = 0;
 
 	TArray<AActor*> enemiesActuallyAttacking;
@@ -135,6 +137,7 @@ public:
 
 	float GetHealth() const { return Health; }
 	float GetMaxHealth() const { return MaxHealth; }
+	float GetDeltaIncreaseHealth() const { return actualHealthWhenStartedHealing + deltaHeal; }
 	FVector GetLocation() const { return GetActorLocation(); }
 	bool IsCharacterInFur();
 	void GetHugged();

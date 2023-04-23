@@ -6,7 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "CreatureUserWidget.generated.h"
 
-UCLASS(Abstract)
+UCLASS()
 class SMALLPROJECT_API UCreatureUserWidget : public UUserWidget
 {
 	GENERATED_BODY()
@@ -17,6 +17,8 @@ protected:
 
 	UPROPERTY(meta = (BindWidget))
 		class UProgressBar* HealthBar;
+	UPROPERTY(meta = (BindWidget))
+		class UProgressBar* IncreaseDeltaBar;
 		
 public:
 	class ACreature* creature;
