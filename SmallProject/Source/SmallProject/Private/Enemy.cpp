@@ -278,7 +278,7 @@ void AEnemy::StateManagement() {
 				Direction.Normalize();
 				FRotator targetRotation = Direction.Rotation();
 				targetRotation.Yaw -= 90.f;
-				EyePivot2->SetWorldRotation(targetRotation);
+				EyePivot2->SetRelativeRotation(targetRotation);
 			}
 
 		}
