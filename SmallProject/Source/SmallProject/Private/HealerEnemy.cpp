@@ -33,11 +33,11 @@ void AHealerEnemy::BeginPlay() {
 	GetCurrentBodyMesh()->OnComponentEndOverlap.AddUniqueDynamic(this, &AHealerEnemy::TriggerExit);
 }
 
-void AHealerEnemy::TriggerEnter(class UPrimitiveComponent* HitComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult){
-	
+void AHealerEnemy::TriggerEnter(class UPrimitiveComponent* HitComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) {
+
 	overlappingGameCharacter = Cast<AGameCharacter>(OtherActor);
 
-	if (canHealingStarted && actualStatus != EnemyStatus::Healing && overlappingGameCharacter != nullptr && overlappingGameCharacter->GetStatus() == GameCharacterStatus::Calm) {
+	if (canHealingStarted && actualStatus != EnemyStatus::Healing && actualStatus != EnemyStatus::SpecialDying && overlappingGameCharacter != nullptr && overlappingGameCharacter->GetStatus() == GameCharacterStatus::Calm) {
 		actualStatus = EnemyStatus::Healing;
 		startTime = GetWorld()->GetTimeSeconds();
 		startScale = GetCurrentBodyMesh()->GetRelativeScale3D();
@@ -50,7 +50,7 @@ void AHealerEnemy::TriggerEnter(class UPrimitiveComponent* HitComp, class AActor
 	}
 }
 
-void AHealerEnemy::TriggerExit(class UPrimitiveComponent* HitComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex){
+void AHealerEnemy::TriggerExit(class UPrimitiveComponent* HitComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) {
 	if (OtherActor && OtherActor != this) {
 		if (OtherActor->IsA(AGameCharacter::StaticClass())) {
 

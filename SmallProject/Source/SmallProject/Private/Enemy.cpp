@@ -47,7 +47,7 @@ AEnemy::AEnemy()
 	Body12 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Body12"));
 	Body12->SetupAttachment(RootComponent);
 
-	EyePivot2= CreateDefaultSubobject<UStaticMeshComponent>(TEXT("EyePivot2"));
+	EyePivot2 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("EyePivot2"));
 
 	LeftEyeWhite2 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("LeftEyeWhite2"));
 
@@ -308,7 +308,8 @@ void AEnemy::StateManagement() {
 		float SplineDistance = SplineLength * (1.f - currentTime);
 		FVector Position = splineComponent->GetLocationAtDistanceAlongSpline(SplineDistance, ESplineCoordinateSpace::World);
 
-		SwallowSphere->SetWorldLocation(Position);
+		if (SwallowSphere != nullptr)
+			SwallowSphere->SetWorldLocation(Position);
 	}
 
 	else if (actualStatus == EnemyStatus::SpecialDying) {
