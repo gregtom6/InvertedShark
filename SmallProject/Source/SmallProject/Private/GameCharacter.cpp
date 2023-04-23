@@ -20,6 +20,7 @@
 #include "NiagaraComponent.h"
 #include "ActorSequenceComponent.h"
 #include "ActorSequencePlayer.h"
+#include "GameFramework/PlayerController.h"
 
 
 // Sets default values
@@ -49,7 +50,7 @@ AGameCharacter::AGameCharacter(const FObjectInitializer& ObjectInitializer)
 
 	DashAudio = CreateDefaultSubobject<UAudioComponent>(TEXT("DashAudio"));
 
-	SneezeAudio= CreateDefaultSubobject<UAudioComponent>(TEXT("SneezeAudio"));
+	SneezeAudio = CreateDefaultSubobject<UAudioComponent>(TEXT("SneezeAudio"));
 
 	Spark = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Spark"));
 
@@ -115,7 +116,7 @@ wing beat movement of game character
 */
 void AGameCharacter::WingBeat() {
 
-	if (isHugging || actualStatus == GameCharacterStatus::Dead || actualStatus == GameCharacterStatus::Dash) { return; }
+	if (isHugging || actualStatus == GameCharacterStatus::Dead || actualStatus == GameCharacterStatus::UpDash) { return; }
 
 	if (actualEnergy < energyDecreaseAfterWingBeat) { return; }
 
@@ -216,7 +217,7 @@ attack ability
 */
 void AGameCharacter::Attack() {
 
-	if (actualStatus == GameCharacterStatus::Attack || isHugging || actualStatus == GameCharacterStatus::Dead || actualStatus == GameCharacterStatus::Dash) { return; }
+	if (actualStatus == GameCharacterStatus::Attack || isHugging || actualStatus == GameCharacterStatus::Dead || actualStatus == GameCharacterStatus::UpDash) { return; }
 
 	UE_LOG(LogTemp, Warning, TEXT("attack happened"));
 
@@ -232,12 +233,36 @@ void AGameCharacter::Attack() {
 dash ability
 */
 void AGameCharacter::Dash() {
-	if (isHugging || actualStatus == GameCharacterStatus::Dead || actualStatus == GameCharacterStatus::Dash || actualStatus == GameCharacterStatus::Attack) { return; }
+	if (isHugging || actualStatus == GameCharacterStatus::Dead || actualStatus == GameCharacterStatus::UpDash || actualStatus == GameCharacterStatus::Attack) { return; }
 
+
+	APlayerController* thisCont = GetWorld()->GetFirstPlayerController();
+	if (thisCont->IsInputKeyDown(EKeys::S)) {
+		actualStatus = GameCharacterStatus::DownDash;
+		DownDash();
+	}
+	else {
+
+		actualStatus = GameCharacterStatus::UpDash;
+		UpDash();
+	}
+
+}
+
+void AGameCharacter::DownDash() {
+
+	FVector actorDownVector = -GetActorUpVector() * dashStrength;
+	FVector impulseDirection = actorDownVector;
+
+	CameraMesh->SetAllPhysicsLinearVelocity(FVector::ZeroVector);
+
+	CameraMesh->AddImpulse(impulseDirection);
+
+	startTime = GetWorld()->GetTimeSeconds();
+}
+
+void AGameCharacter::UpDash() {
 	if (actualEnergy < energyDecreaseAfterDash) { return; }
-
-	actualStatus = GameCharacterStatus::Dash;
-
 	FVector actorUpVector = GetActorUpVector() * dashStrength;
 	FVector impulseDirection = actorUpVector;
 
@@ -269,17 +294,18 @@ void AGameCharacter::Dash() {
 			}
 		}
 	}
-	
-	FFrameTime FirstFrameTime(0);
+
+	//FFrameTime FirstFrameTime(0);
 	//C:\WORK\Sajat\SmallProject\SmallProject\Source\SmallProject\Private\GameCharacter.cpp(274): warning C4996: 'UMovieSceneSequencePlayer::JumpToFrame': JumpToFrame is deprecated, use SetPlaybackPosition. Please update your code to the new API before upgrading to the next release, otherwise your project will no longer compile.
 	//loopedEyePlayer->JumpToFrame(FirstFrameTime);
+	FMovieSceneSequencePlaybackParams FirstFrame(0.f, EUpdatePositionMethod::Play);
+	loopedEyePlayer->SetPlaybackPosition(FirstFrame);
 	loopedEyePlayer->Stop();
 	sneezeBlinkPlayer->Play();
 
 	leftNoseSneezeNiagara->Activate(true);
 	rightNoseSneezeNiagara->Activate(true);
 }
-
 
 /*
 game can be paused with this function. Managing cursor state and adding or removing pause widget to viewport
@@ -405,22 +431,22 @@ void AGameCharacter::BeginPlay()
 	{
 		skeletal->SetupAttachment(CameraMesh);
 	}
-	
+
 	TArray<UActorSequenceComponent*> ActorSequenceComponents;
 	GetComponents<UActorSequenceComponent>(ActorSequenceComponents);
 
-	for (int i=0;i<ActorSequenceComponents.Num();i++)
+	for (int i = 0; i < ActorSequenceComponents.Num(); i++)
 	{
-		if (ActorSequenceComponents[i]->GetFName()==FName("loopedeye"))
+		if (ActorSequenceComponents[i]->GetFName() == FName("loopedeye"))
 		{
 			loopedEyePlayer = ActorSequenceComponents[i]->GetSequencePlayer();
 		}
-		else if (ActorSequenceComponents[i]->GetFName()==FName("sneezeblink"))
+		else if (ActorSequenceComponents[i]->GetFName() == FName("sneezeblink"))
 		{
 			sneezeBlinkPlayer = ActorSequenceComponents[i]->GetSequencePlayer();
 			FScriptDelegate funcDelegate;
 			funcDelegate.BindUFunction(this, FName("SneezeBlinkEnded"));
-			sneezeBlinkPlayer->OnFinished.AddUnique(funcDelegate);	
+			sneezeBlinkPlayer->OnFinished.AddUnique(funcDelegate);
 		}
 	}
 
@@ -546,7 +572,7 @@ void AGameCharacter::TimeManagement() {
 slowing down velocity of player, when it needs
 */
 void AGameCharacter::VelocityManagement(FVector& currentVelocity) {
-	if (actualStatus != GameCharacterStatus::Dead && actualStatus != GameCharacterStatus::Dash) {
+	if (actualStatus != GameCharacterStatus::Dead && actualStatus != GameCharacterStatus::UpDash && actualStatus != GameCharacterStatus::DownDash) {
 		FVector clampedVelocity = currentVelocity.GetClampedToMaxSize(velocityLimit);
 		CameraMesh->SetPhysicsLinearVelocity(clampedVelocity);
 	}
@@ -569,7 +595,16 @@ void AGameCharacter::StateManagement() {
 		}
 	}
 
-	else if (actualStatus == GameCharacterStatus::Dash) {
+	else if (actualStatus == GameCharacterStatus::UpDash) {
+
+		float currentTime = GetWorld()->GetTimeSeconds() - startTime;
+
+		if (currentTime >= dashCooldownTime) {
+			actualStatus = GameCharacterStatus::Calm;
+		}
+	}
+
+	else if (actualStatus == GameCharacterStatus::DownDash) {
 
 		float currentTime = GetWorld()->GetTimeSeconds() - startTime;
 

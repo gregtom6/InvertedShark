@@ -37,7 +37,7 @@ void AHealerEnemy::TriggerEnter(class UPrimitiveComponent* HitComp, class AActor
 
 	overlappingGameCharacter = Cast<AGameCharacter>(OtherActor);
 
-	if (canHealingStarted && actualStatus != EnemyStatus::Healing && actualStatus != EnemyStatus::SpecialDying && overlappingGameCharacter != nullptr && overlappingGameCharacter->GetStatus() == GameCharacterStatus::Calm) {
+	if (canHealingStarted && actualStatus != EnemyStatus::Healing && actualStatus != EnemyStatus::SpecialDying && overlappingGameCharacter != nullptr && overlappingGameCharacter->GetStatus() == GameCharacterStatus::DownDash) {
 		actualStatus = EnemyStatus::Healing;
 		startTime = GetWorld()->GetTimeSeconds();
 		startScale = GetCurrentBodyMesh()->GetRelativeScale3D();

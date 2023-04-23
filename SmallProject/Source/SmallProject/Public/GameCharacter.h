@@ -29,6 +29,10 @@ private:
 
 	void Dash();
 
+	void UpDash();
+
+	void DownDash();
+
 	void StateManagement();
 
 	void EnergyManagement(float DeltaTime, FVector& currentVelocity);
@@ -269,7 +273,8 @@ enum class GameCharacterStatus : uint8
 {
 	Calm,
 	Attack,
-	Dash,
+	UpDash,
+	DownDash,
 	Dead,
 };
 
