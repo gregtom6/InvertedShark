@@ -20,6 +20,8 @@ protected:
 	virtual void Tick(float DeltaTime) override;
 	virtual UStaticMeshComponent* GetCurrentBodyMesh();
 
+	void TimeManagement();
+
 	UFUNCTION()
 		void TriggerEnter(class UPrimitiveComponent* HitComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 

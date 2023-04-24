@@ -515,10 +515,10 @@ void AGameCharacter::DeadManagement() {
 }
 
 void AGameCharacter::TimeManagement() {
-	if (!timeManagementForEnemyDefeated) { return; }
+	if (!canSlowdownTimeStarted) { return; }
 
 	if (slowdownStatus == SlowDownStatus::SlowDownTime) {
-		float currentTime = GetWorld()->GetTimeSeconds() - attackSlowTimeStart;
+		float currentTime = GetWorld()->GetTimeSeconds() - slowdownStartTime;
 
 		float percentage = currentTime / timeOfSlowDown;
 
@@ -535,18 +535,18 @@ void AGameCharacter::TimeManagement() {
 
 		if (percentage >= 1.f) {
 			slowdownStatus = SlowDownStatus::StaySlowedDownTime;
-			attackSlowTimeStart = GetWorld()->GetTimeSeconds();
+			slowdownStartTime = GetWorld()->GetTimeSeconds();
 		}
 	}
 	else if (slowdownStatus == SlowDownStatus::StaySlowedDownTime) {
-		float currentTime = GetWorld()->GetTimeSeconds() - attackSlowTimeStart;
+		float currentTime = GetWorld()->GetTimeSeconds() - slowdownStartTime;
 		if (currentTime >= timeOfStaySlowedDown) {
 			slowdownStatus = SlowDownStatus::RestoreTime;
-			attackSlowTimeStart = GetWorld()->GetTimeSeconds();
+			slowdownStartTime = GetWorld()->GetTimeSeconds();
 		}
 	}
 	else if (slowdownStatus == SlowDownStatus::RestoreTime) {
-		float currentTime = GetWorld()->GetTimeSeconds() - attackSlowTimeStart;
+		float currentTime = GetWorld()->GetTimeSeconds() - slowdownStartTime;
 
 		float percentage = currentTime / timeOfSlowDown;
 
@@ -563,7 +563,7 @@ void AGameCharacter::TimeManagement() {
 
 		if (percentage >= 1.f) {
 			slowdownStatus = SlowDownStatus::NormalTime;
-			timeManagementForEnemyDefeated = false;
+			canSlowdownTimeStarted = false;
 		}
 	}
 }
@@ -765,9 +765,9 @@ void AGameCharacter::SetPrevStatusToActualStatus() {
 	prevStatus = actualStatus;
 }
 
-void AGameCharacter::EnemyDefeated() {
-	timeManagementForEnemyDefeated = true;
-	attackSlowTimeStart = GetWorld()->GetTimeSeconds();
+void AGameCharacter::SlowdownTime() {
+	canSlowdownTimeStarted = true;
+	slowdownStartTime = GetWorld()->GetTimeSeconds();
 	slowdownStatus = SlowDownStatus::SlowDownTime;
 }
 

@@ -46,6 +46,8 @@ void AHealerEnemy::TriggerEnter(class UPrimitiveComponent* HitComp, class AActor
 
 		DeflateAudioComp->Play(0.f);
 
+		overlappingGameCharacter->SlowdownTime();
+
 		canHealingStarted = false;
 	}
 }
@@ -92,6 +94,14 @@ void AHealerEnemy::Tick(float DeltaTime) {
 
 		SwallowSphere->SetWorldLocation(Position);
 	}
+
+	TimeManagement();
+}
+
+void AHealerEnemy::TimeManagement() {
+	if (gameCharacter == nullptr) { return; }
+
+	DeflateAudioComp->SetPitchMultiplier(gameCharacter->GetCurrentSoundPitchMultiplier());
 }
 
 UStaticMeshComponent* AHealerEnemy::GetCurrentBodyMesh() {

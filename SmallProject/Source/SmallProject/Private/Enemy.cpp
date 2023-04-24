@@ -456,7 +456,7 @@ void AEnemy::RemoveEnemy() {
 	PopAudioComp->Play(0.f);
 
 	if (gameCharacter != nullptr)
-		gameCharacter->EnemyDefeated();
+		gameCharacter->SlowdownTime();
 }
 
 UStaticMeshComponent* AEnemy::GetCurrentBodyMesh() {

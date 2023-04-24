@@ -80,8 +80,8 @@ private:
 
 	float actualSoundPitchMultiplier = 1.f;
 
-	float attackSlowTimeStart;
-	bool timeManagementForEnemyDefeated;
+	float slowdownStartTime;
+	bool canSlowdownTimeStarted;
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -249,7 +249,7 @@ protected:
 
 public:
 	UFUNCTION()
-		void EnemyDefeated();
+		void SlowdownTime();
 
 	GameCharacterStatus GetStatus();
 
