@@ -92,29 +92,7 @@ void AEnemy::SetSpline() {
 		FVector startTangent = splineComponent->GetTangentAtSplinePoint(i, ESplineCoordinateSpace::Local);
 		endPoint = splineComponent->GetLocationAtSplinePoint(i + 1, ESplineCoordinateSpace::Local);
 		FVector endTangent = splineComponent->GetTangentAtSplinePoint(i + 1, ESplineCoordinateSpace::Local);
-
-		SplineNiagaras[j]->SetRelativeLocation(startPoint);
-		SplineNiagaras[j + 1]->SetRelativeLocation(endPoint);
-
-
-		j += 2;
-
-		SetSplineMeshComponent(SMeshComps[i], startPoint, startTangent, endPoint, endTangent);
 	}
-
-
-	SplineNiagaras[0]->AttachToComponent(SMeshComps[0], FAttachmentTransformRules::KeepRelativeTransform);
-	SplineNiagaras[1]->AttachToComponent(SMeshComps[0], FAttachmentTransformRules::KeepRelativeTransform);
-
-	SplineNiagaras[2]->AttachToComponent(SMeshComps[1], FAttachmentTransformRules::KeepRelativeTransform);
-	SplineNiagaras[3]->AttachToComponent(SMeshComps[1], FAttachmentTransformRules::KeepRelativeTransform);
-
-	SplineNiagaras[4]->AttachToComponent(SMeshComps[2], FAttachmentTransformRules::KeepRelativeTransform);
-	SplineNiagaras[5]->AttachToComponent(SMeshComps[2], FAttachmentTransformRules::KeepRelativeTransform);
-
-	SplineNiagaras[6]->AttachToComponent(SMeshComps[3], FAttachmentTransformRules::KeepRelativeTransform);
-	SplineNiagaras[7]->AttachToComponent(SMeshComps[3], FAttachmentTransformRules::KeepRelativeTransform);
-
 }
 
 /*
@@ -146,9 +124,7 @@ setting up the Eating state, starting slurp sound. Creating spline between fur c
 void AEnemy::StartEating() {
 	startTime = GetWorld()->GetTimeSeconds();
 	actualStartPosition = GetActorLocation();
-	actualStatus = EnemyStatus::Eating;
-
-	SlurpAudioComp->Play(FMath::FRandRange(0.f, 3.f));
+	actualStatus = EnemyStatus::StartEating;
 
 	FTransform transform = splineComponent->GetTransformAtSplinePoint(1, ESplineCoordinateSpace::World);
 	if (transform.GetLocation() != lastCurveEndPosition) {
@@ -174,12 +150,16 @@ void AEnemy::StartEating() {
 
 		UE_LOG(LogTemp, Warning, TEXT("spline uploaded"));
 
-		SetSpline();
-
 		lastCurveEndPosition = creature->GetActorLocation();
 
 		startTime = GetWorld()->GetTimeSeconds();
 	}
+}
+
+void AEnemy::StartActualEating() {
+	actualStatus = EnemyStatus::Eating;
+
+	SlurpAudioComp->Play(FMath::FRandRange(0.f, 3.f));
 }
 
 /*
@@ -255,6 +235,8 @@ void AEnemy::Tick(float DeltaTime)
 	LifeManagement();
 
 	TimeManagement();
+
+	SplineManagement();
 }
 /*
 moving state : when enemy is moving, it goes from actualStartPosition to actualEndPosition.actualStartPosition setted by the same way in Enemy.cpp and
@@ -364,6 +346,51 @@ void AEnemy::TimeManagement() {
 
 	PopAudioComp->SetPitchMultiplier(gameCharacter->GetCurrentSoundPitchMultiplier());
 	SlurpAudioComp->SetPitchMultiplier(gameCharacter->GetCurrentSoundPitchMultiplier());
+}
+
+void AEnemy::SplineManagement() {
+
+	if (actualStatus != EnemyStatus::StartEating) { return; }
+
+	currentTime= GetWorld()->GetTimeSeconds() - startTime;
+
+	currentTime /= splineGrowTime;
+
+	if (currentTime > 1.f) {
+		currentTime = 1.f;
+		StartActualEating();
+	}
+
+	FVector firstPointOfSpline= splineComponent->GetLocationAtSplinePoint(0, ESplineCoordinateSpace::Local);
+	
+	int j = 0;
+
+	for (int i = 0; i < SMeshComps.Num(); i++) {
+		FVector startPoint = splineComponent->GetLocationAtSplinePoint(i, ESplineCoordinateSpace::Local);
+		FVector startTangent = splineComponent->GetTangentAtSplinePoint(i, ESplineCoordinateSpace::Local);
+		FVector endPoint = splineComponent->GetLocationAtSplinePoint(i + 1, ESplineCoordinateSpace::Local);
+		FVector endTangent = splineComponent->GetTangentAtSplinePoint(i + 1, ESplineCoordinateSpace::Local);
+
+		SplineNiagaras[j]->SetRelativeLocation(FMath::Lerp(firstPointOfSpline, startPoint, currentTime));
+		SplineNiagaras[j + 1]->SetRelativeLocation(FMath::Lerp(firstPointOfSpline, endPoint, currentTime));
+
+
+		j += 2;
+
+		SetSplineMeshComponent(SMeshComps[i], FMath::Lerp(firstPointOfSpline, startPoint, currentTime), startTangent, FMath::Lerp(firstPointOfSpline, endPoint, currentTime), endTangent);
+	}
+
+	SplineNiagaras[0]->AttachToComponent(SMeshComps[0], FAttachmentTransformRules::KeepRelativeTransform);
+	SplineNiagaras[1]->AttachToComponent(SMeshComps[0], FAttachmentTransformRules::KeepRelativeTransform);
+
+	SplineNiagaras[2]->AttachToComponent(SMeshComps[1], FAttachmentTransformRules::KeepRelativeTransform);
+	SplineNiagaras[3]->AttachToComponent(SMeshComps[1], FAttachmentTransformRules::KeepRelativeTransform);
+
+	SplineNiagaras[4]->AttachToComponent(SMeshComps[2], FAttachmentTransformRules::KeepRelativeTransform);
+	SplineNiagaras[5]->AttachToComponent(SMeshComps[2], FAttachmentTransformRules::KeepRelativeTransform);
+
+	SplineNiagaras[6]->AttachToComponent(SMeshComps[3], FAttachmentTransformRules::KeepRelativeTransform);
+	SplineNiagaras[7]->AttachToComponent(SMeshComps[3], FAttachmentTransformRules::KeepRelativeTransform);
 }
 
 /*

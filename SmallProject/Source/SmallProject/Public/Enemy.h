@@ -37,6 +37,10 @@ protected:
 
 	void RemoveEnemy();
 
+	void SplineManagement();
+
+	void StartActualEating();
+
 	void DestroySpline();
 
 	void DestroySplineMeshComp(class USplineMeshComponent* splineMeshComp);
@@ -166,6 +170,9 @@ protected:
 		int countOfInnerPointsInSpline = 3;
 
 	UPROPERTY(EditAnywhere)
+		float splineGrowTime = 1.f;
+
+	UPROPERTY(EditAnywhere)
 		float innerSplinePointRangeBorderZ = 100.f;
 
 	UPROPERTY(EditAnywhere)
@@ -194,6 +201,7 @@ enum class EnemyStatus : uint8
 	Initial,
 	WaitBeforeMoving,
 	Moving,
+	StartEating,
 	Eating,
 	SpecialDying,
 	Healing,
