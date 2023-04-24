@@ -31,6 +31,12 @@ protected:
 	UPROPERTY(EditAnywhere)
 		class UMaterialInstanceDynamic* MaterialInstance;
 
+	UPROPERTY(EditAnywhere)
+		class UMaterialInterface* originalSwallowSphereMaterial;
+
+	UPROPERTY(EditAnywhere)
+		class UMaterialInterface* healingSwallowSphereMaterial;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		class UAudioComponent* DeflateAudioComp;
 
@@ -52,6 +58,7 @@ protected:
 	FLinearColor defaultColor;
 
 	float startTimeForHealingSphere;
+	FVector originalHealingSphereScale;
 
 	bool canHealingStarted = true;
 

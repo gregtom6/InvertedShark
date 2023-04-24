@@ -7,6 +7,7 @@
 #include "Components/AudioComponent.h"
 #include <Sound/SoundCue.h>
 #include "Creature.h"
+#include "Materials/MaterialInterface.h"
 
 AHealerEnemy::AHealerEnemy() {
 	DeflateAudioComp = CreateDefaultSubobject<UAudioComponent>(TEXT("DeflateAudioComp"));
@@ -28,6 +29,8 @@ void AHealerEnemy::BeginPlay() {
 		UE_LOG(LogTemp, Warning, TEXT("pop sound is okay"));
 		DeflateAudioComp->SetSound(deflateSound);
 	}
+
+	originalHealingSphereScale = SwallowSphere->GetRelativeScale3D();
 
 	GetCurrentBodyMesh()->OnComponentBeginOverlap.AddUniqueDynamic(this, &AHealerEnemy::TriggerEnter);
 	GetCurrentBodyMesh()->OnComponentEndOverlap.AddUniqueDynamic(this, &AHealerEnemy::TriggerExit);
@@ -74,6 +77,8 @@ void AHealerEnemy::Tick(float DeltaTime) {
 		if (currentTime >= 1.f) {
 			currentTime = 1.f;
 			actualStatus = EnemyStatus::Eating;
+			SwallowSphere->SetRelativeScale3D(originalHealingSphereScale);
+			SwallowSphere->SetMaterial(0, originalSwallowSphereMaterial);
 		}
 
 
@@ -85,8 +90,11 @@ void AHealerEnemy::Tick(float DeltaTime) {
 
 		currentTime = GetWorld()->GetTimeSeconds() - startTimeForHealingSphere;
 		currentTime *= 2.f;
-		if (currentTime >= 1.f)
+		if (currentTime >= 1.f) {
 			startTimeForHealingSphere = GetWorld()->GetTimeSeconds();
+			SwallowSphere->SetRelativeScale3D(originalHealingSphereScale * 2.f);
+			SwallowSphere->SetMaterial(0, healingSwallowSphereMaterial);
+		}
 
 		float SplineLength = splineComponent->GetSplineLength();
 		float SplineDistance = SplineLength * currentTime;
