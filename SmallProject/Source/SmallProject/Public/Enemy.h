@@ -53,6 +53,8 @@ protected:
 
 	virtual FVector GetEndPosition();
 
+	virtual void MovingToCreatureEnded();
+
 	float actualLife;
 
 	float originalLifeBeforeAttack;
@@ -205,4 +207,6 @@ enum class EnemyStatus : uint8
 	Eating,
 	SpecialDying,
 	Healing,
+	Targeting,
+	Shooting,
 };

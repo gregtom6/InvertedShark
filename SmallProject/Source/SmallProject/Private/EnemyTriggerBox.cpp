@@ -5,6 +5,7 @@
 #include <Enemy.h>
 #include <Creature.h>
 #include "GameFramework/Actor.h"
+#include <SniperEnemy.h>
 
 AEnemyTriggerBox::AEnemyTriggerBox() {
 	
@@ -43,7 +44,11 @@ void AEnemyTriggerBox::Event(class AActor* overlappedActor, class AActor* otherA
 			UE_LOG(LogTemp, Warning, TEXT("eves elotti"));
 			if (arrivedEnemy != nullptr) {
 				UE_LOG(LogTemp, Warning, TEXT("eves"));
-				arrivedEnemy->StartEating();
+
+				if (!arrivedEnemy->IsA(ASniperEnemy::StaticClass())) {
+					arrivedEnemy->StartEating();
+				}
+
 			}
 		}
 		

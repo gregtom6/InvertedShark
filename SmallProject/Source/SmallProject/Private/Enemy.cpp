@@ -276,8 +276,10 @@ void AEnemy::StateManagement() {
 
 		actualEndPosition = GetEndPosition();
 
-		if (currentTime > 1.f)
+		if (currentTime > 1.f) {
 			currentTime = 1.f;
+			MovingToCreatureEnded();
+		}
 
 		SetActorLocation(FMath::Lerp(actualStartPosition, actualEndPosition, currentTime));
 	}
@@ -318,6 +320,10 @@ void AEnemy::StateManagement() {
 			DoAfterDead();
 		}
 	}
+}
+
+void AEnemy::MovingToCreatureEnded() {
+
 }
 
 /*
