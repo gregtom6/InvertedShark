@@ -34,9 +34,27 @@ protected:
 		float shootTime;
 
 	UPROPERTY(EditAnywhere)
+		float targetingPercentageWhenSmokeNeeds;
+
+	UPROPERTY(EditAnywhere)
+		class USoundCue* weaponOverloadingSound;
+
+	UPROPERTY(EditAnywhere)
+		class UNiagaraComponent* smokeNiagara;
+
+	UPROPERTY(EditAnywhere)
 		class UStaticMeshComponent* ProjectileOrigin;
 
-	float shootStartTime;
+	UPROPERTY(EditAnywhere)
+		class USkeletalMeshComponent* SkeletalBody;
+
+	UPROPERTY(EditAnywhere)
+		class UMaterialInstanceDynamic* SniperMaterialInstance;
+
+	UPROPERTY(EditAnywhere)
+		FLinearColor targetColor;
+
+	FLinearColor defaultColor;
 
 	void CreateProjectile();
 	

@@ -4,6 +4,11 @@
 #include "SniperEnemy.h"
 #include <Creature.h>
 #include <Projectile.h>
+#include "Materials/MaterialInterface.h"
+#include "Materials/MaterialInstanceDynamic.h"
+#include "NiagaraFunctionLibrary.h"
+#include "NiagaraComponent.h"
+
 
 ASniperEnemy::ASniperEnemy() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -12,10 +17,22 @@ ASniperEnemy::ASniperEnemy() {
 
 	ProjectileOrigin = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ProjectileOrigin"));
 	ProjectileOrigin->SetupAttachment(RootComponent);
+
+	SkeletalBody = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("SkeletalBody"));
+	SkeletalBody->SetupAttachment(RootComponent);
+
+	smokeNiagara = CreateDefaultSubobject<UNiagaraComponent>(TEXT("smokeNiagara"));
+	smokeNiagara->SetupAttachment(RootComponent);
 }
 
 void ASniperEnemy::BeginPlay() {
 	Super::BeginPlay();	
+
+	SniperMaterialInstance = SkeletalBody->CreateDynamicMaterialInstance(7);
+
+	FHashedMaterialParameterInfo ParameterInfo("Color");
+	SniperMaterialInstance->GetVectorParameterValue(ParameterInfo, defaultColor);
+
 }
 
 void ASniperEnemy::Tick(float DeltaTime) {
@@ -27,25 +44,20 @@ void ASniperEnemy::Tick(float DeltaTime) {
 
 		currentTime /= targetingTime;
 
-		if (currentTime >= 1.f) {
-			currentTime = 1.f;
-			shootStartTime = GetWorld()->GetTimeSeconds();
-			actualStatus = EnemyStatus::Shooting;
-			CreateProjectile();
+		FLinearColor currentColor = FMath::Lerp(defaultColor, targetColor, currentTime);
+		SniperMaterialInstance->SetVectorParameterValue("Color", currentColor);
+
+		if (currentTime >= targetingPercentageWhenSmokeNeeds) {
+			smokeNiagara->Activate();
 		}
-
-	}
-	else if (actualStatus == EnemyStatus::Shooting) {
-		currentTime = GetWorld()->GetTimeSeconds() - shootStartTime;
-
-		currentTime /= shootTime;
 
 		if (currentTime >= 1.f) {
 			currentTime = 1.f;
-			shootStartTime = GetWorld()->GetTimeSeconds();
-			actualStatus = EnemyStatus::Shooting;
+			startTime = GetWorld()->GetTimeSeconds();
 			CreateProjectile();
+			smokeNiagara->Deactivate();
 		}
+
 	}
 }
 
