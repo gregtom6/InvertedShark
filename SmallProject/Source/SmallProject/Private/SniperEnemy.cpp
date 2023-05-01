@@ -8,6 +8,7 @@
 #include "Materials/MaterialInstanceDynamic.h"
 #include "NiagaraFunctionLibrary.h"
 #include "NiagaraComponent.h"
+#include "Components/AudioComponent.h"
 
 
 ASniperEnemy::ASniperEnemy() {
@@ -23,6 +24,9 @@ ASniperEnemy::ASniperEnemy() {
 
 	smokeNiagara = CreateDefaultSubobject<UNiagaraComponent>(TEXT("smokeNiagara"));
 	smokeNiagara->SetupAttachment(RootComponent);
+
+	weaponOverloadingSound = CreateDefaultSubobject<UAudioComponent>(TEXT("weaponOverloadingSound"));
+	weaponOverloadingSound->SetupAttachment(RootComponent);
 }
 
 void ASniperEnemy::BeginPlay() {
@@ -51,11 +55,17 @@ void ASniperEnemy::Tick(float DeltaTime) {
 			smokeNiagara->Activate();
 		}
 
+		if (currentTime >= targetingPercentageWhenAudioNeeds && !soundAlreadyStartedPlaying) {
+			weaponOverloadingSound->Play(startWeaponOverloadingSoundPercentage);
+			soundAlreadyStartedPlaying = true;
+		}
+
 		if (currentTime >= 1.f) {
 			currentTime = 1.f;
 			startTime = GetWorld()->GetTimeSeconds();
 			CreateProjectile();
 			smokeNiagara->Deactivate();
+			soundAlreadyStartedPlaying = false;
 		}
 
 	}

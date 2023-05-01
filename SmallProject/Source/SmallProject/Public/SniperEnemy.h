@@ -37,7 +37,13 @@ protected:
 		float targetingPercentageWhenSmokeNeeds;
 
 	UPROPERTY(EditAnywhere)
-		class USoundCue* weaponOverloadingSound;
+		float targetingPercentageWhenAudioNeeds;
+
+	UPROPERTY(EditAnywhere)
+		float startWeaponOverloadingSoundPercentage;
+
+	UPROPERTY(EditAnywhere)
+		class UAudioComponent* weaponOverloadingSound;
 
 	UPROPERTY(EditAnywhere)
 		class UNiagaraComponent* smokeNiagara;
@@ -55,6 +61,8 @@ protected:
 		FLinearColor targetColor;
 
 	FLinearColor defaultColor;
+
+	bool soundAlreadyStartedPlaying;
 
 	void CreateProjectile();
 	
