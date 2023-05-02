@@ -189,12 +189,6 @@ protected:
 		class UStaticMeshComponent* projectileVisual;
 
 	UPROPERTY(EditAnywhere)
-		class UStaticMeshComponent* projectileVisualParent;
-
-	UPROPERTY(EditAnywhere)
-		class UStaticMeshComponent* projectileVisualParentParent;
-
-	UPROPERTY(EditAnywhere)
 		class USkeletalMeshComponent* skeletal;
 
 	UPROPERTY(EditAnywhere)
@@ -253,8 +247,6 @@ protected:
 
 	UFUNCTION()
 		void SneezeBlinkEnded();
-
-	FRotator AlignRotation(const FRotator& InRotation);
 
 public:
 	UFUNCTION()

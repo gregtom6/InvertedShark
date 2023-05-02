@@ -56,10 +56,6 @@ AGameCharacter::AGameCharacter(const FObjectInitializer& ObjectInitializer)
 
 	Spark = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Spark"));
 
-	projectileVisualParentParent=CreateDefaultSubobject<UStaticMeshComponent>(TEXT("projectileVisualParentParent"));
-
-	projectileVisualParent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("projectileVisualParent"));
-
 	projectileVisual = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("projectileVisual"));
 
 	Spark->SetupAttachment(CameraMesh);
@@ -84,11 +80,7 @@ AGameCharacter::AGameCharacter(const FObjectInitializer& ObjectInitializer)
 
 	SneezeAudio->SetupAttachment(CameraMesh);
 
-	projectileVisualParentParent->SetupAttachment(CameraMesh);
-
-	projectileVisualParent->SetupAttachment(projectileVisualParentParent);
-
-	projectileVisual->SetupAttachment(projectileVisualParent);
+	projectileVisual->SetupAttachment(CameraMesh);
 
 	Camera->Deactivate();
 
@@ -513,36 +505,24 @@ void AGameCharacter::Tick(float DeltaTime)
 
 	if (creature != nullptr) {
 
-
-
 		FRotator targetRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), creature->GetActorLocation());
 		FRotator actorRotation = GetActorRotation();
 		FRotator sum = targetRotation - actorRotation;
 		sum.Roll += sum.Pitch;
 		sum.Pitch -= sum.Pitch;
+		sum.Yaw += 90.f;
 		projectileVisual->SetRelativeRotation(sum);
 	}
 }
 
-FRotator AGameCharacter::AlignRotation(const FRotator& InRotation)
-{
-	return FRotator::ZeroRotator;
-}
-
 void AGameCharacter::SetupProjectile(FRotator rotator, UMaterialInterface* material) {
 	
-	//projectileVisualParent->SetRelativeRotation(rotator);
-
-	//FRotator rot = FRotator::ZeroRotator;
-	rotator.Yaw += 90.f;
-	projectileVisualParentParent->SetRelativeRotation(rotator);
-
-
-	//projectileVisual->SetRelativeRotation(rot);
-
-	//projectileVisualParent->SetRelativeRotation(rotator);
-
-
+	FRotator targetRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), creature->GetActorLocation());
+	FRotator actorRotation = GetActorRotation();
+	FRotator sum = targetRotation - actorRotation;
+	sum.Roll += sum.Pitch;
+	sum.Pitch -= sum.Pitch;
+	projectileVisual->SetRelativeRotation(sum);
  	projectileVisual->SetMaterial(0, material);
 }
 
