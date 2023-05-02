@@ -504,10 +504,21 @@ void AGameCharacter::Tick(float DeltaTime)
 	TimeManagement();
 }
 
-void AGameCharacter::SetupProjectile(FRotator rotator, UMaterialInterface* material) {
+void AGameCharacter::SetupProjectile(FRotator rotator, FVector scale, UStaticMesh* mesh, UMaterialInterface* material) {
 	
-	projectileVisual->SetRelativeRotation(rotator);
- 	projectileVisual->SetMaterial(0, material);
+	UStaticMeshComponent* NewComponent = NewObject<UStaticMeshComponent>(this);
+	NewComponent->RegisterComponent();
+	NewComponent->SetStaticMesh(mesh);
+	NewComponent->AttachToComponent(CameraMesh, FAttachmentTransformRules::KeepRelativeTransform);
+	NewComponent->SetRelativeScale3D(scale);
+
+	NewComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	NewComponent->SetCollisionObjectType(ECollisionChannel::ECC_WorldDynamic);
+	NewComponent->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Overlap);
+	NewComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_WorldDynamic, ECollisionResponse::ECR_Overlap);
+
+	NewComponent->SetRelativeRotation(rotator);
+	NewComponent->SetMaterial(0, material);
 }
 
 /*

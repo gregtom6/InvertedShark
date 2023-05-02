@@ -106,7 +106,7 @@ void AProjectile::Event(class AActor* overlappedActor, class AActor* otherActor)
 				sum.Pitch -= sum.Pitch;
 				sum.Yaw += 90.f;
 
-   				gameCharacter->SetupProjectile(sum, staticMesh->GetMaterial(0));
+   				gameCharacter->SetupProjectile(sum, staticMesh->GetComponentScale(), staticMesh->GetStaticMesh(), staticMesh->GetMaterial(0));
 				//Destroy();
 			}
 		}
