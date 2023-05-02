@@ -60,6 +60,9 @@ protected:
 
 	float deltaHeal;
 
+	float originalLifeBeforeAttack;
+
+
 	int actualTargetIndex = 0;
 
 	TArray<AActor*> enemiesActuallyAttacking;
@@ -148,6 +151,10 @@ public:
 	Status GetStatus();
 
 	void SetupProjectile(FRotator rotator, FVector scale, class UStaticMesh* mesh, class UMaterialInterface* material, FVector offset);
+
+	float GetOriginalLifeBeforeAttack();
+
+	void OriginalLifeRepresentationEnded();
 };
 
 UENUM()

@@ -19,8 +19,29 @@ protected:
 		class UProgressBar* HealthBar;
 	UPROPERTY(meta = (BindWidget))
 		class UProgressBar* IncreaseDeltaBar;
+
+	UPROPERTY(meta = (BindWidget))
+		class UProgressBar* DecreaseDeltaBar;
+
+	UPROPERTY(EditAnywhere)
+		float timeUntilDeltaDecreaseStartDisappear;
+
+	UPROPERTY(EditAnywhere)
+		float timeForDisappear;
+
+	CreatureLifeStatus creatureLifeStatus;
+	float startTime;
 		
 public:
 	class ACreature* creature;
 	
+};
+
+
+UENUM()
+enum class CreatureLifeStatus : uint8
+{
+	Normal,
+	WaitUntilDecrease,
+	Decrease,
 };

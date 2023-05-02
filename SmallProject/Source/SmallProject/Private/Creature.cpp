@@ -48,6 +48,8 @@ void ACreature::BeginPlay()
 
 	Health = MaxHealth;
 
+	originalLifeBeforeAttack = Health;
+
 	if (WhaleAudioComp && whaleSound) {
 		UE_LOG(LogTemp, Warning, TEXT("whale sound setted up"));
 		WhaleAudioComp->SetSound(whaleSound);
@@ -128,7 +130,16 @@ void ACreature::SetupProjectile(FRotator rotator, FVector scale, UStaticMesh* me
 	NewComponent->SetRelativeRotation(rotator);
 	NewComponent->SetMaterial(0, material);
 
+	originalLifeBeforeAttack = Health;
 	Health = Health > 0 ? Health - damageAfterSting : 0;
+}
+
+float ACreature::GetOriginalLifeBeforeAttack() {
+	return originalLifeBeforeAttack;
+}
+
+void ACreature::OriginalLifeRepresentationEnded() {
+	originalLifeBeforeAttack = Health;
 }
 
 
