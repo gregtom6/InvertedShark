@@ -512,10 +512,21 @@ void AGameCharacter::Tick(float DeltaTime)
 	TimeManagement();
 
 	if (creature != nullptr) {
+
+
+
 		FRotator targetRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), creature->GetActorLocation());
 		FRotator actorRotation = GetActorRotation();
-		projectileVisual->SetRelativeRotation(targetRotation-actorRotation);
+		FRotator sum = targetRotation - actorRotation;
+		sum.Roll += sum.Pitch;
+		sum.Pitch -= sum.Pitch;
+		projectileVisual->SetRelativeRotation(sum);
 	}
+}
+
+FRotator AGameCharacter::AlignRotation(const FRotator& InRotation)
+{
+	return FRotator::ZeroRotator;
 }
 
 void AGameCharacter::SetupProjectile(FRotator rotator, UMaterialInterface* material) {

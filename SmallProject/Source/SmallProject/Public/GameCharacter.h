@@ -254,7 +254,7 @@ protected:
 	UFUNCTION()
 		void SneezeBlinkEnded();
 
-
+	FRotator AlignRotation(const FRotator& InRotation);
 
 public:
 	UFUNCTION()
