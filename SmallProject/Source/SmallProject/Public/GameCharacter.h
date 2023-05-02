@@ -186,6 +186,15 @@ protected:
 		float timeOfTimeRestore;
 
 	UPROPERTY(EditAnywhere)
+		class UStaticMeshComponent* projectileVisual;
+
+	UPROPERTY(EditAnywhere)
+		class UStaticMeshComponent* projectileVisualParent;
+
+	UPROPERTY(EditAnywhere)
+		class UStaticMeshComponent* projectileVisualParentParent;
+
+	UPROPERTY(EditAnywhere)
 		class USkeletalMeshComponent* skeletal;
 
 	UPROPERTY(EditAnywhere)
@@ -264,6 +273,8 @@ public:
 	void SetPrevStatusToActualStatus();
 
 	void Pause();
+
+	void SetupProjectile(FRotator rotator, class UMaterialInterface* material);
 
 	FOnDieHappenedSignature OnDieHappenedDelegate;
 };

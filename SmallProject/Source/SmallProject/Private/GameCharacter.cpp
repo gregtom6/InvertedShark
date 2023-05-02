@@ -21,6 +21,8 @@
 #include "ActorSequenceComponent.h"
 #include "ActorSequencePlayer.h"
 #include "GameFramework/PlayerController.h"
+#include "Materials/MaterialInterface.h"
+#include <Kismet/KismetMathLibrary.h>
 
 
 // Sets default values
@@ -54,6 +56,12 @@ AGameCharacter::AGameCharacter(const FObjectInitializer& ObjectInitializer)
 
 	Spark = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Spark"));
 
+	projectileVisualParentParent=CreateDefaultSubobject<UStaticMeshComponent>(TEXT("projectileVisualParentParent"));
+
+	projectileVisualParent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("projectileVisualParent"));
+
+	projectileVisual = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("projectileVisual"));
+
 	Spark->SetupAttachment(CameraMesh);
 
 	SpringArm->SetupAttachment(CameraMesh);
@@ -75,6 +83,12 @@ AGameCharacter::AGameCharacter(const FObjectInitializer& ObjectInitializer)
 	DashAudio->SetupAttachment(CameraMesh);
 
 	SneezeAudio->SetupAttachment(CameraMesh);
+
+	projectileVisualParentParent->SetupAttachment(CameraMesh);
+
+	projectileVisualParent->SetupAttachment(projectileVisualParentParent);
+
+	projectileVisual->SetupAttachment(projectileVisualParent);
 
 	Camera->Deactivate();
 
@@ -496,6 +510,29 @@ void AGameCharacter::Tick(float DeltaTime)
 	MetalScratchManagement();
 
 	TimeManagement();
+
+	if (creature != nullptr) {
+		FRotator targetRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), creature->GetActorLocation());
+		FRotator actorRotation = GetActorRotation();
+		projectileVisual->SetRelativeRotation(targetRotation-actorRotation);
+	}
+}
+
+void AGameCharacter::SetupProjectile(FRotator rotator, UMaterialInterface* material) {
+	
+	//projectileVisualParent->SetRelativeRotation(rotator);
+
+	//FRotator rot = FRotator::ZeroRotator;
+	rotator.Yaw += 90.f;
+	projectileVisualParentParent->SetRelativeRotation(rotator);
+
+
+	//projectileVisual->SetRelativeRotation(rot);
+
+	//projectileVisualParent->SetRelativeRotation(rotator);
+
+
+ 	projectileVisual->SetMaterial(0, material);
 }
 
 /*

@@ -33,6 +33,9 @@ protected:
 		float timeUntilBloodflowStop;
 
 	UPROPERTY(EditAnywhere)
+		class UStaticMeshComponent* staticMesh;
+
+	UPROPERTY(EditAnywhere)
 		class UNiagaraComponent* creatureHitBloodNiagara;
 
 	UPROPERTY(EditAnywhere)
@@ -45,6 +48,8 @@ protected:
 	float startDistance;
 
 	FVector directionVector;
+
+	class AActor* targetedActor;
 
 	float startTimeForBloodFlow;
 

@@ -24,6 +24,8 @@ protected:
 
 	float currentTime;
 
+	EnemyTargeting enemyTargeting;
+
 	UPROPERTY(EditAnywhere)
 		float distanceFromCreature;
 
@@ -41,6 +43,9 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 		float startWeaponOverloadingSoundPercentage;
+
+	UPROPERTY(EditAnywhere)
+		float distancePercentageAfterTargetingPlayer;
 
 	UPROPERTY(EditAnywhere)
 		class UAudioComponent* weaponOverloadingSound;
@@ -65,9 +70,18 @@ protected:
 	bool soundAlreadyStartedPlaying;
 
 	void CreateProjectile();
+
+	class AGameCharacter* gameCharacter;
 	
 public:
 	ASniperEnemy();
 
 	void TargetingCreature();
+};
+
+UENUM()
+enum class EnemyTargeting : uint8
+{
+	CreatureTargeting,
+	PlayerTargeting,
 };

@@ -6,6 +6,8 @@
 #include "Components/AudioComponent.h"
 #include "NiagaraFunctionLibrary.h"
 #include "NiagaraComponent.h"
+#include <Kismet/KismetMathLibrary.h>
+#include "GameCharacter.h"
 
 // Sets default values
 AProjectile::AProjectile()
@@ -18,6 +20,9 @@ AProjectile::AProjectile()
 
 	creatureHitBloodNiagara = CreateDefaultSubobject<UNiagaraComponent>(TEXT("creatureHitBloodNiagara"));
 	//creatureHitBloodNiagara->AttachToComponent(projectileHittedTargetAudioComp, FAttachmentTransformRules::KeepRelativeTransform);
+
+	staticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("staticMesh"));
+	staticMesh->AttachToComponent(projectileHittedTargetAudioComp, FAttachmentTransformRules::KeepRelativeTransform);
 }
 
 // Called when the game starts or when spawned
@@ -66,6 +71,9 @@ void AProjectile::Tick(float DeltaTime)
 		}
 	}
 
+	FRotator targetRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), target);
+	SetActorRotation(targetRotation);
+
 	if (creatureHitBloodNiagara->IsActive()) {
 		float currentTime = GetWorld()->GetTimeSeconds() - startTimeForBloodFlow;
 
@@ -77,7 +85,7 @@ void AProjectile::Tick(float DeltaTime)
 
 void AProjectile::Event(class AActor* overlappedActor, class AActor* otherActor) {
 	if (otherActor && otherActor != this) {
-		if (otherActor->IsA(ACreature::StaticClass())) {
+		if (otherActor->IsA(ACreature::StaticClass()) || otherActor->IsA(AGameCharacter::StaticClass())) {
 			startDistance = FVector::Distance(otherActor->GetActorLocation(), GetActorLocation());
 			status = ProjectileStatus::MoveInsideTarget;
 
@@ -85,15 +93,32 @@ void AProjectile::Event(class AActor* overlappedActor, class AActor* otherActor)
 			creatureHitBloodNiagara->SetWorldLocation(otherActor->GetActorLocation());
 			creatureHitBloodNiagara->Activate();
 			startTimeForBloodFlow = GetWorld()->GetTimeSeconds();
+
+			targetedActor = otherActor;
+
+			if (targetedActor!=nullptr && targetedActor->IsA(AGameCharacter::StaticClass())) {
+				AGameCharacter* gameCharacter = Cast<AGameCharacter>(targetedActor);
+
+				FRotator targetRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), targetedActor->GetActorLocation());
+
+
+   				gameCharacter->SetupProjectile(targetRotation, staticMesh->GetMaterial(0));
+				Destroy();
+			}
+
+			
+			
 		}
 	}
 }
 
 void AProjectile::SetTarget(AActor* t) {
 
+	if (t == nullptr) { return; }
+
 	float offset = offsetForHittingTarget;
 
-	target = FVector(FMath::FRandRange(t->GetActorLocation().X-offset, t->GetActorLocation().X + offset),
+	target = FVector(FMath::FRandRange(t->GetActorLocation().X - offset, t->GetActorLocation().X + offset),
 		FMath::FRandRange(t->GetActorLocation().Y - offset, t->GetActorLocation().Y + offset),
 		FMath::FRandRange(t->GetActorLocation().Z - offset, t->GetActorLocation().Z + offset));
 
