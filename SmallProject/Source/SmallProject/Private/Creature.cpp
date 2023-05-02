@@ -110,6 +110,25 @@ void ACreature::StepTargetIndex() {
 	}
 }
 
+void ACreature::SetupProjectile(FRotator rotator, FVector scale, UStaticMesh* mesh, UMaterialInterface* material, FVector offset) {
+
+	UStaticMeshComponent* NewComponent = NewObject<UStaticMeshComponent>(this);
+	NewComponent->RegisterComponent();
+	NewComponent->SetStaticMesh(mesh);
+	NewComponent->AttachToComponent(WhaleAudioComp, FAttachmentTransformRules::KeepRelativeTransform);
+	NewComponent->SetRelativeScale3D(scale);
+
+	NewComponent->SetWorldLocation(offset);
+
+	NewComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	NewComponent->SetCollisionObjectType(ECollisionChannel::ECC_WorldDynamic);
+	NewComponent->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Overlap);
+	NewComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_WorldDynamic, ECollisionResponse::ECR_Overlap);
+
+	NewComponent->SetRelativeRotation(rotator);
+	NewComponent->SetMaterial(0, material);
+}
+
 
 void ACreature::Tick(float DeltaTime)
 {

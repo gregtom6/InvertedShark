@@ -143,6 +143,8 @@ public:
 	void GetHugged();
 	void HealingStarted();
 	Status GetStatus();
+
+	void SetupProjectile(FRotator rotator, FVector scale, class UStaticMesh* mesh, class UMaterialInterface* material, FVector offset);
 };
 
 UENUM()

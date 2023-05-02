@@ -504,13 +504,15 @@ void AGameCharacter::Tick(float DeltaTime)
 	TimeManagement();
 }
 
-void AGameCharacter::SetupProjectile(FRotator rotator, FVector scale, UStaticMesh* mesh, UMaterialInterface* material) {
+void AGameCharacter::SetupProjectile(FRotator rotator, FVector scale, UStaticMesh* mesh, UMaterialInterface* material, FVector offset) {
 	
 	UStaticMeshComponent* NewComponent = NewObject<UStaticMeshComponent>(this);
 	NewComponent->RegisterComponent();
 	NewComponent->SetStaticMesh(mesh);
 	NewComponent->AttachToComponent(CameraMesh, FAttachmentTransformRules::KeepRelativeTransform);
 	NewComponent->SetRelativeScale3D(scale);
+
+	NewComponent->SetWorldLocation(offset);
 
 	NewComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	NewComponent->SetCollisionObjectType(ECollisionChannel::ECC_WorldDynamic);

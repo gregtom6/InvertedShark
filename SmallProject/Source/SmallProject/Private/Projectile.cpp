@@ -8,6 +8,7 @@
 #include "NiagaraComponent.h"
 #include <Kismet/KismetMathLibrary.h>
 #include "GameCharacter.h"
+#include "Materials/MaterialInterface.h"
 
 // Sets default values
 AProjectile::AProjectile()
@@ -90,15 +91,13 @@ void AProjectile::Event(class AActor* overlappedActor, class AActor* otherActor)
 			status = ProjectileStatus::MoveInsideTarget;
 
 			projectileHittedTargetAudioComp->Play(0.f);
-			creatureHitBloodNiagara->SetWorldLocation(otherActor->GetActorLocation());
-			creatureHitBloodNiagara->Activate();
-			startTimeForBloodFlow = GetWorld()->GetTimeSeconds();
+			//creatureHitBloodNiagara->SetWorldLocation(otherActor->GetActorLocation());
+			//creatureHitBloodNiagara->Activate();
+			//startTimeForBloodFlow = GetWorld()->GetTimeSeconds();
 
 			targetedActor = otherActor;
 
-			if (targetedActor!=nullptr && targetedActor->IsA(AGameCharacter::StaticClass())) {
-				AGameCharacter* gameCharacter = Cast<AGameCharacter>(targetedActor);
-
+			if (targetedActor != nullptr) {
 				FRotator targetRotation = UKismetMathLibrary::FindLookAtRotation(targetedActor->GetActorLocation(), shooterActor->GetActorLocation());
 				FRotator actorRotation = targetedActor->GetActorRotation();
 				FRotator sum = targetRotation - actorRotation;
@@ -106,8 +105,17 @@ void AProjectile::Event(class AActor* overlappedActor, class AActor* otherActor)
 				sum.Pitch -= sum.Pitch;
 				sum.Yaw += 90.f;
 
-   				gameCharacter->SetupProjectile(sum, staticMesh->GetComponentScale(), staticMesh->GetStaticMesh(), staticMesh->GetMaterial(0));
-				//Destroy();
+				if (targetedActor->IsA(AGameCharacter::StaticClass())) {
+
+					AGameCharacter* gameCharacter = Cast<AGameCharacter>(targetedActor);
+					gameCharacter->SetupProjectile(sum, staticMesh->GetComponentScale(), staticMesh->GetStaticMesh(), staticMesh->GetMaterial(0), target);
+				}
+				else if (targetedActor->IsA(ACreature::StaticClass())) {
+					ACreature* creature = Cast<ACreature>(targetedActor);
+					creature->SetupProjectile(sum, staticMesh->GetComponentScale(), staticMesh->GetStaticMesh(), staticMesh->GetMaterial(0), target);
+				}
+
+				staticMesh->SetMaterial(0, invisibleMaterial);
 			}
 		}
 	}

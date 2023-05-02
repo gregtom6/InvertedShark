@@ -41,6 +41,9 @@ protected:
 	UPROPERTY(EditAnywhere)
 		class UAudioComponent* projectileHittedTargetAudioComp;
 
+	UPROPERTY(EditAnywhere)
+		class UMaterialInterface* invisibleMaterial;
+
 	ProjectileStatus status;
 
 	FVector target;
