@@ -502,27 +502,11 @@ void AGameCharacter::Tick(float DeltaTime)
 	MetalScratchManagement();
 
 	TimeManagement();
-
-	if (creature != nullptr) {
-
-		FRotator targetRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), creature->GetActorLocation());
-		FRotator actorRotation = GetActorRotation();
-		FRotator sum = targetRotation - actorRotation;
-		sum.Roll += sum.Pitch;
-		sum.Pitch -= sum.Pitch;
-		sum.Yaw += 90.f;
-		projectileVisual->SetRelativeRotation(sum);
-	}
 }
 
 void AGameCharacter::SetupProjectile(FRotator rotator, UMaterialInterface* material) {
 	
-	FRotator targetRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), creature->GetActorLocation());
-	FRotator actorRotation = GetActorRotation();
-	FRotator sum = targetRotation - actorRotation;
-	sum.Roll += sum.Pitch;
-	sum.Pitch -= sum.Pitch;
-	projectileVisual->SetRelativeRotation(sum);
+	projectileVisual->SetRelativeRotation(rotator);
  	projectileVisual->SetMaterial(0, material);
 }
 

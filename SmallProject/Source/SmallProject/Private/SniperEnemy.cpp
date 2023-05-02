@@ -115,9 +115,9 @@ void ASniperEnemy::CreateProjectile() {
 	AProjectile* NewActor = GetWorld()->SpawnActor<AProjectile>(BPClass, SpawnTransform);
 
 	if (enemyTargeting == EnemyTargeting::CreatureTargeting)
-		NewActor->SetTarget(creature);
+		NewActor->SetTarget(creature, this);
 	else if (enemyTargeting == EnemyTargeting::PlayerTargeting)
-		NewActor->SetTarget(gameCharacter);
+		NewActor->SetTarget(gameCharacter, this);
 }
 
 FVector ASniperEnemy::GetEndPosition() {

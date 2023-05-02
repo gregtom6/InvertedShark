@@ -51,13 +51,15 @@ protected:
 
 	class AActor* targetedActor;
 
+	class AActor* shooterActor;
+
 	float startTimeForBloodFlow;
 
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	void SetTarget(AActor* t);
+	void SetTarget(AActor* t, AActor* origin);
 
 	UFUNCTION()
 		void Event(class AActor* overlappedActor, class AActor* otherActor);

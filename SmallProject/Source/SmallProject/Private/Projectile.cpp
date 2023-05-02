@@ -99,28 +99,31 @@ void AProjectile::Event(class AActor* overlappedActor, class AActor* otherActor)
 			if (targetedActor!=nullptr && targetedActor->IsA(AGameCharacter::StaticClass())) {
 				AGameCharacter* gameCharacter = Cast<AGameCharacter>(targetedActor);
 
-				FRotator targetRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), targetedActor->GetActorLocation());
+				FRotator targetRotation = UKismetMathLibrary::FindLookAtRotation(targetedActor->GetActorLocation(), shooterActor->GetActorLocation());
+				FRotator actorRotation = targetedActor->GetActorRotation();
+				FRotator sum = targetRotation - actorRotation;
+				sum.Roll += sum.Pitch;
+				sum.Pitch -= sum.Pitch;
+				sum.Yaw += 90.f;
 
-
-   				gameCharacter->SetupProjectile(targetRotation, staticMesh->GetMaterial(0));
-				Destroy();
+   				gameCharacter->SetupProjectile(sum, staticMesh->GetMaterial(0));
+				//Destroy();
 			}
-
-			
-			
 		}
 	}
 }
 
-void AProjectile::SetTarget(AActor* t) {
+void AProjectile::SetTarget(AActor* tar, AActor* origin) {
 
-	if (t == nullptr) { return; }
+	if (tar == nullptr) { return; }
 
 	float offset = offsetForHittingTarget;
 
-	target = FVector(FMath::FRandRange(t->GetActorLocation().X - offset, t->GetActorLocation().X + offset),
-		FMath::FRandRange(t->GetActorLocation().Y - offset, t->GetActorLocation().Y + offset),
-		FMath::FRandRange(t->GetActorLocation().Z - offset, t->GetActorLocation().Z + offset));
+	target = FVector(FMath::FRandRange(tar->GetActorLocation().X - offset, tar->GetActorLocation().X + offset),
+		FMath::FRandRange(tar->GetActorLocation().Y - offset, tar->GetActorLocation().Y + offset),
+		FMath::FRandRange(tar->GetActorLocation().Z - offset, tar->GetActorLocation().Z + offset));
+
+	shooterActor = origin;
 
 	status = ProjectileStatus::FlyToTarget;
 }
