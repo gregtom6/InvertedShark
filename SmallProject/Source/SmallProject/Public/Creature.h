@@ -92,6 +92,9 @@ protected:
 		float deltaDamage;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "settings")
+		float damageAfterSting;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "settings")
 		float MaxHealth = 120.f;
 
 	UPROPERTY(EditAnywhere)

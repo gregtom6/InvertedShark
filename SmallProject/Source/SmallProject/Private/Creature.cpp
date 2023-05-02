@@ -127,6 +127,8 @@ void ACreature::SetupProjectile(FRotator rotator, FVector scale, UStaticMesh* me
 
 	NewComponent->SetRelativeRotation(rotator);
 	NewComponent->SetMaterial(0, material);
+
+	Health = Health > 0 ? Health - damageAfterSting : 0;
 }
 
 

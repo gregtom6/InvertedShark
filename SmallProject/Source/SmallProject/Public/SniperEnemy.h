@@ -48,7 +48,7 @@ protected:
 		float distancePercentageAfterTargetingPlayer;
 
 	UPROPERTY(EditAnywhere)
-		class UAudioComponent* weaponOverloadingSound;
+		class UAudioComponent* weaponOverloadingSound1;
 
 	UPROPERTY(EditAnywhere)
 		class UNiagaraComponent* smokeNiagara;

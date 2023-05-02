@@ -29,8 +29,8 @@ ASniperEnemy::ASniperEnemy() {
 	smokeNiagara = CreateDefaultSubobject<UNiagaraComponent>(TEXT("smokeNiagara"));
 	smokeNiagara->SetupAttachment(RootComponent);
 
-	weaponOverloadingSound = CreateDefaultSubobject<UAudioComponent>(TEXT("weaponOverloadingSound"));
-	weaponOverloadingSound->SetupAttachment(RootComponent);
+	weaponOverloadingSound1 = CreateDefaultSubobject<UAudioComponent>(TEXT("weaponOverloadingSound"));
+	weaponOverloadingSound1->SetupAttachment(RootComponent);
 }
 
 void ASniperEnemy::BeginPlay() {
@@ -66,7 +66,7 @@ void ASniperEnemy::Tick(float DeltaTime) {
 		}
 
 		if (currentTime >= targetingPercentageWhenAudioNeeds && !soundAlreadyStartedPlaying) {
-			weaponOverloadingSound->Play(startWeaponOverloadingSoundPercentage);
+			weaponOverloadingSound1->Play(startWeaponOverloadingSoundPercentage);
 			soundAlreadyStartedPlaying = true;
 		}
 
