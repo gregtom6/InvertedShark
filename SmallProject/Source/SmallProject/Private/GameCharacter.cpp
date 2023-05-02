@@ -56,8 +56,6 @@ AGameCharacter::AGameCharacter(const FObjectInitializer& ObjectInitializer)
 
 	Spark = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Spark"));
 
-	projectileVisual = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("projectileVisual"));
-
 	Spark->SetupAttachment(CameraMesh);
 
 	SpringArm->SetupAttachment(CameraMesh);
@@ -79,8 +77,6 @@ AGameCharacter::AGameCharacter(const FObjectInitializer& ObjectInitializer)
 	DashAudio->SetupAttachment(CameraMesh);
 
 	SneezeAudio->SetupAttachment(CameraMesh);
-
-	projectileVisual->SetupAttachment(CameraMesh);
 
 	Camera->Deactivate();
 

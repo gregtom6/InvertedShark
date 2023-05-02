@@ -186,9 +186,6 @@ protected:
 		float timeOfTimeRestore;
 
 	UPROPERTY(EditAnywhere)
-		class UStaticMeshComponent* projectileVisual;
-
-	UPROPERTY(EditAnywhere)
 		class USkeletalMeshComponent* skeletal;
 
 	UPROPERTY(EditAnywhere)
