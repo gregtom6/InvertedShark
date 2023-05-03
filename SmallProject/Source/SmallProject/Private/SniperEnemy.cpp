@@ -129,7 +129,25 @@ void ASniperEnemy::Tick(float DeltaTime) {
 		Body12->AddRelativeRotation(rotatorDelta);
 
 		if (currentTime >= 1.f) {
-			Super::RemoveEnemy();
+
+			if (SwallowSphere != nullptr)
+				SwallowSphere->DestroyComponent();
+
+			SkeletalBody->Stop();
+			Body12->SetSimulatePhysics(true);
+			SkeletalBody->SetSimulatePhysics(true);
+
+			for (int i = 0; i < SMeshContainers.Num(); i++) {
+				SMeshContainers[i]->SetSimulatePhysics(true);
+			}
+
+
+			if (EyePivot2 != nullptr)
+				EyePivot2->SetSimulatePhysics(true);
+
+			dieTornadoNiagara->Deactivate();
+
+			actualStatus = EnemyStatus::SniperDead;
 		}
 	}
 }

@@ -210,4 +210,5 @@ enum class EnemyStatus : uint8
 	Targeting,
 	Shooting,
 	SniperDying,
+	SniperDead,
 };
