@@ -7,7 +7,7 @@
 #include "SniperEnemy.generated.h"
 
 /**
- * 
+ *
  */
 UCLASS()
 class SMALLPROJECT_API ASniperEnemy : public AEnemy
@@ -63,6 +63,12 @@ protected:
 		class UMaterialInstanceDynamic* SniperMaterialInstance;
 
 	UPROPERTY(EditAnywhere)
+		class UAnimSequence* weaponLoadingSequence;
+
+	UPROPERTY(EditAnywhere)
+		class UAnimSequence* weaponShootingSequence;
+
+	UPROPERTY(EditAnywhere)
 		FLinearColor targetColor;
 
 	FLinearColor defaultColor;
@@ -72,7 +78,7 @@ protected:
 	void CreateProjectile();
 
 	class AGameCharacter* gameCharacter;
-	
+
 public:
 	ASniperEnemy();
 

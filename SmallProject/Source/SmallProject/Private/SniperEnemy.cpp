@@ -12,6 +12,8 @@
 #include <Kismet/GameplayStatics.h>
 #include "GameCharacter.h"
 #include <Kismet/KismetMathLibrary.h>
+#include "ActorSequenceComponent.h"
+#include "ActorSequencePlayer.h"
 
 
 ASniperEnemy::ASniperEnemy() {
@@ -46,7 +48,6 @@ void ASniperEnemy::BeginPlay() {
 	APawn* pawn = OurPlayerController->GetPawn();
 
 	gameCharacter = Cast<AGameCharacter, APawn>(pawn);
-
 }
 
 void ASniperEnemy::Tick(float DeltaTime) {
@@ -63,6 +64,11 @@ void ASniperEnemy::Tick(float DeltaTime) {
 
 		if (currentTime >= targetingPercentageWhenSmokeNeeds) {
 			smokeNiagara->Activate();
+
+			if (weaponLoadingSequence && !SkeletalBody->IsPlaying())
+			{
+				SkeletalBody->PlayAnimation(weaponLoadingSequence, false);
+			}
 		}
 
 		if (currentTime >= targetingPercentageWhenAudioNeeds && !soundAlreadyStartedPlaying) {
@@ -76,6 +82,12 @@ void ASniperEnemy::Tick(float DeltaTime) {
 			CreateProjectile();
 			smokeNiagara->Deactivate();
 			soundAlreadyStartedPlaying = false;
+			
+			if (weaponShootingSequence)
+			{
+				SkeletalBody->PlayAnimation(weaponShootingSequence, false);
+			}
+
 		}
 
 
