@@ -14,6 +14,7 @@
 #include <Kismet/KismetMathLibrary.h>
 #include "ActorSequenceComponent.h"
 #include "ActorSequencePlayer.h"
+#include <WindZone.h>
 
 
 ASniperEnemy::ASniperEnemy() {
@@ -133,6 +134,22 @@ void ASniperEnemy::Tick(float DeltaTime) {
 	}
 }
 
+void ASniperEnemy::CreateWindZone() {
+	FTransform SpawnTransform;
+	SpawnTransform.SetLocation(GetActorLocation());
+	SpawnTransform.SetRotation(FQuat::Identity);
+
+	// Get a reference to the Blueprint class
+	UClass* BPClass = LoadClass<ATriggerBox>(nullptr, TEXT("/Game/Blueprints/BP_WindZone.BP_WindZone_C"));
+
+	// Spawn the actor and store a reference to the new instance
+	AWindZone* NewActor = GetWorld()->SpawnActor<AWindZone>(BPClass, SpawnTransform);
+
+	if (NewActor == nullptr) {
+		FRotator rot = FRotator::ZeroRotator;
+	}
+}
+
 void ASniperEnemy::CreateProjectile() {
 	FTransform SpawnTransform;
 	SpawnTransform.SetLocation(ProjectileOrigin->GetComponentLocation());
@@ -181,6 +198,10 @@ void ASniperEnemy::RemoveEnemy() {
 		SkeletalBody->PlayAnimation(dieStartedSequence, false);
 	}
 
+	smokeNiagara->Deactivate();
+
 	dieTornadoNiagara->SetWorldLocation(GetActorLocation());
 	dieTornadoNiagara->Activate();
+
+	CreateWindZone();
 }

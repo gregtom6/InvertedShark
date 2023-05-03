@@ -266,6 +266,9 @@ public:
 	void SetupProjectile(FRotator rotator, FVector scale, class UStaticMesh* mesh, class UMaterialInterface* material, FVector offset);
 
 	FOnDieHappenedSignature OnDieHappenedDelegate;
+
+	class USkeletalMeshComponent* GetSkeletalMeshComponent();
+	class UStaticMeshComponent* GetStaticMeshComponent();
 };
 
 UENUM()

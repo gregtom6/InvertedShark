@@ -91,6 +91,8 @@ protected:
 
 	void CreateProjectile();
 
+	void CreateWindZone();
+
 	class AGameCharacter* gameCharacter;
 
 public:

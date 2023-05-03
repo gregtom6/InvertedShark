@@ -309,6 +309,14 @@ void AGameCharacter::UpDash() {
 	rightNoseSneezeNiagara->Activate(true);
 }
 
+USkeletalMeshComponent* AGameCharacter::GetSkeletalMeshComponent() {
+	return skeletal;
+}
+
+UStaticMeshComponent* AGameCharacter::GetStaticMeshComponent() {
+	return CameraMesh;
+}
+
 /*
 game can be paused with this function. Managing cursor state and adding or removing pause widget to viewport
 */
