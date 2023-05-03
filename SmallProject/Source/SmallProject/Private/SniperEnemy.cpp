@@ -134,6 +134,9 @@ void ASniperEnemy::Tick(float DeltaTime) {
 				SwallowSphere->DestroyComponent();
 
 			SkeletalBody->Stop();
+
+			SkeletalBody->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+
 			Body12->SetSimulatePhysics(true);
 			SkeletalBody->SetSimulatePhysics(true);
 
