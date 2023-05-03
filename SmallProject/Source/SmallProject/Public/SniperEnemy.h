@@ -22,6 +22,8 @@ protected:
 
 	virtual void MovingToCreatureEnded() override;
 
+	virtual void RemoveEnemy() override;
+
 	float currentTime;
 
 	EnemyTargeting enemyTargeting;
@@ -48,7 +50,16 @@ protected:
 		float distancePercentageAfterTargetingPlayer;
 
 	UPROPERTY(EditAnywhere)
+		float dieRotatingTime;
+
+	UPROPERTY(EditAnywhere)
+		float dieRotatingSpeed;
+
+	UPROPERTY(EditAnywhere)
 		class UAudioComponent* weaponOverloadingSound1;
+
+	UPROPERTY(EditAnywhere)
+		class UNiagaraComponent* dieTornadoNiagara;
 
 	UPROPERTY(EditAnywhere)
 		class UNiagaraComponent* smokeNiagara;
@@ -67,6 +78,9 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 		class UAnimSequence* weaponShootingSequence;
+
+	UPROPERTY(EditAnywhere)
+		class UAnimSequence* dieStartedSequence;
 
 	UPROPERTY(EditAnywhere)
 		FLinearColor targetColor;

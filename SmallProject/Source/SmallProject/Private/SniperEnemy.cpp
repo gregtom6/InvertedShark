@@ -31,6 +31,9 @@ ASniperEnemy::ASniperEnemy() {
 	smokeNiagara = CreateDefaultSubobject<UNiagaraComponent>(TEXT("smokeNiagara"));
 	smokeNiagara->SetupAttachment(RootComponent);
 
+	dieTornadoNiagara = CreateDefaultSubobject<UNiagaraComponent>(TEXT("dieTornadoNiagara"));
+	//dieTornadoNiagara2->SetupAttachment(RootComponent);
+
 	weaponOverloadingSound1 = CreateDefaultSubobject<UAudioComponent>(TEXT("weaponOverloadingSound"));
 	weaponOverloadingSound1->SetupAttachment(RootComponent);
 }
@@ -113,6 +116,21 @@ void ASniperEnemy::Tick(float DeltaTime) {
 			SetActorRotation(targetRotation);
 		}
 	}
+	else if (actualStatus == EnemyStatus::SniperDying) {
+		currentTime = GetWorld()->GetTimeSeconds() - startTime;
+
+		currentTime /= dieRotatingTime;
+
+		FRotator rotatorDelta(0.0f, FMath::Lerp(0.f, dieRotatingSpeed,currentTime), 0.0f);
+
+		SkeletalBody->AddRelativeRotation(rotatorDelta);
+
+		Body12->AddRelativeRotation(rotatorDelta);
+
+		if (currentTime >= 1.f) {
+			Super::RemoveEnemy();
+		}
+	}
 }
 
 void ASniperEnemy::CreateProjectile() {
@@ -147,4 +165,22 @@ void ASniperEnemy::MovingToCreatureEnded() {
 void ASniperEnemy::TargetingCreature() {
 	startTime = GetWorld()->GetTimeSeconds();
 	actualStatus = EnemyStatus::Targeting;
+}
+
+void ASniperEnemy::RemoveEnemy() {
+
+	actualStatus = EnemyStatus::SniperDying;
+
+	startTime = GetWorld()->GetTimeSeconds();
+
+	FRotator rot = FRotator::ZeroRotator;
+	SetActorRotation(rot);
+
+	if (dieStartedSequence)
+	{
+		SkeletalBody->PlayAnimation(dieStartedSequence, false);
+	}
+
+	dieTornadoNiagara->SetWorldLocation(GetActorLocation());
+	dieTornadoNiagara->Activate();
 }

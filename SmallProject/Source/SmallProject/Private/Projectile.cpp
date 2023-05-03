@@ -97,7 +97,7 @@ void AProjectile::Event(class AActor* overlappedActor, class AActor* otherActor)
 
 			targetedActor = otherActor;
 
-			if (targetedActor != nullptr) {
+			if (targetedActor != nullptr && shooterActor!=nullptr) {
 				FRotator targetRotation = UKismetMathLibrary::FindLookAtRotation(targetedActor->GetActorLocation(), shooterActor->GetActorLocation());
 				FRotator actorRotation = targetedActor->GetActorRotation();
 				FRotator sum = targetRotation - actorRotation;

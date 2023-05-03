@@ -35,7 +35,7 @@ protected:
 
 	void DecreaseLife();
 
-	void RemoveEnemy();
+	virtual void RemoveEnemy();
 
 	void SplineManagement();
 
@@ -209,4 +209,5 @@ enum class EnemyStatus : uint8
 	Healing,
 	Targeting,
 	Shooting,
+	SniperDying,
 };
