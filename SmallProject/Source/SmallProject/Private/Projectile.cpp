@@ -66,6 +66,7 @@ void AProjectile::Tick(float DeltaTime)
 
 		if (currentDistance >= distanceToProceedInsideTarget + startDistance) {
 			status = ProjectileStatus::StopMovement;
+			staticMesh->SetMaterial(0, invisibleMaterial);
 		}
 		else {
 			SetActorLocation(newLocation);

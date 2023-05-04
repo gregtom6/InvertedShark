@@ -270,6 +270,9 @@ void AGameCharacter::LeftDash() {
 
 		actualEnergy -= energyDecreaseAfterDash;
 	}
+	else {
+		SlowdownTime();
+	}
 
 	startTime = GetWorld()->GetTimeSeconds();
 }
@@ -287,6 +290,9 @@ void AGameCharacter::RightDash() {
 	if (!amITargeted) {
 
 		actualEnergy -= energyDecreaseAfterDash;
+	}
+	else {
+		SlowdownTime();
 	}
 
 	startTime = GetWorld()->GetTimeSeconds();
