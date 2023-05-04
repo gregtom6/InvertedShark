@@ -97,21 +97,6 @@ void AGameCharacter::RotateLR(float rotateDelta) {
 	SpringArm->SetWorldRotation(actualRotation);
 }
 
-/*
-left right strafe movement of game character
-*/
-void AGameCharacter::StrafeLR(float movementDelta) {
-
-	if (isHugging || actualStatus == GameCharacterStatus::Dead) { return; }
-
-	FVector rightVector = GetActorRightVector();
-	FVector upVector = GetActorUpVector();
-	FVector forwardVector = GetActorForwardVector();
-
-	FVector newLocation = GetActorLocation();
-
-	SetActorLocation(newLocation + (rightVector * movementDelta * MovementSpeed));
-}
 
 /*
 wing beat movement of game character
@@ -243,18 +228,26 @@ void AGameCharacter::Dash() {
 		actualStatus = GameCharacterStatus::DownDash;
 		DownDash();
 	}
+	else if (thisCont->IsInputKeyDown(EKeys::Q)) {
+		actualStatus = GameCharacterStatus::LeftDash;
+		LeftDash();
+	}
+	else if (thisCont->IsInputKeyDown(EKeys::E)) {
+		actualStatus = GameCharacterStatus::RightDash;
+		RightDash();
+	}
 	else {
-
 		actualStatus = GameCharacterStatus::UpDash;
 		UpDash();
 	}
-
 }
 
 void AGameCharacter::DownDash() {
 
 	FVector actorDownVector = -GetActorUpVector() * dashStrength;
 	FVector impulseDirection = actorDownVector;
+
+	positionBeforeDash = GetActorLocation();
 
 	CameraMesh->SetAllPhysicsLinearVelocity(FVector::ZeroVector);
 
@@ -263,10 +256,48 @@ void AGameCharacter::DownDash() {
 	startTime = GetWorld()->GetTimeSeconds();
 }
 
+void AGameCharacter::LeftDash() {
+	FVector actorUpVector = (GetActorUpVector() / 2.f + -GetActorRightVector()) * dashStrength;
+	FVector impulseDirection = actorUpVector;
+
+	positionBeforeDash = GetActorLocation();
+
+	CameraMesh->SetAllPhysicsLinearVelocity(FVector::ZeroVector);
+
+	CameraMesh->AddImpulse(impulseDirection);
+
+	if (!amITargeted) {
+
+		actualEnergy -= energyDecreaseAfterDash;
+	}
+
+	startTime = GetWorld()->GetTimeSeconds();
+}
+
+void AGameCharacter::RightDash() {
+	FVector actorUpVector = (GetActorUpVector() / 2.f + GetActorRightVector()) * dashStrength;
+	FVector impulseDirection = actorUpVector;
+
+	positionBeforeDash = GetActorLocation();
+
+	CameraMesh->SetAllPhysicsLinearVelocity(FVector::ZeroVector);
+
+	CameraMesh->AddImpulse(impulseDirection);
+
+	if (!amITargeted) {
+
+		actualEnergy -= energyDecreaseAfterDash;
+	}
+
+	startTime = GetWorld()->GetTimeSeconds();
+}
+
 void AGameCharacter::UpDash() {
 	if (actualEnergy < energyDecreaseAfterDash) { return; }
 	FVector actorUpVector = GetActorUpVector() * dashStrength;
 	FVector impulseDirection = actorUpVector;
+
+	positionBeforeDash = GetActorLocation();
 
 	CameraMesh->SetAllPhysicsLinearVelocity(FVector::ZeroVector);
 
@@ -307,6 +338,14 @@ void AGameCharacter::UpDash() {
 
 	leftNoseSneezeNiagara->Activate(true);
 	rightNoseSneezeNiagara->Activate(true);
+}
+
+FVector AGameCharacter::GetBackBeforeDashLocation() {
+	return positionBeforeDash;
+}
+
+void AGameCharacter::NotifyTargeting(bool iAmTargeted) {
+	amITargeted = iAmTargeted;
 }
 
 USkeletalMeshComponent* AGameCharacter::GetSkeletalMeshComponent() {
@@ -509,7 +548,7 @@ void AGameCharacter::Tick(float DeltaTime)
 }
 
 void AGameCharacter::SetupProjectile(FRotator rotator, FVector scale, UStaticMesh* mesh, UMaterialInterface* material, FVector offset) {
-	
+
 	UStaticMeshComponent* NewComponent = NewObject<UStaticMeshComponent>(this);
 	NewComponent->RegisterComponent();
 	NewComponent->SetStaticMesh(mesh);
@@ -601,7 +640,9 @@ void AGameCharacter::TimeManagement() {
 slowing down velocity of player, when it needs
 */
 void AGameCharacter::VelocityManagement(FVector& currentVelocity) {
-	if (actualStatus != GameCharacterStatus::Dead && actualStatus != GameCharacterStatus::UpDash && actualStatus != GameCharacterStatus::DownDash) {
+	if (actualStatus != GameCharacterStatus::Dead &&
+		actualStatus != GameCharacterStatus::UpDash && actualStatus != GameCharacterStatus::DownDash
+		&& actualStatus != GameCharacterStatus::LeftDash && actualStatus != GameCharacterStatus::RightDash) {
 		FVector clampedVelocity = currentVelocity.GetClampedToMaxSize(velocityLimit);
 		CameraMesh->SetPhysicsLinearVelocity(clampedVelocity);
 	}
@@ -629,6 +670,24 @@ void AGameCharacter::StateManagement() {
 		float currentTime = GetWorld()->GetTimeSeconds() - startTime;
 
 		if (currentTime >= dashCooldownTime) {
+			actualStatus = GameCharacterStatus::Calm;
+		}
+	}
+
+	else if (actualStatus == GameCharacterStatus::LeftDash) {
+
+		float currentTime = GetWorld()->GetTimeSeconds() - startTime;
+
+		if (currentTime >= dashCooldownTime/2.f) {
+			actualStatus = GameCharacterStatus::Calm;
+		}
+	}
+
+	else if (actualStatus == GameCharacterStatus::RightDash) {
+
+		float currentTime = GetWorld()->GetTimeSeconds() - startTime;
+
+		if (currentTime >= dashCooldownTime/2.f) {
 			actualStatus = GameCharacterStatus::Calm;
 		}
 	}
@@ -810,9 +869,6 @@ subscribing to controls
 void AGameCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
-	//register for LR movement
-	PlayerInputComponent->BindAxis(TEXT("StrafeLR"), this, &AGameCharacter::StrafeLR);
 
 	PlayerInputComponent->BindAxis(TEXT("RotateLR"), this, &AGameCharacter::RotateLR);
 

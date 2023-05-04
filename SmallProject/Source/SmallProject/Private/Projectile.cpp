@@ -88,16 +88,15 @@ void AProjectile::Event(class AActor* overlappedActor, class AActor* otherActor)
 	if (otherActor && otherActor != this) {
 		if (otherActor->IsA(ACreature::StaticClass()) || otherActor->IsA(AGameCharacter::StaticClass())) {
 			startDistance = FVector::Distance(otherActor->GetActorLocation(), GetActorLocation());
-			status = ProjectileStatus::MoveInsideTarget;
 
-			projectileHittedTargetAudioComp->Play(0.f);
+
 			//creatureHitBloodNiagara->SetWorldLocation(otherActor->GetActorLocation());
 			//creatureHitBloodNiagara->Activate();
 			//startTimeForBloodFlow = GetWorld()->GetTimeSeconds();
 
 			targetedActor = otherActor;
 
-			if (targetedActor != nullptr && shooterActor!=nullptr) {
+			if (targetedActor != nullptr && shooterActor != nullptr) {
 				FRotator targetRotation = UKismetMathLibrary::FindLookAtRotation(targetedActor->GetActorLocation(), shooterActor->GetActorLocation());
 				FRotator actorRotation = targetedActor->GetActorRotation();
 				FRotator sum = targetRotation - actorRotation;
@@ -108,14 +107,42 @@ void AProjectile::Event(class AActor* overlappedActor, class AActor* otherActor)
 				if (targetedActor->IsA(AGameCharacter::StaticClass())) {
 
 					AGameCharacter* gameCharacter = Cast<AGameCharacter>(targetedActor);
-					gameCharacter->SetupProjectile(sum, staticMesh->GetComponentScale(), staticMesh->GetStaticMesh(), staticMesh->GetMaterial(0), target);
+
+					TArray<UPrimitiveComponent*> OverlappingComponents;
+					staticMesh->GetOverlappingComponents(OverlappingComponents);
+
+					for (UPrimitiveComponent* Component : OverlappingComponents)
+					{
+						// Check if the static mesh is overlapping with the current component
+						if (staticMesh->IsOverlappingComponent(Component))
+						{
+							// The static mesh is overlapping with this component
+							FName ComponentName = Component->GetFName();
+							FString MyString = ComponentName.ToString();
+							MyString.RemoveAt(MyString.Len() - 1);
+
+							UE_LOG(LogTemp, Log, TEXT("overlapping comp: %s"), *MyString);
+							if (MyString != FString("StaticMeshComponent_")) {
+								projectileHittedTargetAudioComp->Play(0.f);
+								status = ProjectileStatus::MoveInsideTarget;
+								gameCharacter->SetupProjectile(sum, staticMesh->GetComponentScale(), staticMesh->GetStaticMesh(), staticMesh->GetMaterial(0), target);
+								staticMesh->SetMaterial(0, invisibleMaterial);
+							}
+							else {
+								UE_LOG(LogTemp, Log, TEXT("overlapping comp internal volt"));
+							}
+						}
+					}
+
 				}
 				else if (targetedActor->IsA(ACreature::StaticClass())) {
 					ACreature* creature = Cast<ACreature>(targetedActor);
-					creature->SetupProjectile(sum, staticMesh->GetComponentScale(), staticMesh->GetStaticMesh(), staticMesh->GetMaterial(0), target);
-				}
 
-				staticMesh->SetMaterial(0, invisibleMaterial);
+					projectileHittedTargetAudioComp->Play(0.f);
+					status = ProjectileStatus::MoveInsideTarget;
+					creature->SetupProjectile(sum, staticMesh->GetComponentScale(), staticMesh->GetStaticMesh(), staticMesh->GetMaterial(0), target);
+					staticMesh->SetMaterial(0, invisibleMaterial);
+				}
 			}
 		}
 	}
@@ -127,9 +154,20 @@ void AProjectile::SetTarget(AActor* tar, AActor* origin) {
 
 	float offset = offsetForHittingTarget;
 
-	target = FVector(FMath::FRandRange(tar->GetActorLocation().X - offset, tar->GetActorLocation().X + offset),
-		FMath::FRandRange(tar->GetActorLocation().Y - offset, tar->GetActorLocation().Y + offset),
-		FMath::FRandRange(tar->GetActorLocation().Z - offset, tar->GetActorLocation().Z + offset));
+	FVector actorLocation = tar->GetActorLocation();
+
+	if (tar->IsA(AGameCharacter::StaticClass())) {
+
+		AGameCharacter* gameCharacter = Cast<AGameCharacter>(tar);
+
+		if (gameCharacter->GetStatus() != GameCharacterStatus::Calm) {
+			actorLocation = gameCharacter->GetBackBeforeDashLocation();
+		}
+	}
+
+	target = FVector(FMath::FRandRange(actorLocation.X - offset, actorLocation.X + offset),
+		FMath::FRandRange(actorLocation.Y - offset, actorLocation.Y + offset),
+		FMath::FRandRange(actorLocation.Z - offset, actorLocation.Z + offset));
 
 	shooterActor = origin;
 

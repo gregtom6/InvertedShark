@@ -101,9 +101,11 @@ void ASniperEnemy::Tick(float DeltaTime) {
 		float relatedDist = distanceBetweenMeAndPlayer / distanceBetweenMeAndCreature;
 		if (relatedDist <= distancePercentageAfterTargetingPlayer) {
 			enemyTargeting = EnemyTargeting::PlayerTargeting;
+			gameCharacter->NotifyTargeting(true);
 		}
 		else {
 			enemyTargeting = EnemyTargeting::CreatureTargeting;
+			gameCharacter->NotifyTargeting(false);
 		}
 
 		if (enemyTargeting == EnemyTargeting::PlayerTargeting) {
@@ -184,8 +186,9 @@ void ASniperEnemy::CreateProjectile() {
 
 	if (enemyTargeting == EnemyTargeting::CreatureTargeting)
 		NewActor->SetTarget(creature, this);
-	else if (enemyTargeting == EnemyTargeting::PlayerTargeting)
+	else if (enemyTargeting == EnemyTargeting::PlayerTargeting) {
 		NewActor->SetTarget(gameCharacter, this);
+	}
 }
 
 FVector ASniperEnemy::GetEndPosition() {

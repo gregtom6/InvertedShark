@@ -17,8 +17,6 @@ private:
 	// Sets default values for this pawn's properties
 	AGameCharacter(const FObjectInitializer& ObjectInitializer);
 
-	void StrafeLR(float movementDelta);
-
 	void WingBeat();
 
 	void RotateLR(float rotateDelta);
@@ -32,6 +30,10 @@ private:
 	void UpDash();
 
 	void DownDash();
+
+	void LeftDash();
+
+	void RightDash();
 
 	void StateManagement();
 
@@ -82,6 +84,10 @@ private:
 
 	float slowdownStartTime;
 	bool canSlowdownTimeStarted;
+
+	bool amITargeted;
+
+	FVector positionBeforeDash;
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -269,6 +275,10 @@ public:
 
 	class USkeletalMeshComponent* GetSkeletalMeshComponent();
 	class UStaticMeshComponent* GetStaticMeshComponent();
+
+	void NotifyTargeting(bool iAmTargeted);
+
+	FVector GetBackBeforeDashLocation();
 };
 
 UENUM()
@@ -279,6 +289,8 @@ enum class GameCharacterStatus : uint8
 	UpDash,
 	DownDash,
 	Dead,
+	LeftDash,
+	RightDash,
 };
 
 UENUM()
