@@ -257,7 +257,7 @@ void AGameCharacter::DownDash() {
 }
 
 void AGameCharacter::LeftDash() {
-	FVector actorUpVector = (GetActorUpVector() / 2.f + -GetActorRightVector()) * dashStrength;
+	FVector actorUpVector = (GetActorUpVector() + -GetActorRightVector()) * (dashStrength/2.f);
 	FVector impulseDirection = actorUpVector;
 
 	positionBeforeDash = GetActorLocation();
@@ -278,7 +278,7 @@ void AGameCharacter::LeftDash() {
 }
 
 void AGameCharacter::RightDash() {
-	FVector actorUpVector = (GetActorUpVector() / 2.f + GetActorRightVector()) * dashStrength;
+	FVector actorUpVector = (GetActorUpVector() + GetActorRightVector()) * (dashStrength/2.f);
 	FVector impulseDirection = actorUpVector;
 
 	positionBeforeDash = GetActorLocation();
@@ -559,7 +559,9 @@ void AGameCharacter::SetupProjectile(FRotator rotator, FVector scale, UStaticMes
 	NewComponent->RegisterComponent();
 	NewComponent->SetStaticMesh(mesh);
 	NewComponent->AttachToComponent(CameraMesh, FAttachmentTransformRules::KeepRelativeTransform);
-	NewComponent->SetRelativeScale3D(scale);
+	FVector newScale = scale *1.25f;
+	FVector nScale = newScale*1.25f;
+	NewComponent->SetRelativeScale3D(nScale);
 
 	NewComponent->SetWorldLocation(offset);
 
