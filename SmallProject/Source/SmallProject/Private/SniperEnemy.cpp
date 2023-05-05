@@ -158,6 +158,15 @@ void ASniperEnemy::Tick(float DeltaTime) {
 			actualStatus = EnemyStatus::SniperDead;
 		}
 	}
+
+	TimeManagement();
+}
+
+void ASniperEnemy::TimeManagement() {
+	if (gameCharacter == nullptr) { return; }
+
+	loopedMosquitoSound->SetPitchMultiplier(gameCharacter->GetCurrentSoundPitchMultiplier());
+	weaponOverloadingSound1->SetPitchMultiplier(gameCharacter->GetCurrentSoundPitchMultiplier());
 }
 
 void ASniperEnemy::CreateWindZone() {

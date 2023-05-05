@@ -20,6 +20,8 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
+	void TimeManagement();
+
 	UPROPERTY(EditAnywhere)
 		float speed;
 
@@ -55,6 +57,8 @@ protected:
 	class AActor* targetedActor;
 
 	class AActor* shooterActor;
+
+	class AGameCharacter* gameChar;
 
 	float startTimeForBloodFlow;
 

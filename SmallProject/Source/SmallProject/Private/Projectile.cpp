@@ -9,6 +9,7 @@
 #include <Kismet/KismetMathLibrary.h>
 #include "GameCharacter.h"
 #include "Materials/MaterialInterface.h"
+#include <Kismet/GameplayStatics.h>
 
 // Sets default values
 AProjectile::AProjectile()
@@ -32,6 +33,14 @@ void AProjectile::BeginPlay()
 	Super::BeginPlay();
 
 	status = ProjectileStatus::Initial;
+
+
+	APlayerController* OurPlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+
+	APawn* pawn = OurPlayerController->GetPawn();
+
+	gameChar = Cast<AGameCharacter, APawn>(pawn);
+
 
 	OnActorBeginOverlap.AddUniqueDynamic(this, &AProjectile::Event);
 }
@@ -83,6 +92,14 @@ void AProjectile::Tick(float DeltaTime)
 			creatureHitBloodNiagara->Deactivate();
 		}
 	}
+
+	TimeManagement();
+}
+
+void AProjectile::TimeManagement() {
+	if (gameChar == nullptr) { return; }
+
+	projectileHittedTargetAudioComp->SetPitchMultiplier(gameChar->GetCurrentSoundPitchMultiplier());
 }
 
 void AProjectile::Event(class AActor* overlappedActor, class AActor* otherActor) {

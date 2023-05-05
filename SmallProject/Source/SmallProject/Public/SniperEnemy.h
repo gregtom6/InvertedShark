@@ -24,6 +24,8 @@ protected:
 
 	virtual void RemoveEnemy() override;
 
+	void TimeManagement();
+
 	float currentTime;
 
 	EnemyTargeting enemyTargeting;
