@@ -577,7 +577,7 @@ void AGameCharacter::Tick(float DeltaTime)
 	TimeManagement();
 }
 
-void AGameCharacter::SetupProjectile(FRotator rotator, FVector scale, UStaticMesh* mesh, UMaterialInterface* material, FVector offset) {
+void AGameCharacter::SetupProjectile(FRotator rotator, FVector scale, UStaticMesh* mesh, UMaterialInterface* material, FVector offset, FVector direction) {
 
 	UStaticMeshComponent* NewComponent = NewObject<UStaticMeshComponent>(this);
 	NewComponent->RegisterComponent();
@@ -603,6 +603,13 @@ void AGameCharacter::SetupProjectile(FRotator rotator, FVector scale, UStaticMes
 	if (actualStatus == GameCharacterStatus::Dead) { return; }
 
 	SetDieState();
+
+	CameraMesh->SetAllPhysicsLinearVelocity(FVector::ZeroVector);
+
+	CameraMesh->AddImpulse(direction*150.f);
+	CameraMesh->SetConstraintMode(EDOFMode::Type::SixDOF);
+
+	CameraMesh->AddAngularImpulseInRadians(direction*1000.f);
 }
 
 /*

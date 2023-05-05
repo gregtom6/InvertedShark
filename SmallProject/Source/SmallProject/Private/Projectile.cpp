@@ -123,6 +123,8 @@ void AProjectile::Event(class AActor* overlappedActor, class AActor* otherActor)
 				sum.Pitch -= sum.Pitch;
 				sum.Yaw += 90.f;
 
+				FVector direction =  targetedActor->GetActorLocation()-shooterActor->GetActorLocation();
+
 				if (targetedActor->IsA(AGameCharacter::StaticClass())) {
 
 					AGameCharacter* gameCharacter = Cast<AGameCharacter>(targetedActor);
@@ -143,7 +145,7 @@ void AProjectile::Event(class AActor* overlappedActor, class AActor* otherActor)
 							MyString.RemoveAt(MyString.Len() - 1);
 
 							UE_LOG(LogTemp, Log, TEXT("overlapping comp: %s"), *MyString);
-							if (MyString != FString("InnerProjectile_") && MyString != FString("InnerProjectile_1") && MyString!=FString("Bo")) {
+							if (MyString != FString("InnerProjectile_") && MyString != FString("InnerProjectile_1")/* && MyString != FString("Bo")*/) {
 								UE_LOG(LogTemp, Log, TEXT("overlapping comp letrehozas %s"), *MyString);
 
 								projectileHittedTargetAudioComp->Play(0.f);
@@ -156,7 +158,7 @@ void AProjectile::Event(class AActor* overlappedActor, class AActor* otherActor)
 								}
 
  								status = ProjectileStatus::MoveInsideTarget;
-								gameCharacter->SetupProjectile(sum, staticMesh->GetComponentScale(), staticMesh->GetStaticMesh(), staticMesh->GetMaterial(0), target);
+								gameCharacter->SetupProjectile(sum, staticMesh->GetComponentScale(), staticMesh->GetStaticMesh(), staticMesh->GetMaterial(0), target, direction);
 								staticMesh->SetMaterial(0, invisibleMaterial);
 							}
 							else {

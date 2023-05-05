@@ -274,7 +274,7 @@ public:
 
 	void Pause();
 
-	void SetupProjectile(FRotator rotator, FVector scale, class UStaticMesh* mesh, class UMaterialInterface* material, FVector offset);
+	void SetupProjectile(FRotator rotator, FVector scale, class UStaticMesh* mesh, class UMaterialInterface* material, FVector offset, FVector direction);
 
 	FOnDieHappenedSignature OnDieHappenedDelegate;
 
