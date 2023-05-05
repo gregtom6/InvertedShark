@@ -56,9 +56,6 @@ protected:
 		float dieRotatingSpeed;
 
 	UPROPERTY(EditAnywhere)
-		class UAudioComponent* loopedMosquitoSound;
-
-	UPROPERTY(EditAnywhere)
 		class UAudioComponent* weaponOverloadingSound1;
 
 	UPROPERTY(EditAnywhere)

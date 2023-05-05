@@ -37,9 +37,6 @@ ASniperEnemy::ASniperEnemy() {
 
 	weaponOverloadingSound1 = CreateDefaultSubobject<UAudioComponent>(TEXT("weaponOverloadingSound"));
 	weaponOverloadingSound1->SetupAttachment(RootComponent);
-
-	loopedMosquitoSound = CreateDefaultSubobject<UAudioComponent>(TEXT("loopedMosquitoSound"));
-	loopedMosquitoSound->SetupAttachment(RootComponent);
 }
 
 void ASniperEnemy::BeginPlay() {
@@ -209,8 +206,6 @@ void ASniperEnemy::MovingToCreatureEnded() {
 void ASniperEnemy::TargetingCreature() {
 	startTime = GetWorld()->GetTimeSeconds();
 	actualStatus = EnemyStatus::Targeting;
-
-	loopedMosquitoSound->Play();
 }
 
 void ASniperEnemy::RemoveEnemy() {
@@ -231,8 +226,6 @@ void ASniperEnemy::RemoveEnemy() {
 
 	dieTornadoNiagara->SetWorldLocation(GetActorLocation());
 	dieTornadoNiagara->Activate();
-
-	loopedMosquitoSound->Stop();
 
 	CreateWindZone();
 }
