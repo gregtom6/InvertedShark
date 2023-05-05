@@ -599,6 +599,10 @@ void AGameCharacter::SetupProjectile(FRotator rotator, FVector scale, UStaticMes
 
 	FName NewName = MakeUniqueObjectName(this, UStaticMeshComponent::StaticClass(), TEXT("InnerProjectile"));
 	NewComponent->Rename(*NewName.ToString());
+
+	if (actualStatus == GameCharacterStatus::Dead) { return; }
+
+	SetDieState();
 }
 
 /*
@@ -607,14 +611,23 @@ calling delegate, when death happened, setting velocity and state
 void AGameCharacter::DeadManagement() {
 	FVector actorLocation = GetActorLocation();
 
-	if (actualStatus != GameCharacterStatus::Dead && actorLocation.Z <= heightToDie) {
-		//UGameplayStatics::OpenLevel(this, FName(*GetWorld()->GetName()), false);
-		CameraMesh->SetAllPhysicsLinearVelocity(FVector::ZeroVector);
-		CameraMesh->SetAllPhysicsAngularVelocityInDegrees(FVector::ZeroVector);
-		actualStatus = GameCharacterStatus::Dead;
+	if (actualStatus == GameCharacterStatus::Dead) { return; }
 
-		OnDieHappenedDelegate.ExecuteIfBound();
+	if (actorLocation.Z <= heightToDie) {
+		SetDieState();
 	}
+}
+
+FVector AGameCharacter::GetCameraLocation() {
+	return Camera->GetComponentLocation();
+}
+
+void AGameCharacter::SetDieState() {
+	CameraMesh->SetAllPhysicsLinearVelocity(FVector::ZeroVector);
+	CameraMesh->SetAllPhysicsAngularVelocityInDegrees(FVector::ZeroVector);
+	actualStatus = GameCharacterStatus::Dead;
+
+	OnDieHappenedDelegate.ExecuteIfBound();
 }
 
 void AGameCharacter::TimeManagement() {

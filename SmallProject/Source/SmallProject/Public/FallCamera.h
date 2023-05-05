@@ -10,12 +10,17 @@ UCLASS()
 class SMALLPROJECT_API AFallCamera : public AActor
 {
 	GENERATED_BODY()
+
+private:
+	virtual void Tick(float DeltaTime) override;
+
 	
 public:	
 	// Sets default values for this actor's properties
 	AFallCamera();
 
 protected:
+
 
 	class AGameCharacter* gameCharacter;
 
@@ -33,6 +38,11 @@ protected:
 
 	UPROPERTY(VisibleInstanceOnly)
 		class UDeadUserWidget* deaduserwidget;
+
+	UPROPERTY(EditAnywhere)
+		float showTime = 3.f;
+
+	float startTime;
 
 public:	
 

@@ -7,11 +7,12 @@
 #include "Camera/CameraComponent.h"
 #include <GameCharacter.h>
 #include "DeadUserWidget.h"
+#include <Kismet/KismetMathLibrary.h>
 
 // Sets default values
 AFallCamera::AFallCamera()
 {
-	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = true;
 
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
@@ -42,6 +43,25 @@ void AFallCamera::BeginPlay()
 	}
 }
 
+void AFallCamera::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	if (gameCharacter == nullptr || gameCharacter->GetStatus()!=GameCharacterStatus::Dead) { return; }
+
+	FRotator targetRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), gameCharacter->GetActorLocation());
+
+	Camera->SetRelativeRotation(targetRotation);
+
+	float currentTime = GetWorld()->GetTimeSeconds() - startTime;
+
+	currentTime /= showTime;
+
+	if (currentTime >= 1.f) {
+		deaduserwidget->AddToViewport(0);
+	}
+}
+
 /*
 adding widget to viewport, when player dies
 */
@@ -49,10 +69,9 @@ void AFallCamera::DieHappened()
 {
 	UE_LOG(LogTemp, Warning, TEXT("delegate !!!!"));
 
-
 	APlayerController* OurPlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
 
-	SetActorLocation(gameCharacter->GetActorLocation());
+	SetActorLocation(gameCharacter->GetCameraLocation());
 
 	//Smoothly transition to our actor on begin play.
 	OurPlayerController->SetViewTargetWithBlend(this, 0.5f);
@@ -60,11 +79,12 @@ void AFallCamera::DieHappened()
 	if (deaduserwidget != nullptr) {
 		UE_LOG(LogTemp, Warning, TEXT("dead userwidget2"));
 		UWidgetLayoutLibrary::RemoveAllWidgets(GetWorld());
-		deaduserwidget->AddToViewport(0);
 
 		OurPlayerController->bShowMouseCursor = true;
 		OurPlayerController->bEnableClickEvents = true;
 		OurPlayerController->bEnableMouseOverEvents = true;
 	}
+
+	startTime = GetWorld()->GetTimeSeconds();
 }
 

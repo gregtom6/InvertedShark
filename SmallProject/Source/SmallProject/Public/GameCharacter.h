@@ -47,6 +47,8 @@ private:
 
 	void DeadManagement();
 
+	void SetDieState();
+
 	void TimeManagement();
 
 	void SetRotationLocks(bool X, bool Y, bool Z);
@@ -282,6 +284,8 @@ public:
 	void NotifyTargeting(bool iAmTargeted);
 
 	FVector GetBackBeforeDashLocation();
+
+	FVector GetCameraLocation();
 };
 
 UENUM()
