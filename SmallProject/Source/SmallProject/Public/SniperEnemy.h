@@ -64,6 +64,9 @@ protected:
 		class UAudioComponent* weaponOverloadingSound1;
 
 	UPROPERTY(EditAnywhere)
+		class UAudioComponent* dyingBeeSound;
+
+	UPROPERTY(EditAnywhere)
 		class UNiagaraComponent* dieTornadoNiagara;
 
 	UPROPERTY(EditAnywhere)

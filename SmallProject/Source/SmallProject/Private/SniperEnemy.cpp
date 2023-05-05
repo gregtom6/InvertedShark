@@ -40,6 +40,9 @@ ASniperEnemy::ASniperEnemy() {
 
 	loopedMosquitoSound = CreateDefaultSubobject<UAudioComponent>(TEXT("loopedMosquitoSound"));
 	loopedMosquitoSound->SetupAttachment(RootComponent);
+
+	dyingBeeSound = CreateDefaultSubobject<UAudioComponent>(TEXT("dyingBeeSound"));
+	dyingBeeSound->SetupAttachment(RootComponent);
 }
 
 void ASniperEnemy::BeginPlay() {
@@ -242,6 +245,8 @@ void ASniperEnemy::RemoveEnemy() {
 	dieTornadoNiagara->Activate();
 
 	loopedMosquitoSound->Stop();
+
+	dyingBeeSound->Play();
 
 	CreateWindZone();
 }
