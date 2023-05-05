@@ -245,6 +245,9 @@ protected:
 	class UActorSequencePlayer* loopedEyePlayer;
 	class UActorSequencePlayer* sneezeBlinkPlayer;
 
+	class UActorSequencePlayer* leftDashPlayer;
+	class UActorSequencePlayer* rightDashPlayer;
+
 	UFUNCTION()
 		bool GetOverlapInfluenceSphere(class UStaticMeshComponent* StaticMeshComponent, FVector& Actor1ClosestPoint, FVector& Actor2ClosestPoint);
 

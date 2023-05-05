@@ -269,10 +269,17 @@ void AGameCharacter::LeftDash() {
 	if (!amITargeted) {
 
 		actualEnergy -= energyDecreaseAfterDash;
+		if (actualEnergy < 0.f)
+			actualEnergy = 0.f;
 	}
 	else {
 		SlowdownTime();
 	}
+
+	SpringArm->bInheritYaw = false;
+	FRotator rotator = CameraMesh->GetComponentRotation();
+	SpringArm->SetWorldRotation(rotator);
+	leftDashPlayer->Play();
 
 	startTime = GetWorld()->GetTimeSeconds();
 }
@@ -290,10 +297,17 @@ void AGameCharacter::RightDash() {
 	if (!amITargeted) {
 
 		actualEnergy -= energyDecreaseAfterDash;
+		if (actualEnergy < 0.f)
+			actualEnergy = 0.f;
 	}
 	else {
 		SlowdownTime();
 	}
+
+	SpringArm->bInheritYaw = false;
+	FRotator rotator = CameraMesh->GetComponentRotation();
+	SpringArm->SetWorldRotation(rotator);
+	rightDashPlayer->Play();
 
 	startTime = GetWorld()->GetTimeSeconds();
 }
@@ -310,6 +324,8 @@ void AGameCharacter::UpDash() {
 	CameraMesh->AddImpulse(impulseDirection);
 
 	actualEnergy -= energyDecreaseAfterDash;
+	if (actualEnergy < 0.f)
+		actualEnergy = 0.f;
 
 	startTime = GetWorld()->GetTimeSeconds();
 
@@ -503,6 +519,14 @@ void AGameCharacter::BeginPlay()
 			funcDelegate.BindUFunction(this, FName("SneezeBlinkEnded"));
 			sneezeBlinkPlayer->OnFinished.AddUnique(funcDelegate);
 		}
+		else if (ActorSequenceComponents[i]->GetFName() == FName("leftDash"))
+		{
+			leftDashPlayer = ActorSequenceComponents[i]->GetSequencePlayer();
+		}
+		else if (ActorSequenceComponents[i]->GetFName() == FName("rightDash"))
+		{
+			rightDashPlayer = ActorSequenceComponents[i]->GetSequencePlayer();
+		}
 	}
 
 	TArray<UNiagaraComponent*> niagaraComponents;
@@ -572,6 +596,9 @@ void AGameCharacter::SetupProjectile(FRotator rotator, FVector scale, UStaticMes
 
 	NewComponent->SetRelativeRotation(rotator);
 	NewComponent->SetMaterial(0, material);
+
+	FName NewName = MakeUniqueObjectName(this, UStaticMeshComponent::StaticClass(), TEXT("InnerProjectile"));
+	NewComponent->Rename(*NewName.ToString());
 }
 
 /*
@@ -688,6 +715,7 @@ void AGameCharacter::StateManagement() {
 
 		if (currentTime >= dashCooldownTime/2.f) {
 			actualStatus = GameCharacterStatus::Calm;
+			SpringArm->bInheritYaw = true;
 		}
 	}
 
@@ -697,6 +725,7 @@ void AGameCharacter::StateManagement() {
 
 		if (currentTime >= dashCooldownTime/2.f) {
 			actualStatus = GameCharacterStatus::Calm;
+			SpringArm->bInheritYaw = true;
 		}
 	}
 

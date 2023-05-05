@@ -58,6 +58,7 @@ void AProjectile::Tick(float DeltaTime)
 
 	if (status == ProjectileStatus::FlyToTarget && target != FVector::Zero()) {
 
+
 		if (directionVector == FVector::Zero()) {
 			directionVector = target - GetActorLocation();
 			directionVector.Normalize();
@@ -82,9 +83,6 @@ void AProjectile::Tick(float DeltaTime)
 		}
 	}
 
-	FRotator targetRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), target);
-	SetActorRotation(targetRotation);
-
 	if (creatureHitBloodNiagara->IsActive()) {
 		float currentTime = GetWorld()->GetTimeSeconds() - startTimeForBloodFlow;
 
@@ -103,6 +101,9 @@ void AProjectile::TimeManagement() {
 }
 
 void AProjectile::Event(class AActor* overlappedActor, class AActor* otherActor) {
+
+	if (status == ProjectileStatus::Initial) { return; }
+
 	if (otherActor && otherActor != this) {
 		if (otherActor->IsA(ACreature::StaticClass()) || otherActor->IsA(AGameCharacter::StaticClass())) {
 			startDistance = FVector::Distance(otherActor->GetActorLocation(), GetActorLocation());
@@ -129,6 +130,8 @@ void AProjectile::Event(class AActor* overlappedActor, class AActor* otherActor)
 					TArray<UPrimitiveComponent*> OverlappingComponents;
 					staticMesh->GetOverlappingComponents(OverlappingComponents);
 
+					UE_LOG(LogTemp, Log, TEXT("overlapping comp --------------"));
+
 					for (UPrimitiveComponent* Component : OverlappingComponents)
 					{
 						// Check if the static mesh is overlapping with the current component
@@ -140,9 +143,19 @@ void AProjectile::Event(class AActor* overlappedActor, class AActor* otherActor)
 							MyString.RemoveAt(MyString.Len() - 1);
 
 							UE_LOG(LogTemp, Log, TEXT("overlapping comp: %s"), *MyString);
-							if (MyString != FString("StaticMeshComponent_")) {
+							if (MyString != FString("InnerProjectile_") && MyString != FString("InnerProjectile_1") && MyString!=FString("Bo")) {
+								UE_LOG(LogTemp, Log, TEXT("overlapping comp letrehozas %s"), *MyString);
+
 								projectileHittedTargetAudioComp->Play(0.f);
-								status = ProjectileStatus::MoveInsideTarget;
+
+								const UEnum* EnumPtr = FindObject<UEnum>(ANY_PACKAGE, TEXT("ProjectileStatus"), true);
+								if (EnumPtr)
+								{
+									FString EnumValueString = EnumPtr->GetNameStringByIndex(static_cast<uint8>(status));
+									UE_LOG(LogTemp, Log, TEXT("overlapping enum value: %s"), *EnumValueString);
+								}
+
+ 								status = ProjectileStatus::MoveInsideTarget;
 								gameCharacter->SetupProjectile(sum, staticMesh->GetComponentScale(), staticMesh->GetStaticMesh(), staticMesh->GetMaterial(0), target);
 								staticMesh->SetMaterial(0, invisibleMaterial);
 							}
@@ -156,10 +169,30 @@ void AProjectile::Event(class AActor* overlappedActor, class AActor* otherActor)
 				else if (targetedActor->IsA(ACreature::StaticClass())) {
 					ACreature* creature = Cast<ACreature>(targetedActor);
 
-					projectileHittedTargetAudioComp->Play(0.f);
-					status = ProjectileStatus::MoveInsideTarget;
-					creature->SetupProjectile(sum, staticMesh->GetComponentScale(), staticMesh->GetStaticMesh(), staticMesh->GetMaterial(0), target);
-					staticMesh->SetMaterial(0, invisibleMaterial);
+					TArray<UPrimitiveComponent*> OverlappingComponents;
+					staticMesh->GetOverlappingComponents(OverlappingComponents);
+
+					UE_LOG(LogTemp, Log, TEXT("overlapping comp --------------"));
+
+					for (UPrimitiveComponent* Component : OverlappingComponents)
+					{
+						// Check if the static mesh is overlapping with the current component
+						if (staticMesh->IsOverlappingComponent(Component))
+						{
+							FName ComponentName = Component->GetFName();
+							FString MyString = ComponentName.ToString();
+							MyString.RemoveAt(MyString.Len() - 1);
+
+							UE_LOG(LogTemp, Log, TEXT("overlapping comp: %s"), *MyString);
+
+
+							projectileHittedTargetAudioComp->Play(0.f);
+							status = ProjectileStatus::MoveInsideTarget;
+							creature->SetupProjectile(sum, staticMesh->GetComponentScale(), staticMesh->GetStaticMesh(), staticMesh->GetMaterial(0), target);
+							staticMesh->SetMaterial(0, invisibleMaterial);
+
+						}
+					}
 				}
 			}
 		}
@@ -188,6 +221,9 @@ void AProjectile::SetTarget(AActor* tar, AActor* origin) {
 		FMath::FRandRange(actorLocation.Z - offset, actorLocation.Z + offset));
 
 	shooterActor = origin;
+
+	FRotator targetRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), target);
+	SetActorRotation(targetRotation);
 
 	status = ProjectileStatus::FlyToTarget;
 }
