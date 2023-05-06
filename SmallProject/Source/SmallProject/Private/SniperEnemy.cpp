@@ -53,7 +53,7 @@ void ASniperEnemy::BeginPlay() {
 
 	SniperMaterialInstance = SkeletalBody->CreateDynamicMaterialInstance(7);
 
-	
+
 
 	FHashedMaterialParameterInfo ParameterInfo("Color");
 	SniperMaterialInstance->GetVectorParameterValue(ParameterInfo, defaultColor);
@@ -104,7 +104,7 @@ void ASniperEnemy::Tick(float DeltaTime) {
 			CreateProjectile();
 			smokeNiagara->Deactivate();
 			soundAlreadyStartedPlaying = false;
-			
+
 			if (weaponShootingSequence)
 			{
 				SkeletalBody->PlayAnimation(weaponShootingSequence, false);
@@ -144,7 +144,7 @@ void ASniperEnemy::Tick(float DeltaTime) {
 
 		currentTime /= dieRotatingTime;
 
-		FRotator rotatorDelta(0.0f, FMath::Lerp(0.f, dieRotatingSpeed,currentTime), 0.0f);
+		FRotator rotatorDelta(0.0f, FMath::Lerp(0.f, dieRotatingSpeed, currentTime), 0.0f);
 
 		SkeletalBody->AddRelativeRotation(rotatorDelta);
 
@@ -183,13 +183,12 @@ void ASniperEnemy::Tick(float DeltaTime) {
 		FCollisionQueryParams TraceParams(FName(TEXT("LineTraceByChannel")), true);
 
 		// Perform the line trace
-		bool bHit = GetWorld()->LineTraceSingleByChannel(HitResult, laserTargetingNiagara1->GetComponentLocation(), FVector(1000.f,0.f,0.f), CollisionChannel, TraceParams);
+		bool bHit = GetWorld()->LineTraceSingleByChannel(HitResult, laserTargetingNiagara1->GetComponentLocation(), FVector(1000.f, 0.f, 0.f), CollisionChannel, TraceParams);
 
 		float dist = FVector::Distance(laserTargetingNiagara1->GetComponentLocation(), currentTarget);
 
-		//if (bHit) {
-			laserTargetingNiagara1->SetVectorParameter(FName(TEXT("User.Beam End")), FVector(dist,0.f,0.f));
-		//}
+		laserTargetingNiagara1->SetVectorParameter(FName(TEXT("User.Beam End")), FVector(dist, 0.f, 0.f));
+
 	}
 
 	TimeManagement();
