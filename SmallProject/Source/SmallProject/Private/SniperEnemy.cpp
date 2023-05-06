@@ -32,6 +32,9 @@ ASniperEnemy::ASniperEnemy() {
 	smokeNiagara = CreateDefaultSubobject<UNiagaraComponent>(TEXT("smokeNiagara"));
 	smokeNiagara->SetupAttachment(RootComponent);
 
+	laserTargetingNiagara1 = CreateDefaultSubobject<UNiagaraComponent>(TEXT("laserTargetingNiagara1"));
+	laserTargetingNiagara1->AttachToComponent(SkeletalBody, FAttachmentTransformRules::KeepRelativeTransform);
+
 	dieTornadoNiagara = CreateDefaultSubobject<UNiagaraComponent>(TEXT("dieTornadoNiagara"));
 	//dieTornadoNiagara2->SetupAttachment(RootComponent);
 
@@ -50,6 +53,8 @@ void ASniperEnemy::BeginPlay() {
 
 	SniperMaterialInstance = SkeletalBody->CreateDynamicMaterialInstance(7);
 
+	
+
 	FHashedMaterialParameterInfo ParameterInfo("Color");
 	SniperMaterialInstance->GetVectorParameterValue(ParameterInfo, defaultColor);
 
@@ -63,7 +68,12 @@ void ASniperEnemy::BeginPlay() {
 void ASniperEnemy::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
 
-	if (actualStatus == EnemyStatus::Targeting) {
+	if (actualStatus == EnemyStatus::Moving) {
+		FRotator targetRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), creature->GetActorLocation());
+		SetActorRotation(targetRotation);
+	}
+
+	else if (actualStatus == EnemyStatus::Targeting) {
 
 		currentTime = GetWorld()->GetTimeSeconds() - startTime;
 
@@ -74,6 +84,8 @@ void ASniperEnemy::Tick(float DeltaTime) {
 
 		if (currentTime >= targetingPercentageWhenSmokeNeeds) {
 			smokeNiagara->Activate();
+
+			laserTargetingNiagara1->Activate();
 
 			if (weaponLoadingSequence && !SkeletalBody->IsPlaying())
 			{
@@ -108,10 +120,12 @@ void ASniperEnemy::Tick(float DeltaTime) {
 		if (relatedDist <= distancePercentageAfterTargetingPlayer) {
 			enemyTargeting = EnemyTargeting::PlayerTargeting;
 			gameCharacter->NotifyTargeting(true);
+			currentTarget = gameCharacter->GetActorLocation();
 		}
 		else {
 			enemyTargeting = EnemyTargeting::CreatureTargeting;
 			gameCharacter->NotifyTargeting(false);
+			currentTarget = creature->GetActorLocation();
 		}
 
 		if (enemyTargeting == EnemyTargeting::PlayerTargeting) {
@@ -162,6 +176,22 @@ void ASniperEnemy::Tick(float DeltaTime) {
 		}
 	}
 
+	if (laserTargetingNiagara1->IsActive()) {
+		ECollisionChannel CollisionChannel = ECC_WorldDynamic; // Set the desired collision channel for the line trace
+
+		FHitResult HitResult;
+		FCollisionQueryParams TraceParams(FName(TEXT("LineTraceByChannel")), true);
+
+		// Perform the line trace
+		bool bHit = GetWorld()->LineTraceSingleByChannel(HitResult, laserTargetingNiagara1->GetComponentLocation(), FVector(1000.f,0.f,0.f), CollisionChannel, TraceParams);
+
+		float dist = FVector::Distance(laserTargetingNiagara1->GetComponentLocation(), currentTarget);
+
+		//if (bHit) {
+			laserTargetingNiagara1->SetVectorParameter(FName(TEXT("User.Beam End")), FVector(dist,0.f,0.f));
+		//}
+	}
+
 	TimeManagement();
 }
 
@@ -192,6 +222,8 @@ void ASniperEnemy::CreateProjectile() {
 	FTransform SpawnTransform;
 	SpawnTransform.SetLocation(ProjectileOrigin->GetComponentLocation());
 	SpawnTransform.SetRotation(FQuat::Identity);
+
+	laserTargetingNiagara1->Deactivate();
 
 	// Get a reference to the Blueprint class
 	UClass* BPClass = LoadClass<AActor>(nullptr, TEXT("/Game/Blueprints/BP_SniperProjectile.BP_SniperProjectile_C"));

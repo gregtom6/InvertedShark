@@ -73,6 +73,9 @@ protected:
 		class UNiagaraComponent* smokeNiagara;
 
 	UPROPERTY(EditAnywhere)
+		class UNiagaraComponent* laserTargetingNiagara1;
+
+	UPROPERTY(EditAnywhere)
 		class UStaticMeshComponent* ProjectileOrigin;
 
 	UPROPERTY(EditAnywhere)
@@ -100,6 +103,8 @@ protected:
 	void CreateProjectile();
 
 	void CreateWindZone();
+
+	FVector currentTarget;
 
 	class AGameCharacter* gameCharacter;
 
