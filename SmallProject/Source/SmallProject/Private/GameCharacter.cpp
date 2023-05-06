@@ -92,9 +92,7 @@ void AGameCharacter::RotateLR(float rotateDelta) {
 
 	FRotator actualRotation = GetActorRotation();
 	actualRotation.Yaw += rotateDelta * RotateSpeed;
-	SetActorRotation(actualRotation);
-
-	SpringArm->SetWorldRotation(actualRotation);
+	CameraMesh-> SetWorldRotation(actualRotation);
 }
 
 
@@ -278,7 +276,7 @@ void AGameCharacter::LeftDash() {
 
 	SpringArm->bInheritYaw = false;
 	FRotator rotator = CameraMesh->GetComponentRotation();
-	SpringArm->SetWorldRotation(rotator);
+	SpringArm->SetRelativeRotation(rotator);
 	leftDashPlayer->Play();
 
 	startTime = GetWorld()->GetTimeSeconds();
@@ -306,7 +304,7 @@ void AGameCharacter::RightDash() {
 
 	SpringArm->bInheritYaw = false;
 	FRotator rotator = CameraMesh->GetComponentRotation();
-	SpringArm->SetWorldRotation(rotator);
+	SpringArm->SetRelativeRotation(rotator);
 	rightDashPlayer->Play();
 
 	startTime = GetWorld()->GetTimeSeconds();
@@ -736,6 +734,8 @@ void AGameCharacter::StateManagement() {
 		if (currentTime >= dashCooldownTime/2.f) {
 			actualStatus = GameCharacterStatus::Calm;
 			SpringArm->bInheritYaw = true;
+			FRotator rotator = FRotator::ZeroRotator;
+			SpringArm->SetRelativeRotation(rotator);
 		}
 	}
 
@@ -746,6 +746,8 @@ void AGameCharacter::StateManagement() {
 		if (currentTime >= dashCooldownTime/2.f) {
 			actualStatus = GameCharacterStatus::Calm;
 			SpringArm->bInheritYaw = true;
+			FRotator rotator = FRotator::ZeroRotator;
+			SpringArm->SetRelativeRotation(rotator);
 		}
 	}
 
