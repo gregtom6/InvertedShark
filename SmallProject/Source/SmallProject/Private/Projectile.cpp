@@ -76,10 +76,18 @@ void AProjectile::Tick(float DeltaTime)
 
 		if (currentDistance >= distanceToProceedInsideTarget + startDistance) {
 			status = ProjectileStatus::StopMovement;
+			startTime = GetWorld()->GetTimeSeconds();
 			staticMesh->SetMaterial(0, invisibleMaterial);
 		}
 		else {
 			SetActorLocation(newLocation);
+		}
+	}
+	else if (status == ProjectileStatus::StopMovement) {
+		float currentTime = GetWorld()->GetTimeSeconds() - startTime;
+		currentTime /= timeUntilDestroy;
+		if (currentTime >= 1.f) {
+			Destroy();
 		}
 	}
 
@@ -102,7 +110,7 @@ void AProjectile::TimeManagement() {
 
 void AProjectile::Event(class AActor* overlappedActor, class AActor* otherActor) {
 
-	if (status == ProjectileStatus::Initial) { return; }
+	if (status !=ProjectileStatus::FlyToTarget) { return; }
 
 	if (otherActor && otherActor != this) {
 		if (otherActor->IsA(ACreature::StaticClass()) || otherActor->IsA(AGameCharacter::StaticClass())) {
@@ -123,11 +131,13 @@ void AProjectile::Event(class AActor* overlappedActor, class AActor* otherActor)
 				sum.Pitch -= sum.Pitch;
 				sum.Yaw += 90.f;
 
-				FVector direction =  targetedActor->GetActorLocation()-shooterActor->GetActorLocation();
+				FVector direction = targetedActor->GetActorLocation() - shooterActor->GetActorLocation();
 
 				if (targetedActor->IsA(AGameCharacter::StaticClass())) {
 
 					AGameCharacter* gameCharacter = Cast<AGameCharacter>(targetedActor);
+
+					if (gameCharacter->GetStatus() == GameCharacterStatus::Dead) { return; }
 
 					TArray<UPrimitiveComponent*> OverlappingComponents;
 					staticMesh->GetOverlappingComponents(OverlappingComponents);
@@ -158,7 +168,7 @@ void AProjectile::Event(class AActor* overlappedActor, class AActor* otherActor)
 								}
 
  								status = ProjectileStatus::MoveInsideTarget;
-								gameCharacter->SetupProjectile(sum, staticMesh->GetComponentScale(), staticMesh->GetStaticMesh(), staticMesh->GetMaterial(0), target, direction);
+ 								gameCharacter->SetupProjectile(sum, staticMesh->GetComponentScale(), staticMesh->GetStaticMesh(), staticMesh->GetMaterial(0), target, direction);
 								staticMesh->SetMaterial(0, invisibleMaterial);
 							}
 							else {
@@ -189,8 +199,8 @@ void AProjectile::Event(class AActor* overlappedActor, class AActor* otherActor)
 
 
 							projectileHittedTargetAudioComp->Play(0.f);
-							status = ProjectileStatus::MoveInsideTarget;
-							creature->SetupProjectile(sum, staticMesh->GetComponentScale(), staticMesh->GetStaticMesh(), staticMesh->GetMaterial(0), target);
+  							status = ProjectileStatus::MoveInsideTarget;
+ 							creature->SetupProjectile(sum, staticMesh->GetComponentScale(), staticMesh->GetStaticMesh(), staticMesh->GetMaterial(0), target);
 							staticMesh->SetMaterial(0, invisibleMaterial);
 
 						}

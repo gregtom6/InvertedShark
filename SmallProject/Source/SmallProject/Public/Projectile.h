@@ -35,6 +35,9 @@ protected:
 		float timeUntilBloodflowStop;
 
 	UPROPERTY(EditAnywhere)
+		float timeUntilDestroy;
+
+	UPROPERTY(EditAnywhere)
 		class UStaticMeshComponent* staticMesh;
 
 	UPROPERTY(EditAnywhere)
@@ -62,6 +65,8 @@ protected:
 
 	float startTimeForBloodFlow;
 
+	float startTime;
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -79,4 +84,5 @@ enum class ProjectileStatus : uint8
 	FlyToTarget,
 	MoveInsideTarget,
 	StopMovement,
+	CanBeDestroyed,
 };
