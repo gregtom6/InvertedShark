@@ -70,6 +70,11 @@ void AHealerEnemy::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
 
 	if (actualStatus == EnemyStatus::Healing) {
+
+		HealingSphereManagement();
+
+		BodyManagement();
+
 		currentTime = GetWorld()->GetTimeSeconds() - startTime;
 
 		currentTime /= timeForHeal;
@@ -79,31 +84,40 @@ void AHealerEnemy::Tick(float DeltaTime) {
 			actualStatus = EnemyStatus::Eating;
 			SwallowSphere->SetRelativeScale3D(originalHealingSphereScale);
 			SwallowSphere->SetMaterial(0, originalSwallowSphereMaterial);
+
+			GetCurrentBodyMesh()->SetRelativeScale3D(endScale);
+			MaterialInstance->SetVectorParameterValue("Color", targetColor);
 		}
-
-
-		FVector newScale = FMath::Lerp(startScale, endScale, currentTime);
-		GetCurrentBodyMesh()->SetRelativeScale3D(newScale);
-		FLinearColor currentColor = FMath::Lerp(defaultColor, targetColor, currentTime);
-		MaterialInstance->SetVectorParameterValue("Color", currentColor);
-
-
-		currentTime = GetWorld()->GetTimeSeconds() - startTimeForHealingSphere;
-		currentTime *= 2.f;
-		if (currentTime >= 1.f) {
-			startTimeForHealingSphere = GetWorld()->GetTimeSeconds();
-			SwallowSphere->SetRelativeScale3D(originalHealingSphereScale * 2.f);
-			SwallowSphere->SetMaterial(0, healingSwallowSphereMaterial);
-		}
-
-		float SplineLength = splineComponent->GetSplineLength();
-		float SplineDistance = SplineLength * currentTime;
-		FVector Position = splineComponent->GetLocationAtDistanceAlongSpline(SplineDistance, ESplineCoordinateSpace::World);
-
-		SwallowSphere->SetWorldLocation(Position);
 	}
 
 	TimeManagement();
+}
+
+void AHealerEnemy::HealingSphereManagement() {
+	currentTime = GetWorld()->GetTimeSeconds() - startTimeForHealingSphere;
+	currentTime *= 2.f;
+	if (currentTime >= 1.f) {
+		startTimeForHealingSphere = GetWorld()->GetTimeSeconds();
+		SwallowSphere->SetRelativeScale3D(originalHealingSphereScale * 2.f);
+		SwallowSphere->SetMaterial(0, healingSwallowSphereMaterial);
+	}
+
+	float SplineLength = splineComponent->GetSplineLength();
+	float SplineDistance = SplineLength * currentTime;
+	FVector Position = splineComponent->GetLocationAtDistanceAlongSpline(SplineDistance, ESplineCoordinateSpace::World);
+
+	SwallowSphere->SetWorldLocation(Position);
+}
+
+void AHealerEnemy::BodyManagement() {
+	currentTime = GetWorld()->GetTimeSeconds() - startTime;
+
+	currentTime /= timeForHeal;
+
+	FVector newScale = FMath::Lerp(startScale, endScale, currentTime);
+	GetCurrentBodyMesh()->SetRelativeScale3D(newScale);
+	FLinearColor currentColor = FMath::Lerp(defaultColor, targetColor, currentTime);
+	MaterialInstance->SetVectorParameterValue("Color", currentColor);
 }
 
 void AHealerEnemy::TimeManagement() {

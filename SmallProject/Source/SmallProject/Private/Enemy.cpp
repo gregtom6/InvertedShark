@@ -122,6 +122,9 @@ void AEnemy::MoveToCreature(float timeToStart) {
 setting up the Eating state, starting slurp sound. Creating spline between fur creature and enemy to represent blood transfusion.
 */
 void AEnemy::StartEating() {
+
+	if (actualStatus == EnemyStatus::StartEating || actualStatus == EnemyStatus::Eating) { return; }
+
 	startTime = GetWorld()->GetTimeSeconds();
 	actualStartPosition = GetActorLocation();
 	actualStatus = EnemyStatus::StartEating;
