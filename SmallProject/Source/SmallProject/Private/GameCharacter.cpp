@@ -92,7 +92,7 @@ void AGameCharacter::RotateLR(float rotateDelta) {
 
 	FRotator actualRotation = GetActorRotation();
 	actualRotation.Yaw += rotateDelta * RotateSpeed;
-	CameraMesh-> SetWorldRotation(actualRotation);
+	CameraMesh-> SetRelativeRotation(actualRotation);
 }
 
 
@@ -116,6 +116,14 @@ void AGameCharacter::WingBeat() {
 	if (AudioComp && wingBeat) {
 		AudioComp->Play(0.f);
 	}
+
+	wingPlayer->Play();
+	wingPlayer->Stop();
+	FRotator rot = CameraMesh->GetComponentRotation();
+	rot.Roll = 0.f;
+	CameraMesh->SetWorldRotation(rot);
+
+	wingPlayer->Play();
 }
 
 /*
@@ -126,8 +134,6 @@ void AGameCharacter::HugCreature() {
 	if (!isHugging) {
 
 		if (creature != nullptr && creature->IsCharacterInFur()) {
-
-			SetRotationLocks(false, false, false);
 
 			creature->GetHugged();
 
@@ -167,8 +173,6 @@ void AGameCharacter::HugCreature() {
 		rotation.Roll = 0.f;
 		rotation.Pitch = 0.f;
 		SetActorRotation(rotation);
-
-		SetRotationLocks(true, true, false);
 
 		CameraMesh->SetAllPhysicsLinearVelocity(FVector::ZeroVector);
 		CameraMesh->SetAllPhysicsAngularVelocityInDegrees(FVector::ZeroVector);
@@ -524,6 +528,10 @@ void AGameCharacter::BeginPlay()
 		else if (ActorSequenceComponents[i]->GetFName() == FName("rightDash"))
 		{
 			rightDashPlayer = ActorSequenceComponents[i]->GetSequencePlayer();
+		}
+		else if (ActorSequenceComponents[i]->GetFName() == FName("wing"))
+		{
+			wingPlayer = ActorSequenceComponents[i]->GetSequencePlayer();
 		}
 	}
 

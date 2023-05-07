@@ -250,6 +250,8 @@ protected:
 	class UActorSequencePlayer* leftDashPlayer;
 	class UActorSequencePlayer* rightDashPlayer;
 
+	class UActorSequencePlayer* wingPlayer;
+
 	UFUNCTION()
 		bool GetOverlapInfluenceSphere(class UStaticMeshComponent* StaticMeshComponent, FVector& Actor1ClosestPoint, FVector& Actor2ClosestPoint);
 
