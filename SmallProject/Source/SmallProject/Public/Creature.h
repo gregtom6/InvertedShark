@@ -85,6 +85,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		class UAudioComponent* WhaleAudioComp;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		class UAudioComponent* WhaleCryAudio;
+
 	UPROPERTY(EditAnywhere)
 		TSubclassOf<UUserWidget> widgetclass;
 

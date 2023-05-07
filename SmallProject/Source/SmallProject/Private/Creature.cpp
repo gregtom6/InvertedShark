@@ -22,6 +22,9 @@ ACreature::ACreature(const FObjectInitializer& ObjectInitializer)
 	WhaleAudioComp = CreateDefaultSubobject<UAudioComponent>(TEXT("WhaleAudioComp"));
 	WhaleAudioComp->SetupAttachment(CreatureMesh);
 
+	WhaleCryAudio = CreateDefaultSubobject<UAudioComponent>(TEXT("WhaleCryAudio"));
+	WhaleCryAudio->SetupAttachment(CreatureMesh);
+
 	huggableComp = CreateDefaultSubobject<UBoxComponent>(TEXT("huggableComp"));
 	huggableComp->SetupAttachment(WhaleAudioComp);
 
@@ -132,6 +135,9 @@ void ACreature::SetupProjectile(FRotator rotator, FVector scale, UStaticMesh* me
 
 	originalLifeBeforeAttack = Health;
 	Health = Health > 0 ? Health - damageAfterSting : 0;
+
+	WhaleCryAudio->Stop();
+	WhaleCryAudio->Play();
 }
 
 float ACreature::GetOriginalLifeBeforeAttack() {
