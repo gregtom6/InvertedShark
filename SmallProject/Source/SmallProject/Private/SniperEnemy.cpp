@@ -173,6 +173,17 @@ void ASniperEnemy::Tick(float DeltaTime) {
 			dieTornadoNiagara->Deactivate();
 
 			actualStatus = EnemyStatus::SniperDead;
+
+			startTime = GetWorld()->GetTimeSeconds();
+		}
+	}
+	else if (actualStatus == EnemyStatus::SniperDead) {
+		currentTime = GetWorld()->GetTimeSeconds() - startTime;
+
+		currentTime /= levelRemoveTime;
+
+		if (currentTime >= 1.f) {
+			Destroy();
 		}
 	}
 

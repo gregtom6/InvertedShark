@@ -58,6 +58,9 @@ protected:
 		float dieRotatingSpeed;
 
 	UPROPERTY(EditAnywhere)
+		float levelRemoveTime;
+
+	UPROPERTY(EditAnywhere)
 		class UAudioComponent* loopedMosquitoSound;
 
 	UPROPERTY(EditAnywhere)
