@@ -15,6 +15,8 @@ protected:
 	virtual void NativeConstruct() override;
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 
+	void BigDeltaDamageHappened(float originalLifeBeforeAttack);
+
 	UPROPERTY(meta = (BindWidget))
 		class UProgressBar* HealthBar;
 	UPROPERTY(meta = (BindWidget))
@@ -31,6 +33,8 @@ protected:
 
 	CreatureLifeStatus creatureLifeStatus;
 	float startTime;
+
+	float deltaLifePercentage;
 		
 public:
 	class ACreature* creature;

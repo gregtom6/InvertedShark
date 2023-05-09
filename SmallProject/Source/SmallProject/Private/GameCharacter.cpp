@@ -461,7 +461,7 @@ void AGameCharacter::BeginPlay()
 
 	slowdownStatus = SlowDownStatus::NormalTime;
 
-	if (IsValid(widgetclass)) {
+  	if (IsValid(widgetclass)) {
 
 		UE_LOG(LogTemp, Warning, TEXT("energy1"));
 		energyuserwidget = Cast<UGameCharacterUserWidget>(CreateWidget(GetWorld(), widgetclass));

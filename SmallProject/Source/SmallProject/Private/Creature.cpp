@@ -135,6 +135,7 @@ void ACreature::SetupProjectile(FRotator rotator, FVector scale, UStaticMesh* me
 
 	originalLifeBeforeAttack = Health;
 	Health = Health > 0 ? Health - damageAfterSting : 0;
+	bigDeltaDamageHappenedDelegate.ExecuteIfBound(originalLifeBeforeAttack);
 
 	WhaleCryAudio->Stop();
 	WhaleCryAudio->Play();

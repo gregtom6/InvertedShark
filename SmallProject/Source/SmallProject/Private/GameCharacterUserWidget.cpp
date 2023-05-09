@@ -10,8 +10,6 @@
 void UGameCharacterUserWidget::NativeConstruct() {
 	Super::NativeConstruct();
 
-	AddToPlayerScreen();
-
 	fadeStatus = FadeStatus::Invisible;
 	Energybar->SetRenderOpacity(0.f);
 	

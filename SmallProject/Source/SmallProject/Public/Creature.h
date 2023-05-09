@@ -6,6 +6,8 @@
 #include "GameFramework/Actor.h"
 #include "Creature.generated.h"
 
+DECLARE_DELEGATE_OneParam(FBigDeltaDamageHappened, float);
+
 UCLASS()
 class SMALLPROJECT_API ACreature : public AActor
 {
@@ -158,6 +160,8 @@ public:
 	float GetOriginalLifeBeforeAttack();
 
 	void OriginalLifeRepresentationEnded();
+
+	FBigDeltaDamageHappened bigDeltaDamageHappenedDelegate;
 };
 
 UENUM()

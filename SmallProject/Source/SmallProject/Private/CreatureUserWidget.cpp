@@ -13,6 +13,9 @@ void UCreatureUserWidget::NativeConstruct() {
 	IncreaseDeltaBar->SetPercent(0.f);
 
 	DecreaseDeltaBar->SetPercent(0.f);
+
+	if (creature != nullptr)
+		creature->bigDeltaDamageHappenedDelegate.BindUObject(this, &UCreatureUserWidget::BigDeltaDamageHappened);
 }
 
 /*
@@ -25,7 +28,6 @@ void UCreatureUserWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaT
 	if (creature == nullptr) { return; }
 
 	float currentLifePercentage = creature->GetHealth() / creature->GetMaxHealth();
-	float deltaLifePercentage = creature->GetOriginalLifeBeforeAttack() / creature->GetMaxHealth();
 
 	HealthBar->SetPercent(creature->GetHealth() / creature->GetMaxHealth());
 
@@ -34,12 +36,6 @@ void UCreatureUserWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaT
 	}
 	else if (IncreaseDeltaBar->GetPercent() != 0.f) {
 		IncreaseDeltaBar->SetPercent(0.f);
-	}
-
-	if (creatureLifeStatus == CreatureLifeStatus::Normal && FMath::Abs(currentLifePercentage-deltaLifePercentage)>0.2f) {
-		creatureLifeStatus = CreatureLifeStatus::WaitUntilDecrease;
-		DecreaseDeltaBar->SetPercent(deltaLifePercentage);
-		startTime = GetWorld()->GetTimeSeconds();
 	}
 
 	if (creatureLifeStatus == CreatureLifeStatus::WaitUntilDecrease) {
@@ -63,4 +59,14 @@ void UCreatureUserWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaT
 			creature->OriginalLifeRepresentationEnded();
 		}
 	}
+}
+
+void UCreatureUserWidget::BigDeltaDamageHappened(float originalLifeBeforeAttack) {
+	if (creatureLifeStatus != CreatureLifeStatus::Normal) { return; }
+	
+	deltaLifePercentage = originalLifeBeforeAttack / creature->GetMaxHealth();
+
+	creatureLifeStatus = CreatureLifeStatus::WaitUntilDecrease;
+	DecreaseDeltaBar->SetPercent(deltaLifePercentage);
+	startTime = GetWorld()->GetTimeSeconds();
 }
