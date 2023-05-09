@@ -13,6 +13,7 @@
 #include "GameCharacter.h"
 #include <Sound/SoundCue.h >
 #include <Kismet/KismetMathLibrary.h>
+#include "SniperEnemy.h"
 
 ACreature::ACreature(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -321,11 +322,15 @@ void ACreature::HealthManagement(float DeltaTime) {
 
 		deltaHeal = MaxHealth * attackingHealer->GetPercentageOfMaxLifeToHealBack();
 
-		float currentTime = GetWorld()->GetTimeSeconds() - startTime;
+		float t = GetWorld()->GetTimeSeconds() - startTime;
 
-		currentTime /= attackingHealer->GetTimeForHeal();
+		actualTime = t / attackingHealer->GetTimeForHeal();
 
-		Health = Health < MaxHealth ? actualHealthWhenStartedHealing + (deltaHeal * currentTime) : MaxHealth;
+		if (actualHealthWhenStartedHealing + deltaHeal > MaxHealth) {
+			deltaHeal = MaxHealth - actualHealthWhenStartedHealing;
+		}
+
+		Health = Health < MaxHealth ? actualHealthWhenStartedHealing + (deltaHeal * actualTime) : MaxHealth;
 	}
 
 	if (actualStatus == Status::Healing && Health == MaxHealth && enemiesActuallyAttacking.Num() > 0) {
@@ -365,7 +370,7 @@ void ACreature::ExitEvent(class AActor* overlappedActor, class AActor* otherActo
 	UE_LOG(LogTemp, Warning, TEXT("enemy leaving1"));
 	if (otherActor && otherActor != this) {
 		UE_LOG(LogTemp, Warning, TEXT("enemy leaving2"));
-		if (otherActor->IsA(AEnemy::StaticClass())) {
+		if (otherActor->IsA(AEnemy::StaticClass()) && !otherActor->IsA(ASniperEnemy::StaticClass())) {
 
 			AEnemy* attackingEnemy = Cast<AEnemy>(otherActor);
 			if (enemiesActuallyAttacking.Contains(attackingEnemy))

@@ -56,7 +56,7 @@ protected:
 	FVector actualEndPosition;
 
 	double startTime;
-
+	float actualTime;
 
 	float Health;
 
@@ -67,7 +67,6 @@ protected:
 
 	int actualTargetIndex = 0;
 
-	TArray<AActor*> enemiesActuallyAttacking;
 
 	UFUNCTION()
 		void EnterEvent(class AActor* overlappedActor, class AActor* otherActor);
@@ -144,11 +143,13 @@ protected:
 	UPROPERTY(EditAnywhere)
 		float lookAtPlayerBorder;
 public:	
+	UPROPERTY(EditAnywhere)
+	TArray<AActor*> enemiesActuallyAttacking;
 	
 
 	float GetHealth() const { return Health; }
 	float GetMaxHealth() const { return MaxHealth; }
-	float GetDeltaIncreaseHealth() const { return actualHealthWhenStartedHealing + deltaHeal; }
+	float GetDeltaIncreaseHealth() const { return actualHealthWhenStartedHealing + (deltaHeal*actualTime); }
 	FVector GetLocation() const { return GetActorLocation(); }
 	bool IsCharacterInFur();
 	void GetHugged();

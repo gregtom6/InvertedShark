@@ -188,6 +188,10 @@ void AGameCharacter::HugCreature() {
 
 }
 
+bool AGameCharacter::IsHugging() {
+	return isHugging;
+}
+
 /*
 helper method for hugging action
 */

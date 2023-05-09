@@ -367,6 +367,11 @@ void AEnemy::SplineManagement() {
 
 	if (currentTime > 1.f) {
 		currentTime = 1.f;
+
+		for (int i = 0; i < SMeshComps.Num(); i++) {
+			SMeshComps[i]->SetRelativeLocation(SMeshComps[i]->GetRelativeLocation()+FVector(0.01f,0.f,0.f));
+		}
+
 		StartActualEating();
 	}
 
@@ -387,6 +392,7 @@ void AEnemy::SplineManagement() {
 		j += 2;
 
 		SetSplineMeshComponent(SMeshComps[i], FMath::Lerp(firstPointOfSpline, startPoint, currentTime), startTangent, FMath::Lerp(firstPointOfSpline, endPoint, currentTime), endTangent);
+		SMeshComps[i]->UpdateMesh();
 	}
 
 	SplineNiagaras[0]->AttachToComponent(SMeshComps[0], FAttachmentTransformRules::KeepRelativeTransform);

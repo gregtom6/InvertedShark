@@ -288,6 +288,8 @@ public:
 	FVector GetBackBeforeDashLocation();
 
 	FVector GetCameraLocation();
+
+	bool IsHugging();
 };
 
 UENUM()
