@@ -312,8 +312,10 @@ creature health management. Decrease depends on the currently attacking enemy co
 */
 void ACreature::HealthManagement(float DeltaTime) {
 
-	if (actualStatus == Status::UnderAttack)
+	if (actualStatus == Status::UnderAttack) {
+		originalLifeBeforeAttack = Health;
 		Health = Health > 0 ? Health - (deltaDamage * DeltaTime * enemiesActuallyAttacking.Num()) : 0;
+	}
 	else if (actualStatus == Status::Healing && attackingHealer != nullptr) {
 
 		deltaHeal = MaxHealth * attackingHealer->GetPercentageOfMaxLifeToHealBack();
