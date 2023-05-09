@@ -315,7 +315,7 @@ void AEnemy::StateManagement() {
 
 
 		for (int i = 0; i < SMeshContainers.Num(); i++) {
-			SMeshContainers[i]->SetWorldScale3D(newScale);
+ 			SMeshContainers[i]->SetWorldScale3D(newScale);
 		}
 
 
