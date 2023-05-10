@@ -54,7 +54,7 @@ void ABossEnemy::MoveToCreature(float timeToStart) {
 after ending movement state, bossenemy will be above the player vertically, not around the player. 
 */
 
-FVector ABossEnemy::GetEndPosition() {
+FVector ABossEnemy::GetEndPosition() const {
 	FVector vec = creature->GetActorLocation();
 	double z = GetActorLocation().Z;
 	vec.Z = z;
@@ -84,7 +84,7 @@ float ABossEnemy::GetMaxLife() {
 	return maxLife;
 }
 
-UStaticMeshComponent* ABossEnemy::GetCurrentBodyMesh() {
+UStaticMeshComponent* ABossEnemy::GetCurrentBodyMesh() const {
 	return bodyMesh;
 }
 

@@ -262,15 +262,15 @@ public:
 	UFUNCTION()
 		void SlowdownTime();
 
-	GameCharacterStatus GetStatus();
+	GameCharacterStatus GetStatus() const;
 
-	GameCharacterStatus GetPrevStatus();
+	GameCharacterStatus GetPrevStatus() const;
 
-	float GetEnergy();
+	float GetEnergy() const;
 
-	float GetMaxEnergy();
+	float GetMaxEnergy() const;
 
-	float GetCurrentSoundPitchMultiplier();
+	float GetCurrentSoundPitchMultiplier() const;
 
 	void SetPrevStatusToActualStatus();
 
@@ -280,16 +280,16 @@ public:
 
 	FOnDieHappenedSignature OnDieHappenedDelegate;
 
-	class USkeletalMeshComponent* GetSkeletalMeshComponent();
-	class UStaticMeshComponent* GetStaticMeshComponent();
+	class USkeletalMeshComponent* GetSkeletalMeshComponent() const;
+	class UStaticMeshComponent* GetStaticMeshComponent() const;
 
 	void NotifyTargeting(bool iAmTargeted);
 
-	FVector GetBackBeforeDashLocation();
+	FVector GetBackBeforeDashLocation() const;
 
-	FVector GetCameraLocation();
+	FVector GetCameraLocation() const;
 
-	bool IsHugging();
+	bool IsHugging() const;
 };
 
 UENUM()

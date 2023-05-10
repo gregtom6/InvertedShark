@@ -9,12 +9,13 @@
 /**
  * 
  */
-UCLASS(Abstract)
+UCLASS()
 class SMALLPROJECT_API UDeadUserWidget : public UUserWidget
 {
 	GENERATED_BODY()
 	
 		virtual void NativeConstruct() override;
+		virtual void NativeDestruct() override;
 
 protected:
 

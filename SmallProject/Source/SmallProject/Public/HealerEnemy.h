@@ -17,8 +17,9 @@ class SMALLPROJECT_API AHealerEnemy : public AEnemy
 protected:
 
 	virtual void BeginPlay() override;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 	virtual void Tick(float DeltaTime) override;
-	virtual UStaticMeshComponent* GetCurrentBodyMesh();
+	virtual UStaticMeshComponent* GetCurrentBodyMesh() const;
 
 	void TimeManagement();
 
@@ -44,9 +45,6 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		class UAudioComponent* DeflateAudioComp;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		class USoundCue* deflateSound;
-
 	UPROPERTY(EditAnywhere)
 		FVector defaultBodyScale;
 
@@ -69,7 +67,7 @@ protected:
 public:
 	AHealerEnemy(const FObjectInitializer& ObjectInitializer);
 
-	float GetPercentageOfMaxLifeToHealBack();
+	float GetPercentageOfMaxLifeToHealBack() const;
 
-	float GetTimeForHeal();
+	float GetTimeForHeal() const;
 };

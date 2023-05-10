@@ -54,12 +54,7 @@ void ACreature::BeginPlay()
 
 	originalLifeBeforeAttack = Health;
 
-	if (WhaleAudioComp && whaleSound) {
-		UE_LOG(LogTemp, Warning, TEXT("whale sound setted up"));
-		WhaleAudioComp->SetSound(whaleSound);
-		WhaleAudioComp->Play(0.f);
-	}
-
+	WhaleAudioComp->Play(0.f);
 
 	if (IsValid(widgetclass)) {
 
@@ -142,7 +137,7 @@ void ACreature::SetupProjectile(FRotator rotator, FVector scale, UStaticMesh* me
 	WhaleCryAudio->Play();
 }
 
-float ACreature::GetOriginalLifeBeforeAttack() {
+float ACreature::GetOriginalLifeBeforeAttack() const {
 	return originalLifeBeforeAttack;
 }
 
@@ -453,10 +448,10 @@ void ACreature::SwitchingToMovingFast() {
 isCharInFur state can be asked from creature
 */
 
-bool ACreature::IsCharacterInFur() {
+bool ACreature::IsCharacterInFur() const {
 	return isCharInFur;
 }
 
-Status ACreature::GetStatus() {
+Status ACreature::GetStatus() const {
 	return actualStatus;
 }

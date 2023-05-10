@@ -32,8 +32,8 @@ protected:
 	UPROPERTY(EditAnywhere)
 		FName levelToLoadAfterDefeat;
 
-	virtual UStaticMeshComponent* GetCurrentBodyMesh() override;
-	virtual FVector GetEndPosition() override;
+	virtual class UStaticMeshComponent* GetCurrentBodyMesh() const override;
+	virtual FVector GetEndPosition() const override;
 	virtual void DoAfterDead() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 public:

@@ -12,8 +12,8 @@ UCLASS()
 class SMALLPROJECT_API ACreature : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	// Sets default values for this actor's properties
 	//ACreature();
 	ACreature(const FObjectInitializer& ObjectInitializer);
@@ -81,9 +81,6 @@ protected:
 		void TriggerExit(class UPrimitiveComponent* HitComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		class USoundCue* whaleSound;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		class UAudioComponent* WhaleAudioComp;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -142,23 +139,23 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 		float lookAtPlayerBorder;
-public:	
+public:
 	UPROPERTY(EditAnywhere)
-	TArray<AActor*> enemiesActuallyAttacking;
-	
+		TArray<AActor*> enemiesActuallyAttacking;
+
 
 	float GetHealth() const { return Health; }
 	float GetMaxHealth() const { return MaxHealth; }
-	float GetDeltaIncreaseHealth() const { return actualHealthWhenStartedHealing + (deltaHeal*actualTime); }
+	float GetDeltaIncreaseHealth() const { return actualHealthWhenStartedHealing + (deltaHeal * actualTime); }
 	FVector GetLocation() const { return GetActorLocation(); }
-	bool IsCharacterInFur();
+	bool IsCharacterInFur() const;
 	void GetHugged();
 	void HealingStarted();
-	Status GetStatus();
+	Status GetStatus() const;
 
 	void SetupProjectile(FRotator rotator, FVector scale, class UStaticMesh* mesh, class UMaterialInterface* material, FVector offset);
 
-	float GetOriginalLifeBeforeAttack();
+	float GetOriginalLifeBeforeAttack() const;
 
 	void OriginalLifeRepresentationEnded();
 

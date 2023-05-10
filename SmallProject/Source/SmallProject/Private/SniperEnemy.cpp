@@ -250,7 +250,7 @@ void ASniperEnemy::CreateProjectile() {
 	}
 }
 
-FVector ASniperEnemy::GetEndPosition() {
+FVector ASniperEnemy::GetEndPosition() const {
 	FVector directionVector = creature->GetActorLocation() - GetActorLocation();
 	directionVector.Normalize();
 

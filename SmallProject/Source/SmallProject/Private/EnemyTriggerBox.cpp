@@ -7,10 +7,6 @@
 #include "GameFramework/Actor.h"
 #include <SniperEnemy.h>
 
-AEnemyTriggerBox::AEnemyTriggerBox() {
-	
-}
-
 void AEnemyTriggerBox::BeginPlay() {
 	Super::BeginPlay();
 
@@ -48,7 +44,6 @@ void AEnemyTriggerBox::Event(class AActor* overlappedActor, class AActor* otherA
 				if (!arrivedEnemy->IsA(ASniperEnemy::StaticClass())) {
 					arrivedEnemy->StartEating();
 				}
-
 			}
 		}
 		

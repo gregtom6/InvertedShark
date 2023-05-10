@@ -47,11 +47,11 @@ protected:
 
 	void SplineMeshCompAttach(class USplineMeshComponent* splineMeshComp);
 
-	virtual UStaticMeshComponent* GetCurrentBodyMesh();
+	virtual class UStaticMeshComponent* GetCurrentBodyMesh() const;
 	
 	virtual void DoAfterDead();
 
-	virtual FVector GetEndPosition();
+	virtual FVector GetEndPosition() const;
 
 	virtual void MovingToCreatureEnded();
 
@@ -138,20 +138,11 @@ protected:
 	UPROPERTY(EditAnywhere)
 		class UStaticMeshComponent* RightEyeLid22;
 
-
 	UPROPERTY(EditAnywhere)
 		class ACreature* creature;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		class USoundCue* popSound;
-
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		class UAudioComponent* PopAudioComp;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		class USoundCue* slurpSound;
-
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		class UAudioComponent* SlurpAudioComp;
@@ -192,7 +183,7 @@ public:
 
 	void StartEating();
 
-	float GetOriginalLifeBeforeAttack();
+	float GetOriginalLifeBeforeAttack() const;
 
 	void OriginalLifeRepresentationEnded();
 };

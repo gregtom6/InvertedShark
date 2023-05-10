@@ -188,7 +188,7 @@ void AGameCharacter::HugCreature() {
 
 }
 
-bool AGameCharacter::IsHugging() {
+bool AGameCharacter::IsHugging() const {
 	return isHugging;
 }
 
@@ -368,7 +368,7 @@ void AGameCharacter::UpDash() {
 	rightNoseSneezeNiagara->Activate(true);
 }
 
-FVector AGameCharacter::GetBackBeforeDashLocation() {
+FVector AGameCharacter::GetBackBeforeDashLocation() const {
 	return positionBeforeDash;
 }
 
@@ -376,11 +376,11 @@ void AGameCharacter::NotifyTargeting(bool iAmTargeted) {
 	amITargeted = iAmTargeted;
 }
 
-USkeletalMeshComponent* AGameCharacter::GetSkeletalMeshComponent() {
+USkeletalMeshComponent* AGameCharacter::GetSkeletalMeshComponent() const {
 	return skeletal;
 }
 
-UStaticMeshComponent* AGameCharacter::GetStaticMeshComponent() {
+UStaticMeshComponent* AGameCharacter::GetStaticMeshComponent() const {
 	return CameraMesh;
 }
 
@@ -635,7 +635,7 @@ void AGameCharacter::DeadManagement() {
 	}
 }
 
-FVector AGameCharacter::GetCameraLocation() {
+FVector AGameCharacter::GetCameraLocation() const {
 	return Camera->GetComponentLocation();
 }
 
@@ -904,19 +904,19 @@ bool AGameCharacter::GetOverlapInfluenceSphere(UStaticMeshComponent* StaticMeshC
 /*
 getter, setter functions
 */
-float AGameCharacter::GetEnergy() {
+float AGameCharacter::GetEnergy() const {
 	return actualEnergy;
 }
 
-float AGameCharacter::GetMaxEnergy() {
+float AGameCharacter::GetMaxEnergy() const {
 	return maxEnergy;
 }
 
-GameCharacterStatus AGameCharacter::GetStatus() {
+GameCharacterStatus AGameCharacter::GetStatus() const {
 	return actualStatus;
 }
 
-GameCharacterStatus AGameCharacter::GetPrevStatus() {
+GameCharacterStatus AGameCharacter::GetPrevStatus() const {
 	return prevStatus;
 }
 
@@ -930,7 +930,7 @@ void AGameCharacter::SlowdownTime() {
 	slowdownStatus = SlowDownStatus::SlowDownTime;
 }
 
-float AGameCharacter::GetCurrentSoundPitchMultiplier() {
+float AGameCharacter::GetCurrentSoundPitchMultiplier() const {
 	return actualSoundPitchMultiplier;
 }
 

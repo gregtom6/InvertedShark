@@ -11,6 +11,8 @@
 #include <Sound/SoundCue.h >
 #include "NiagaraComponent.h"
 
+AEnemy::AEnemy(){}
+
 AEnemy::AEnemy(const FObjectInitializer& ObjectInitializer) 
 	: Super(ObjectInitializer)
 {
@@ -172,16 +174,6 @@ initializing components and subscribing to events
 void AEnemy::BeginPlay()
 {
 	Super::BeginPlay();
-
-	if (PopAudioComp && popSound) {
-		UE_LOG(LogTemp, Warning, TEXT("pop sound is okay"));
-		PopAudioComp->SetSound(popSound);
-	}
-
-	if (SlurpAudioComp && slurpSound) {
-		UE_LOG(LogTemp, Warning, TEXT("slurp sound is okay"));
-		SlurpAudioComp->SetSound(slurpSound);
-	}
 
 	for (int i = 0; i < SMeshComps.Num(); i++) {
 		SplineMeshCompAttach(SMeshComps[i]);
@@ -442,7 +434,7 @@ GetEndPosition gets back different end position for enemy movement, when it's fo
 enemy will stop at the creature position, BossEnemy will stop above the creature.
 */
 
-FVector AEnemy::GetEndPosition() {
+FVector AEnemy::GetEndPosition() const {
 	return creature->GetActorLocation();
 }
 
@@ -502,7 +494,7 @@ void AEnemy::RemoveEnemy() {
 		gameCharacter->SlowdownTime();
 }
 
-UStaticMeshComponent* AEnemy::GetCurrentBodyMesh() {
+UStaticMeshComponent* AEnemy::GetCurrentBodyMesh() const {
 	return Body12;
 }
 
@@ -513,7 +505,7 @@ void AEnemy::DoAfterDead() {
 	Destroy();
 }
 
-float AEnemy::GetOriginalLifeBeforeAttack() {
+float AEnemy::GetOriginalLifeBeforeAttack() const {
 	return originalLifeBeforeAttack;
 }
 

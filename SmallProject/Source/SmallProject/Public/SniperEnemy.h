@@ -18,7 +18,7 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 
-	virtual FVector GetEndPosition() override;
+	virtual FVector GetEndPosition() const override;
 
 	virtual void MovingToCreatureEnded() override;
 

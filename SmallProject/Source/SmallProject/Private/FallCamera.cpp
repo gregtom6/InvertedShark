@@ -10,7 +10,7 @@
 #include <Kismet/KismetMathLibrary.h>
 
 // Sets default values
-AFallCamera::AFallCamera()
+AFallCamera::AFallCamera(const FObjectInitializer& ObjectInitializer):Super(ObjectInitializer)
 {
 	PrimaryActorTick.bCanEverTick = true;
 

@@ -24,7 +24,6 @@ protected:
 	UPROPERTY(EditAnywhere)
 		float maxMoveTime = 3.f;
 public:
-	AEnemyTriggerBox();
 
 	UFUNCTION()
 		void Event(class AActor* overlappedActor, class AActor* otherActor);

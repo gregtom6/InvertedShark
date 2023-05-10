@@ -17,7 +17,7 @@ private:
 	
 public:	
 	// Sets default values for this actor's properties
-	AFallCamera();
+	AFallCamera(const FObjectInitializer& ObjectInitializer);
 
 protected:
 

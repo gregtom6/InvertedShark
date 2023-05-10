@@ -22,18 +22,19 @@ void AHealerEnemy::BeginPlay() {
 	FHashedMaterialParameterInfo ParameterInfo("Color");
 	MaterialInstance->GetVectorParameterValue(ParameterInfo, defaultColor);
 
-
 	GetCurrentBodyMesh()->SetRelativeScale3D(defaultBodyScale);
-
-	if (DeflateAudioComp && deflateSound) {
-		UE_LOG(LogTemp, Warning, TEXT("pop sound is okay"));
-		DeflateAudioComp->SetSound(deflateSound);
-	}
 
 	originalHealingSphereScale = SwallowSphere->GetRelativeScale3D();
 
 	GetCurrentBodyMesh()->OnComponentBeginOverlap.AddUniqueDynamic(this, &AHealerEnemy::TriggerEnter);
 	GetCurrentBodyMesh()->OnComponentEndOverlap.AddUniqueDynamic(this, &AHealerEnemy::TriggerExit);
+}
+
+void AHealerEnemy::EndPlay(const EEndPlayReason::Type EndPlayReason) {
+	Super::EndPlay(EndPlayReason);
+
+	GetCurrentBodyMesh()->OnComponentBeginOverlap.RemoveDynamic(this, &AHealerEnemy::TriggerEnter);
+	GetCurrentBodyMesh()->OnComponentEndOverlap.RemoveDynamic(this, &AHealerEnemy::TriggerExit);
 }
 
 void AHealerEnemy::TriggerEnter(class UPrimitiveComponent* HitComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) {
@@ -126,14 +127,14 @@ void AHealerEnemy::TimeManagement() {
 	DeflateAudioComp->SetPitchMultiplier(gameCharacter->GetCurrentSoundPitchMultiplier());
 }
 
-UStaticMeshComponent* AHealerEnemy::GetCurrentBodyMesh() {
+UStaticMeshComponent* AHealerEnemy::GetCurrentBodyMesh() const {
 	return Body12;
 }
 
-float AHealerEnemy::GetPercentageOfMaxLifeToHealBack() {
+float AHealerEnemy::GetPercentageOfMaxLifeToHealBack() const {
 	return percentageOfMaxLifeToHealBack;
 }
 
-float AHealerEnemy::GetTimeForHeal() {
+float AHealerEnemy::GetTimeForHeal() const {
 	return timeForHeal;
 }

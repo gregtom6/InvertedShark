@@ -13,6 +13,14 @@ void UDeadUserWidget::NativeConstruct() {
 	BackToMenuButton->OnClicked.AddUniqueDynamic(this, &UDeadUserWidget::OnBackToMenuClick);
 }
 
+void UDeadUserWidget::NativeDestruct()
+{
+	Super::NativeDestruct();
+
+	ResurrectButton->OnClicked.RemoveDynamic(this, &UDeadUserWidget::OnResurrectClick);
+	BackToMenuButton->OnClicked.RemoveDynamic(this, &UDeadUserWidget::OnBackToMenuClick);
+}
+
 /*
 death screen (player felt down) button clickevents
 */
