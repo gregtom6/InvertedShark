@@ -467,7 +467,7 @@ void AEnemy::RemoveEnemy() {
 
 	startTime = GetWorld()->GetTimeSeconds();
 	startScale = GetCurrentBodyMesh()->GetComponentScale();
-	endScale = FVector(0.f, 0.f, 0.f);
+	endScale = FVector(0.001f, 0.001f, 0.001f);
 	actualStatus = EnemyStatus::SpecialDying;
 
 	GetCurrentBodyMesh()->SetSimulatePhysics(true);

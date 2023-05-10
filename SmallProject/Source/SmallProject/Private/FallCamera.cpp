@@ -57,7 +57,7 @@ void AFallCamera::Tick(float DeltaTime)
 
 	currentTime /= showTime;
 
-	if (currentTime >= 1.f) {
+	if (currentTime >= 1.f && !deaduserwidget->IsInViewport()) {
 		deaduserwidget->AddToViewport(0);
 	}
 }

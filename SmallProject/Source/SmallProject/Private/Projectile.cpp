@@ -18,7 +18,7 @@ AProjectile::AProjectile(const FObjectInitializer& ObjectInitializer) :Super(Obj
 	PrimaryActorTick.bCanEverTick = true;
 
 	projectileHittedTargetAudioComp = CreateDefaultSubobject<UAudioComponent>(TEXT("projectileHittedTargetAudioComp"));
-	projectileHittedTargetAudioComp->SetupAttachment(RootComponent);
+	SetRootComponent(projectileHittedTargetAudioComp);
 
 	creatureHitBloodNiagara = CreateDefaultSubobject<UNiagaraComponent>(TEXT("creatureHitBloodNiagara"));
 	//creatureHitBloodNiagara->AttachToComponent(projectileHittedTargetAudioComp, FAttachmentTransformRules::KeepRelativeTransform);
