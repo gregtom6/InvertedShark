@@ -11,7 +11,8 @@
 #include <Sound/SoundCue.h >
 #include "NiagaraComponent.h"
 
-AEnemy::AEnemy()
+AEnemy::AEnemy(const FObjectInitializer& ObjectInitializer) 
+	: Super(ObjectInitializer)
 {
 	PrimaryActorTick.bCanEverTick = true;
 

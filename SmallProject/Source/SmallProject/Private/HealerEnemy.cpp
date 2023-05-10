@@ -9,7 +9,7 @@
 #include "Creature.h"
 #include "Materials/MaterialInterface.h"
 
-AHealerEnemy::AHealerEnemy() {
+AHealerEnemy::AHealerEnemy(const FObjectInitializer& ObjectInitializer) :Super(ObjectInitializer) {
 	DeflateAudioComp = CreateDefaultSubobject<UAudioComponent>(TEXT("DeflateAudioComp"));
 	DeflateAudioComp->SetupAttachment(RootComponent);
 }

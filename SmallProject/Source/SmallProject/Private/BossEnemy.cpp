@@ -8,12 +8,21 @@
 #include "Creature.h"
 
 ABossEnemy::ABossEnemy(const FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer)
 {
 	bodyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("bodyMesh"));
 	bodyMesh->SetupAttachment(splineComponent);
 
 	OnActorBeginOverlap.AddUniqueDynamic(this, &AEnemy::EnterEvent);
 	OnActorEndOverlap.AddUniqueDynamic(this, &AEnemy::ExitEvent);
+}
+
+void ABossEnemy::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	Super::EndPlay(EndPlayReason);
+
+	OnActorBeginOverlap.RemoveDynamic(this, &AEnemy::EnterEvent);
+	OnActorEndOverlap.RemoveDynamic(this, &AEnemy::ExitEvent);
 }
 
 /*
@@ -53,7 +62,9 @@ FVector ABossEnemy::GetEndPosition() {
 }
 
 FVector ABossEnemy::GetPositionOfBodyMesh() {
-	return bodyMesh->GetComponentLocation();
+	if (bodyMesh != nullptr)
+		return bodyMesh->GetComponentLocation();
+	else return FVector::ZeroVector;
 }
 
 float ABossEnemy::GetBodyMeshRadius() {

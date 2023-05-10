@@ -17,7 +17,7 @@ class SMALLPROJECT_API ABossEnemy : public AEnemy
 
 public:
 	ABossEnemy(const FObjectInitializer& ObjectInitializer);
-	
+
 protected:
 
 	UPROPERTY(EditAnywhere)
@@ -35,6 +35,7 @@ protected:
 	virtual UStaticMeshComponent* GetCurrentBodyMesh() override;
 	virtual FVector GetEndPosition() override;
 	virtual void DoAfterDead() override;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 public:
 
 	virtual void MoveToCreature(float timeToStart) override;

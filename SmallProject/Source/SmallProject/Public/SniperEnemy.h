@@ -112,7 +112,7 @@ protected:
 	class AGameCharacter* gameCharacter;
 
 public:
-	ASniperEnemy();
+	ASniperEnemy(const FObjectInitializer& ObjectInitializer);
 
 	void TargetingCreature();
 };

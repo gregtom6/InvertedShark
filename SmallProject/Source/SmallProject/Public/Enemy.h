@@ -13,9 +13,9 @@ class SMALLPROJECT_API AEnemy : public AActor
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this actor's properties
 	AEnemy();
-
+	// Sets default values for this actor's properties
+	AEnemy(const FObjectInitializer& ObjectInitializer);
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

@@ -67,7 +67,7 @@ protected:
 	bool canHealingStarted = true;
 
 public:
-	AHealerEnemy();
+	AHealerEnemy(const FObjectInitializer& ObjectInitializer);
 
 	float GetPercentageOfMaxLifeToHealBack();
 

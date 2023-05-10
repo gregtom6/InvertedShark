@@ -17,7 +17,9 @@
 #include <WindZone.h>
 
 
-ASniperEnemy::ASniperEnemy() {
+ASniperEnemy::ASniperEnemy(const FObjectInitializer& ObjectInitializer) 
+	: Super(ObjectInitializer) {
+
 	PrimaryActorTick.bCanEverTick = true;
 
 	actualStatus = EnemyStatus::Initial;
