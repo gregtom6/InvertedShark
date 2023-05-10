@@ -31,7 +31,8 @@ protected:
 	float startTime;
 
 public:
-	class ABossEnemy* boss;
+	UPROPERTY()
+		class ABossEnemy* boss;
 };
 
 UENUM()

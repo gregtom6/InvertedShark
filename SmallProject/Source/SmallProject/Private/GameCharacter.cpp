@@ -32,12 +32,12 @@ AGameCharacter::AGameCharacter(const FObjectInitializer& ObjectInitializer)
 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	SetRootComponent(CameraMesh);
+
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
 
 	CameraMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("CameraMesh"));
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
-
-	SetRootComponent(CameraMesh);
 
 	LeftLeft = CreateDefaultSubobject<UPhysicsConstraintComponent>(TEXT("LeftLeft"));
 	RightArm = CreateDefaultSubobject< UPhysicsConstraintComponent>(TEXT("RightArm"));
@@ -113,9 +113,7 @@ void AGameCharacter::WingBeat() {
 
 	actualEnergy -= energyDecreaseAfterWingBeat;
 
-	if (AudioComp && wingBeat) {
-		AudioComp->Play(0.f);
-	}
+	AudioComp->Play(0.f);
 
 	wingPlayer->Play();
 	wingPlayer->Stop();
@@ -186,10 +184,6 @@ void AGameCharacter::HugCreature() {
 		startTimeForSpringArm = GetWorld()->GetTimeSeconds();
 	}
 
-}
-
-bool AGameCharacter::IsHugging() const {
-	return isHugging;
 }
 
 /*
@@ -335,13 +329,9 @@ void AGameCharacter::UpDash() {
 
 	startTime = GetWorld()->GetTimeSeconds();
 
-	if (DashAudio && dashSound) {
-		DashAudio->Play(0.f);
-	}
+	DashAudio->Play(0.f);
 
-	if (SneezeAudio && sneezeSound) {
-		SneezeAudio->Play(0.f);
-	}
+	SneezeAudio->Play(0.f);
 
 	if (skeletal) {
 		UAnimationAsset* AnimationAsset = skeletal->AnimationData.AnimToPlay;
@@ -368,21 +358,10 @@ void AGameCharacter::UpDash() {
 	rightNoseSneezeNiagara->Activate(true);
 }
 
-FVector AGameCharacter::GetBackBeforeDashLocation() const {
-	return positionBeforeDash;
-}
-
 void AGameCharacter::NotifyTargeting(bool iAmTargeted) {
 	amITargeted = iAmTargeted;
 }
 
-USkeletalMeshComponent* AGameCharacter::GetSkeletalMeshComponent() const {
-	return skeletal;
-}
-
-UStaticMeshComponent* AGameCharacter::GetStaticMeshComponent() const {
-	return CameraMesh;
-}
 
 /*
 game can be paused with this function. Managing cursor state and adding or removing pause widget to viewport
@@ -438,14 +417,6 @@ initializing audios, pause widget, energy, status, position, etc.
 void AGameCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
-	if (AudioComp && wingBeat) {
-		AudioComp->SetSound(wingBeat);
-	}
-
-	if (TongueAudio && tongueSound) {
-		TongueAudio->SetSound(tongueSound);
-	}
 
 	InitializePause();
 
@@ -633,10 +604,6 @@ void AGameCharacter::DeadManagement() {
 	if (actorLocation.Z <= heightToDie) {
 		SetDieState();
 	}
-}
-
-FVector AGameCharacter::GetCameraLocation() const {
-	return Camera->GetComponentLocation();
 }
 
 void AGameCharacter::SetDieState() {
@@ -851,7 +818,7 @@ void AGameCharacter::MetalScratchManagement() {
 		Spark->SetWorldLocation(Actor1ClosestPoint);
 		Spark->Activate();
 
-		if (MetalScratchAudio && metalScratchSound && !MetalScratchAudio->IsPlaying()) {
+		if (MetalScratchAudio && !MetalScratchAudio->IsPlaying()) {
 
 			// Get a random playback time
 			float RandomTime = FMath::FRandRange(0.0f, 15.f);
@@ -901,24 +868,6 @@ bool AGameCharacter::GetOverlapInfluenceSphere(UStaticMeshComponent* StaticMeshC
 	return false;
 }
 
-/*
-getter, setter functions
-*/
-float AGameCharacter::GetEnergy() const {
-	return actualEnergy;
-}
-
-float AGameCharacter::GetMaxEnergy() const {
-	return maxEnergy;
-}
-
-GameCharacterStatus AGameCharacter::GetStatus() const {
-	return actualStatus;
-}
-
-GameCharacterStatus AGameCharacter::GetPrevStatus() const {
-	return prevStatus;
-}
 
 void AGameCharacter::SetPrevStatusToActualStatus() {
 	prevStatus = actualStatus;
@@ -930,9 +879,6 @@ void AGameCharacter::SlowdownTime() {
 	slowdownStatus = SlowDownStatus::SlowDownTime;
 }
 
-float AGameCharacter::GetCurrentSoundPitchMultiplier() const {
-	return actualSoundPitchMultiplier;
-}
 
 /*
 subscribing to controls
@@ -955,3 +901,44 @@ void AGameCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	toggle.bExecuteWhenPaused = true;
 }
 
+USkeletalMeshComponent* AGameCharacter::GetSkeletalMeshComponent() const {
+	return skeletal;
+}
+
+UStaticMeshComponent* AGameCharacter::GetStaticMeshComponent() const {
+	return CameraMesh;
+}
+
+float AGameCharacter::GetCurrentSoundPitchMultiplier() const {
+	return actualSoundPitchMultiplier;
+}
+/*
+getter, setter functions
+*/
+float AGameCharacter::GetEnergy() const {
+	return actualEnergy;
+}
+
+float AGameCharacter::GetMaxEnergy() const {
+	return maxEnergy;
+}
+
+GameCharacterStatus AGameCharacter::GetStatus() const {
+	return actualStatus;
+}
+
+GameCharacterStatus AGameCharacter::GetPrevStatus() const {
+	return prevStatus;
+}
+
+FVector AGameCharacter::GetCameraLocation() const {
+	return Camera->GetComponentLocation();
+}
+
+bool AGameCharacter::IsHugging() const {
+	return isHugging;
+}
+
+FVector AGameCharacter::GetBackBeforeDashLocation() const {
+	return positionBeforeDash;
+}

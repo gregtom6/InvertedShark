@@ -40,3 +40,11 @@ void UPauseUserWidget::SetGameCharacter(AGameCharacter* gameCharacter) {
 
 	QuitToMainMenuButton->OnClicked.AddUniqueDynamic(this, &UPauseUserWidget::OnQuitToMainMenuClick);
 }
+
+void UPauseUserWidget::NativeDestruct() {
+	Super::NativeDestruct();
+
+	ResumeButton->OnClicked.RemoveDynamic(this, &UPauseUserWidget::OnResumeClick);
+
+	QuitToMainMenuButton->OnClicked.RemoveDynamic(this, &UPauseUserWidget::OnQuitToMainMenuClick);
+}

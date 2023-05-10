@@ -10,7 +10,7 @@ UCLASS()
 class SMALLPROJECT_API UCreatureUserWidget : public UUserWidget
 {
 	GENERATED_BODY()
-	
+
 protected:
 	virtual void NativeConstruct() override;
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
@@ -35,10 +35,11 @@ protected:
 	float startTime;
 
 	float deltaLifePercentage;
-		
+
 public:
-	class ACreature* creature;
-	
+	UPROPERTY()
+		class ACreature* creature;
+
 };
 
 

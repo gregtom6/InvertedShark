@@ -12,7 +12,6 @@ void UGameCharacterUserWidget::NativeConstruct() {
 
 	fadeStatus = FadeStatus::Invisible;
 	Energybar->SetRenderOpacity(0.f);
-	
 }
 
 /*

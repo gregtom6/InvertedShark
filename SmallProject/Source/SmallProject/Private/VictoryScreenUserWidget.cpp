@@ -11,6 +11,12 @@ void UVictoryScreenUserWidget::NativeConstruct() {
 	ReturnToMenuButton->OnClicked.AddUniqueDynamic(this, &UVictoryScreenUserWidget::OnReturnMenuClick);
 }
 
+void UVictoryScreenUserWidget::NativeDestruct() {
+	Super::NativeDestruct();
+
+	ReturnToMenuButton->OnClicked.RemoveDynamic(this, &UVictoryScreenUserWidget::OnReturnMenuClick);
+}
+
 /*
 returning to main menu, when player won the game (defeated the boss)
 */

@@ -16,6 +16,7 @@ class SMALLPROJECT_API UVictoryScreenUserWidget : public UUserWidget
 	
 private:
 	virtual void NativeConstruct() override;
+	virtual void NativeDestruct() override;
 protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Sounds")

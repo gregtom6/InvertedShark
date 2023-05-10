@@ -14,15 +14,15 @@ class SMALLPROJECT_API AFallCamera : public AActor
 private:
 	virtual void Tick(float DeltaTime) override;
 
-	
-public:	
+
+public:
 	// Sets default values for this actor's properties
 	AFallCamera(const FObjectInitializer& ObjectInitializer);
 
 protected:
 
-
-	class AGameCharacter* gameCharacter;
+	UPROPERTY()
+		class AGameCharacter* gameCharacter;
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -44,7 +44,7 @@ protected:
 
 	float startTime;
 
-public:	
+public:
 
 	UFUNCTION()
 		void DieHappened();

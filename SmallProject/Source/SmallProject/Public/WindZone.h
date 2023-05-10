@@ -10,10 +10,7 @@ UCLASS()
 class SMALLPROJECT_API AWindZone : public ATriggerBox
 {
 	GENERATED_BODY()
-	
-public:	
-	// Sets default values for this actor's properties
-	AWindZone();
+
 
 protected:
 	// Called when the game starts or when spawned
@@ -31,9 +28,10 @@ protected:
 
 	float startTime;
 
-	class AGameCharacter* gameCharacter;
+	UPROPERTY()
+		class AGameCharacter* gameCharacter;
 
-public:	
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 

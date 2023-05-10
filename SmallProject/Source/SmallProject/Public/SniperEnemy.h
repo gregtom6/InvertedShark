@@ -99,6 +99,12 @@ protected:
 	UPROPERTY(EditAnywhere)
 		FLinearColor targetColor;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+		TSubclassOf<AActor> ProjectileClass;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+		TSubclassOf<AActor> WindzoneClass;
+
 	FLinearColor defaultColor;
 
 	bool soundAlreadyStartedPlaying;
@@ -108,8 +114,6 @@ protected:
 	void CreateWindZone();
 
 	FVector currentTarget;
-
-	class AGameCharacter* gameCharacter;
 
 public:
 	ASniperEnemy(const FObjectInitializer& ObjectInitializer);

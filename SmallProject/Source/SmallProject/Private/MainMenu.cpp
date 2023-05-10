@@ -24,6 +24,22 @@ void UMainMenu::NativeConstruct() {
 	BackToMainMenuButton->OnClicked.AddUniqueDynamic(this, &UMainMenu::OnBackClick);
 }
 
+void UMainMenu::NativeDestruct() {
+	Super::NativeDestruct();
+
+	StartButton->OnClicked.RemoveDynamic(this, &UMainMenu::OnStartClick);
+
+	ControlsButton->OnClicked.RemoveDynamic(this, &UMainMenu::OnControlsClick);
+
+	QuitButton->OnClicked.RemoveDynamic(this, &UMainMenu::OnQuitClick);
+
+	BackButton->OnClicked.RemoveDynamic(this, &UMainMenu::OnBackClick);
+
+	HowToPlayButton->OnClicked.RemoveDynamic(this, &UMainMenu::OnHowToPlayClick);
+
+	BackToMainMenuButton->OnClicked.RemoveDynamic(this, &UMainMenu::OnBackClick);
+}
+
 /*
 button click event management
 */

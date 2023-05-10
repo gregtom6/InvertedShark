@@ -48,7 +48,7 @@ protected:
 	void SplineMeshCompAttach(class USplineMeshComponent* splineMeshComp);
 
 	virtual class UStaticMeshComponent* GetCurrentBodyMesh() const;
-	
+
 	virtual void DoAfterDead();
 
 	virtual FVector GetEndPosition() const;
@@ -70,9 +70,10 @@ protected:
 	bool canPlayerDamageMe = true;
 
 	//TODO: merge them, remove nullptr setting
-	class AGameCharacter* overlappingGameCharacter;
-
-	class AGameCharacter* gameCharacter;
+	UPROPERTY()
+		class AGameCharacter* overlappingGameCharacter;
+	UPROPERTY()
+		class AGameCharacter* gameCharacter;
 
 	EnemyStatus actualStatus;
 

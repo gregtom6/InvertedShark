@@ -10,10 +10,10 @@ UCLASS()
 class SMALLPROJECT_API AProjectile : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	// Sets default values for this actor's properties
-	AProjectile();
+	AProjectile(const FObjectInitializer& ObjectInitializer);
 
 protected:
 	// Called when the game starts or when spawned
@@ -57,21 +57,22 @@ protected:
 
 	FVector directionVector;
 
-	class AActor* targetedActor;
-
-	class AActor* shooterActor;
-
-	class AGameCharacter* gameChar;
+	UPROPERTY()
+		class AActor* targetedActor;
+	UPROPERTY()
+		class AActor* shooterActor;
+	UPROPERTY()
+		class AGameCharacter* gameChar;
 
 	float startTimeForBloodFlow;
 
 	float startTime;
 
-public:	
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	void SetTarget(AActor* t, AActor* origin);
+	void SetTarget(class AActor* t, class AActor* origin);
 
 	UFUNCTION()
 		void Event(class AActor* overlappedActor, class AActor* otherActor);

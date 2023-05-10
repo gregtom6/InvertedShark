@@ -9,7 +9,7 @@
 /**
  * 
  */
-UCLASS(Abstract)
+UCLASS()
 class SMALLPROJECT_API UGameCharacterUserWidget : public UUserWidget
 {
 	GENERATED_BODY()
@@ -28,6 +28,7 @@ protected:
 		float fadeTime;
 
 public:
+	UPROPERTY()
 	class AGameCharacter* player;
 };
 

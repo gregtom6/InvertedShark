@@ -14,9 +14,10 @@ class SMALLPROJECT_API UPauseUserWidget : public UUserWidget
 {
 	GENERATED_BODY()
 
-		class AGameCharacter* gameChar;
+		UPROPERTY()
+			class AGameCharacter* gameChar;
 protected:
-
+	virtual void NativeDestruct() override;
 
 	UPROPERTY(meta = (BindWidget))
 		class UButton* ResumeButton;

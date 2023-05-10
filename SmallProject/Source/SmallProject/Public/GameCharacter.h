@@ -63,8 +63,9 @@ private:
 
 	bool isHugging;
 
+	UPROPERTY()
 	class ACreature* creature;
-
+	UPROPERTY()
 	class AActor* bossEnemy;
 
 	GameCharacterStatus actualStatus;
@@ -223,33 +224,24 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		class UAudioComponent* SneezeAudio;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		class USoundCue* wingBeat;
+	UPROPERTY(EditAnywhere) 
+		TSubclassOf<UPauseUserWidget> widgetPauseMenu;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		class USoundCue* tongueSound;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		class USoundCue* metalScratchSound;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		class USoundCue* dashSound;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		class USoundCue* sneezeSound;
-
+	UPROPERTY()
 	class UNiagaraComponent* leftNoseSneezeNiagara;
+	UPROPERTY()
 	class UNiagaraComponent* rightNoseSneezeNiagara;
-
-	UPROPERTY(EditAnywhere) TSubclassOf<UPauseUserWidget> widgetPauseMenu;
+	UPROPERTY()
 	class UPauseUserWidget* widgetPauseMenuInstance;
-
+	UPROPERTY()
 	class UActorSequencePlayer* loopedEyePlayer;
+	UPROPERTY()
 	class UActorSequencePlayer* sneezeBlinkPlayer;
-
+	UPROPERTY()
 	class UActorSequencePlayer* leftDashPlayer;
+	UPROPERTY()
 	class UActorSequencePlayer* rightDashPlayer;
-
+	UPROPERTY()
 	class UActorSequencePlayer* wingPlayer;
 
 	UFUNCTION()

@@ -55,8 +55,6 @@ void ASniperEnemy::BeginPlay() {
 
 	SniperMaterialInstance = SkeletalBody->CreateDynamicMaterialInstance(7);
 
-
-
 	FHashedMaterialParameterInfo ParameterInfo("Color");
 	SniperMaterialInstance->GetVectorParameterValue(ParameterInfo, defaultColor);
 
@@ -219,11 +217,8 @@ void ASniperEnemy::CreateWindZone() {
 	SpawnTransform.SetLocation(GetActorLocation());
 	SpawnTransform.SetRotation(FQuat::Identity);
 
-	// Get a reference to the Blueprint class
-	UClass* BPClass = LoadClass<ATriggerBox>(nullptr, TEXT("/Game/Blueprints/BP_WindZone.BP_WindZone_C"));
-
 	// Spawn the actor and store a reference to the new instance
-	AWindZone* NewActor = GetWorld()->SpawnActor<AWindZone>(BPClass, SpawnTransform);
+	AWindZone* NewActor = GetWorld()->SpawnActor<AWindZone>(WindzoneClass, SpawnTransform);
 
 	if (NewActor == nullptr) {
 		FRotator rot = FRotator::ZeroRotator;
@@ -237,11 +232,8 @@ void ASniperEnemy::CreateProjectile() {
 
 	laserTargetingNiagara1->Deactivate();
 
-	// Get a reference to the Blueprint class
-	UClass* BPClass = LoadClass<AActor>(nullptr, TEXT("/Game/Blueprints/BP_SniperProjectile.BP_SniperProjectile_C"));
-
 	// Spawn the actor and store a reference to the new instance
-	AProjectile* NewActor = GetWorld()->SpawnActor<AProjectile>(BPClass, SpawnTransform);
+	AProjectile* NewActor = GetWorld()->SpawnActor<AProjectile>(ProjectileClass, SpawnTransform);
 
 	if (enemyTargeting == EnemyTargeting::CreatureTargeting)
 		NewActor->SetTarget(creature, this);
