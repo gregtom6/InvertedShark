@@ -11,9 +11,9 @@
 #include <Sound/SoundCue.h >
 #include "NiagaraComponent.h"
 
-AEnemy::AEnemy(){}
+AEnemy::AEnemy() {}
 
-AEnemy::AEnemy(const FObjectInitializer& ObjectInitializer) 
+AEnemy::AEnemy(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -183,13 +183,9 @@ void AEnemy::BeginPlay()
 
 	originalLifeBeforeAttack = actualLife;
 
-
-	SMeshComps[0]->AttachToComponent(SMeshContainers[0], FAttachmentTransformRules::KeepRelativeTransform);
-	SMeshComps[1]->AttachToComponent(SMeshContainers[1], FAttachmentTransformRules::KeepRelativeTransform);
-	SMeshComps[2]->AttachToComponent(SMeshContainers[2], FAttachmentTransformRules::KeepRelativeTransform);
-	SMeshComps[3]->AttachToComponent(SMeshContainers[3], FAttachmentTransformRules::KeepRelativeTransform);
-
-
+	for (int i = 0; i < SMeshComps.Num(); i++) {
+		SMeshComps[i]->AttachToComponent(SMeshContainers[i], FAttachmentTransformRules::KeepRelativeTransform);
+	}
 
 	EyePivot2->AttachToComponent(Body12, FAttachmentTransformRules::KeepRelativeTransform);
 	LeftEyeWhite2->AttachToComponent(EyePivot2, FAttachmentTransformRules::KeepRelativeTransform);
@@ -308,7 +304,7 @@ void AEnemy::StateManagement() {
 
 
 		for (int i = 0; i < SMeshContainers.Num(); i++) {
- 			SMeshContainers[i]->SetWorldScale3D(newScale);
+			SMeshContainers[i]->SetWorldScale3D(newScale);
 		}
 
 
@@ -354,7 +350,7 @@ void AEnemy::SplineManagement() {
 
 	if (actualStatus != EnemyStatus::StartEating) { return; }
 
-	currentTime= GetWorld()->GetTimeSeconds() - startTime;
+	currentTime = GetWorld()->GetTimeSeconds() - startTime;
 
 	currentTime /= splineGrowTime;
 
@@ -362,14 +358,14 @@ void AEnemy::SplineManagement() {
 		currentTime = 1.f;
 
 		for (int i = 0; i < SMeshComps.Num(); i++) {
-			SMeshComps[i]->SetRelativeLocation(SMeshComps[i]->GetRelativeLocation()+FVector(0.01f,0.f,0.f));
+			SMeshComps[i]->SetRelativeLocation(SMeshComps[i]->GetRelativeLocation() + FVector(0.01f, 0.f, 0.f));
 		}
 
 		StartActualEating();
 	}
 
-	FVector firstPointOfSpline= splineComponent->GetLocationAtSplinePoint(0, ESplineCoordinateSpace::Local);
-	
+	FVector firstPointOfSpline = splineComponent->GetLocationAtSplinePoint(0, ESplineCoordinateSpace::Local);
+
 	int j = 0;
 
 	for (int i = 0; i < SMeshComps.Num(); i++) {
@@ -388,17 +384,14 @@ void AEnemy::SplineManagement() {
 		SMeshComps[i]->UpdateMesh();
 	}
 
-	SplineNiagaras[0]->AttachToComponent(SMeshComps[0], FAttachmentTransformRules::KeepRelativeTransform);
-	SplineNiagaras[1]->AttachToComponent(SMeshComps[0], FAttachmentTransformRules::KeepRelativeTransform);
+	j = 0;
+	for (int i = 0; i < SplineNiagaras.Num(); i++) {
+		if (i != 0 && i % 2 == 0) {
+			j += 1;
+		}
 
-	SplineNiagaras[2]->AttachToComponent(SMeshComps[1], FAttachmentTransformRules::KeepRelativeTransform);
-	SplineNiagaras[3]->AttachToComponent(SMeshComps[1], FAttachmentTransformRules::KeepRelativeTransform);
-
-	SplineNiagaras[4]->AttachToComponent(SMeshComps[2], FAttachmentTransformRules::KeepRelativeTransform);
-	SplineNiagaras[5]->AttachToComponent(SMeshComps[2], FAttachmentTransformRules::KeepRelativeTransform);
-
-	SplineNiagaras[6]->AttachToComponent(SMeshComps[3], FAttachmentTransformRules::KeepRelativeTransform);
-	SplineNiagaras[7]->AttachToComponent(SMeshComps[3], FAttachmentTransformRules::KeepRelativeTransform);
+		SplineNiagaras[i]->AttachToComponent(SMeshComps[j], FAttachmentTransformRules::KeepRelativeTransform);
+	}
 }
 
 /*
