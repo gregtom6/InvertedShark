@@ -29,6 +29,8 @@ void AWindZone::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (!isActivated) { return; }
+
 	if (gameCharacter == nullptr) { return; }
 
 	UStaticMeshComponent* skeletal = gameCharacter->GetStaticMeshComponent();
@@ -45,6 +47,9 @@ void AWindZone::Tick(float DeltaTime)
 }
 
 void AWindZone::EnterEvent(class AActor* overlappedActor, class AActor* otherActor) {
+
+	if (!isActivated) { return; }
+
 	if (otherActor && otherActor != this) {
 		if (otherActor->IsA(AGameCharacter::StaticClass())) {
 
@@ -54,10 +59,16 @@ void AWindZone::EnterEvent(class AActor* overlappedActor, class AActor* otherAct
 }
 
 void AWindZone::ExitEvent(class AActor* overlappedActor, class AActor* otherActor) {
+	if (!isActivated) { return; }
+	
 	if (otherActor && otherActor != this) {
 		if (otherActor->IsA(AGameCharacter::StaticClass())) {
 
 			gameCharacter = nullptr;
 		}
 	}
+}
+
+void AWindZone::Activate(bool isActive) {
+	isActivated = isActive;
 }

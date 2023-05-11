@@ -28,6 +28,8 @@ protected:
 
 	float startTime;
 
+	bool isActivated;
+
 	UPROPERTY()
 		class AGameCharacter* gameCharacter;
 
@@ -40,5 +42,7 @@ public:
 
 	UFUNCTION()
 		virtual void ExitEvent(class AActor* overlappedActor, class AActor* otherActor);
+
+	void Activate(bool isActive);
 
 };

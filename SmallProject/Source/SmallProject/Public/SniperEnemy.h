@@ -105,6 +105,11 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 		TSubclassOf<AActor> WindzoneClass;
 
+	UPROPERTY()
+		class AProjectile* projectile;
+	UPROPERTY()
+		class AWindZone* windZone;
+
 	FLinearColor defaultColor;
 
 	bool soundAlreadyStartedPlaying;

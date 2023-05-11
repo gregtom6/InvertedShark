@@ -47,6 +47,9 @@ protected:
 		class UAudioComponent* projectileHittedTargetAudioComp;
 
 	UPROPERTY(EditAnywhere)
+		class UMaterialInterface* originalMaterial;
+
+	UPROPERTY(EditAnywhere)
 		class UMaterialInterface* invisibleMaterial;
 
 	ProjectileStatus status;
@@ -85,5 +88,5 @@ enum class ProjectileStatus : uint8
 	FlyToTarget,
 	MoveInsideTarget,
 	StopMovement,
-	CanBeDestroyed,
+	CanGetBackInPool,
 };

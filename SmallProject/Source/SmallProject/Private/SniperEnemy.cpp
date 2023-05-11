@@ -63,6 +63,13 @@ void ASniperEnemy::BeginPlay() {
 	APawn* pawn = OurPlayerController->GetPawn();
 
 	gameCharacter = Cast<AGameCharacter, APawn>(pawn);
+
+	FTransform SpawnTransform;
+	SpawnTransform.SetLocation(GetActorLocation());
+
+	windZone = GetWorld()->SpawnActor<AWindZone>(WindzoneClass, SpawnTransform);
+
+	projectile = GetWorld()->SpawnActor<AProjectile>(ProjectileClass, SpawnTransform);
 }
 
 void ASniperEnemy::Tick(float DeltaTime) {
@@ -213,32 +220,21 @@ void ASniperEnemy::TimeManagement() {
 }
 
 void ASniperEnemy::CreateWindZone() {
-	FTransform SpawnTransform;
-	SpawnTransform.SetLocation(GetActorLocation());
-	SpawnTransform.SetRotation(FQuat::Identity);
 
-	// Spawn the actor and store a reference to the new instance
-	AWindZone* NewActor = GetWorld()->SpawnActor<AWindZone>(WindzoneClass, SpawnTransform);
-
-	if (NewActor == nullptr) {
-		FRotator rot = FRotator::ZeroRotator;
-	}
+	windZone->SetActorLocation(GetActorLocation());
+	windZone->Activate(true);
 }
 
 void ASniperEnemy::CreateProjectile() {
-	FTransform SpawnTransform;
-	SpawnTransform.SetLocation(ProjectileOrigin->GetComponentLocation());
-	SpawnTransform.SetRotation(FQuat::Identity);
+
+	projectile->SetActorLocation(ProjectileOrigin->GetComponentLocation());
 
 	laserTargetingNiagara1->Deactivate();
 
-	// Spawn the actor and store a reference to the new instance
-	AProjectile* NewActor = GetWorld()->SpawnActor<AProjectile>(ProjectileClass, SpawnTransform);
-
 	if (enemyTargeting == EnemyTargeting::CreatureTargeting)
-		NewActor->SetTarget(creature, this);
+		projectile->SetTarget(creature, this);
 	else if (enemyTargeting == EnemyTargeting::PlayerTargeting) {
-		NewActor->SetTarget(gameCharacter, this);
+		projectile->SetTarget(gameCharacter, this);
 	}
 }
 

@@ -87,7 +87,7 @@ void AProjectile::Tick(float DeltaTime)
 		float currentTime = GetWorld()->GetTimeSeconds() - startTime;
 		currentTime /= timeUntilDestroy;
 		if (currentTime >= 1.f) {
-			Destroy();
+			status = ProjectileStatus::Initial;
 		}
 	}
 
@@ -238,4 +238,6 @@ void AProjectile::SetTarget(AActor* tar, AActor* origin) {
 	SetActorRotation(targetRotation);
 
 	status = ProjectileStatus::FlyToTarget;
+
+	staticMesh->SetMaterial(0, originalMaterial);
 }
