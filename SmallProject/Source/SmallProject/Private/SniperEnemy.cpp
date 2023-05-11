@@ -186,6 +186,7 @@ void ASniperEnemy::Tick(float DeltaTime) {
 		currentTime /= levelRemoveTime;
 
 		if (currentTime >= 1.f) {
+			projectile->Destroy();
 			Destroy();
 		}
 	}
