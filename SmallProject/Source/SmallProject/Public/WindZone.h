@@ -11,6 +11,7 @@ class SMALLPROJECT_API AWindZone : public ATriggerBox
 {
 	GENERATED_BODY()
 
+		AWindZone(const FObjectInitializer& ObjectInitializer);
 
 protected:
 	// Called when the game starts or when spawned

@@ -57,12 +57,6 @@ void AProjectile::Tick(float DeltaTime)
 
 	if (status == ProjectileStatus::FlyToTarget && target != FVector::Zero()) {
 
-
-		if (directionVector == FVector::Zero()) {
-			directionVector = target - GetActorLocation();
-			directionVector.Normalize();
-		}
-
 		FVector newLocation = GetActorLocation() + directionVector * speed;
 
 		SetActorLocation(newLocation);
@@ -86,7 +80,10 @@ void AProjectile::Tick(float DeltaTime)
 		float currentTime = GetWorld()->GetTimeSeconds() - startTime;
 		currentTime /= timeUntilDestroy;
 		if (currentTime >= 1.f) {
-			status = ProjectileStatus::Initial;
+  			status = ProjectileStatus::Initial;
+			SetActorLocation(shooterActor->GetActorLocation());
+			staticMesh->SetMaterial(0, invisibleMaterial);
+			isActivated = false;
 		}
 	}
 
@@ -109,7 +106,7 @@ void AProjectile::TimeManagement() {
 
 void AProjectile::Event(class AActor* overlappedActor, class AActor* otherActor) {
 
-	if (status !=ProjectileStatus::FlyToTarget) { return; }
+	if (status !=ProjectileStatus::FlyToTarget || !isActivated) { return; }
 
 	if (otherActor && otherActor != this) {
 		if (otherActor->IsA(ACreature::StaticClass()) || otherActor->IsA(AGameCharacter::StaticClass())) {
@@ -232,6 +229,11 @@ void AProjectile::SetTarget(AActor* tar, AActor* origin) {
 	SetActorRotation(targetRotation);
 
 	status = ProjectileStatus::FlyToTarget;
+
+	directionVector = target - GetActorLocation();
+	directionVector.Normalize();
+
+	isActivated = true;
 
 	staticMesh->SetMaterial(0, originalMaterial);
 }

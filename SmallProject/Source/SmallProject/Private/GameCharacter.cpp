@@ -556,7 +556,7 @@ void AGameCharacter::Tick(float DeltaTime)
 
 void AGameCharacter::SetupProjectile(FRotator rotator, FVector scale, UStaticMesh* mesh, UMaterialInterface* material, FVector offset, FVector direction) {
 
-	UStaticMeshComponent* NewComponent = NewObject<UStaticMeshComponent>(this);
+ 	UStaticMeshComponent* NewComponent = NewObject<UStaticMeshComponent>(this);
 	NewComponent->RegisterComponent();
 	NewComponent->SetStaticMesh(mesh);
 	NewComponent->AttachToComponent(CameraMesh, FAttachmentTransformRules::KeepRelativeTransform);
@@ -825,7 +825,6 @@ void AGameCharacter::MetalScratchManagement() {
 		}
 	}
 	else {
-		UE_LOG(LogTemp, Warning, TEXT("bools: %f  %f"), bOverlap, Tongue->GetVisibleFlag());
 
 		Spark->Deactivate();
 		MetalScratchAudio->Stop();

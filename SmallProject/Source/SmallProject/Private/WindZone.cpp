@@ -4,13 +4,14 @@
 #include "WindZone.h"
 #include "GameCharacter.h"
 
+AWindZone::AWindZone(const FObjectInitializer& ObjectInitializer) :Super(ObjectInitializer) {
+	PrimaryActorTick.bCanEverTick = true;
+}
 
 // Called when the game starts or when spawned
 void AWindZone::BeginPlay()
 {
 	Super::BeginPlay();
-
-	startTime = GetWorld()->GetTimeSeconds();
 	
 	OnActorBeginOverlap.AddUniqueDynamic(this, &AWindZone::EnterEvent);
 	OnActorEndOverlap.AddUniqueDynamic(this, &AWindZone::ExitEvent);
@@ -48,8 +49,6 @@ void AWindZone::Tick(float DeltaTime)
 
 void AWindZone::EnterEvent(class AActor* overlappedActor, class AActor* otherActor) {
 
-	if (!isActivated) { return; }
-
 	if (otherActor && otherActor != this) {
 		if (otherActor->IsA(AGameCharacter::StaticClass())) {
 
@@ -59,7 +58,6 @@ void AWindZone::EnterEvent(class AActor* overlappedActor, class AActor* otherAct
 }
 
 void AWindZone::ExitEvent(class AActor* overlappedActor, class AActor* otherActor) {
-	if (!isActivated) { return; }
 	
 	if (otherActor && otherActor != this) {
 		if (otherActor->IsA(AGameCharacter::StaticClass())) {
@@ -70,5 +68,8 @@ void AWindZone::ExitEvent(class AActor* overlappedActor, class AActor* otherActo
 }
 
 void AWindZone::Activate(bool isActive) {
+
+	startTime = GetWorld()->GetTimeSeconds();
+
 	isActivated = isActive;
 }

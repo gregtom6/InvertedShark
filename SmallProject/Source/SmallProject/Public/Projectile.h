@@ -60,6 +60,8 @@ protected:
 
 	FVector directionVector;
 
+	bool isActivated;
+
 	UPROPERTY()
 		class AActor* targetedActor;
 	UPROPERTY()
