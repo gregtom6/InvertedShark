@@ -38,7 +38,6 @@ ASniperEnemy::ASniperEnemy(const FObjectInitializer& ObjectInitializer)
 	laserTargetingNiagara1->AttachToComponent(SkeletalBody, FAttachmentTransformRules::KeepRelativeTransform);
 
 	dieTornadoNiagara = CreateDefaultSubobject<UNiagaraComponent>(TEXT("dieTornadoNiagara"));
-	//dieTornadoNiagara2->SetupAttachment(RootComponent);
 
 	weaponOverloadingSound1 = CreateDefaultSubobject<UAudioComponent>(TEXT("weaponOverloadingSound"));
 	weaponOverloadingSound1->SetupAttachment(RootComponent);
@@ -116,7 +115,6 @@ void ASniperEnemy::Tick(float DeltaTime) {
 			{
 				SkeletalBody->PlayAnimation(weaponShootingSequence, false);
 			}
-
 		}
 
 
@@ -137,12 +135,10 @@ void ASniperEnemy::Tick(float DeltaTime) {
 
 		if (enemyTargeting == EnemyTargeting::PlayerTargeting) {
 			FRotator targetRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), gameCharacter->GetActorLocation());
-			//targetRotation.Yaw += 90.f;
 			SetActorRotation(targetRotation);
 		}
 		else if (enemyTargeting == EnemyTargeting::CreatureTargeting) {
 			FRotator targetRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), creature->GetActorLocation());
-			//targetRotation.Yaw += 90.f;
 			SetActorRotation(targetRotation);
 		}
 	}

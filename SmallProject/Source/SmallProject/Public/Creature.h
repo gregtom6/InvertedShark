@@ -15,7 +15,6 @@ class SMALLPROJECT_API ACreature : public AActor
 
 public:
 	// Sets default values for this actor's properties
-	//ACreature();
 	ACreature(const FObjectInitializer& ObjectInitializer);
 
 	virtual void Tick(float DeltaTime) override;
@@ -37,7 +36,9 @@ protected:
 
 	void StateManagement();
 
-	class AHealerEnemy* attackingHealer;
+	UPROPERTY()
+		class AHealerEnemy* attackingHealer;
+
 	float actualHealthWhenStartedHealing;
 
 	FRotator startHeadRotation;
@@ -66,6 +67,11 @@ protected:
 
 
 	int actualTargetIndex = 0;
+
+	int projectileShootedThroughCreatureCacheIndex;
+
+	UPROPERTY()
+		TArray<UStaticMeshComponent*> projectilesShootedThroughCreature;
 
 
 	UFUNCTION()
@@ -102,10 +108,7 @@ protected:
 		float MaxHealth = 120.f;
 
 	UPROPERTY(EditAnywhere)
-		class UStaticMeshComponent* CreatureMesh;
-
-	UPROPERTY(EditAnywhere)
-		TArray<AActor*> positionsToMove;
+		TArray<class AActor*> positionsToMove;
 
 	UPROPERTY(EditAnywhere)
 		class USkeletalMeshComponent* headMesh;
@@ -139,9 +142,13 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 		float lookAtPlayerBorder;
+
+	UPROPERTY(EditAnywhere)
+		int projectilesShootedThroughCreatureCacheSize;
+
 public:
 	UPROPERTY(EditAnywhere)
-		TArray<AActor*> enemiesActuallyAttacking;
+		TArray<class AActor*> enemiesActuallyAttacking;
 
 
 	float GetHealth() const { return Health; }

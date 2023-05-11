@@ -21,10 +21,10 @@ ACreature::ACreature(const FObjectInitializer& ObjectInitializer)
 	PrimaryActorTick.bCanEverTick = true;
 
 	WhaleAudioComp = CreateDefaultSubobject<UAudioComponent>(TEXT("WhaleAudioComp"));
-	WhaleAudioComp->SetupAttachment(CreatureMesh);
+	SetRootComponent(WhaleAudioComp);
 
 	WhaleCryAudio = CreateDefaultSubobject<UAudioComponent>(TEXT("WhaleCryAudio"));
-	WhaleCryAudio->SetupAttachment(CreatureMesh);
+	WhaleCryAudio->SetupAttachment(WhaleAudioComp);
 
 	huggableComp = CreateDefaultSubobject<UBoxComponent>(TEXT("huggableComp"));
 	huggableComp->SetupAttachment(WhaleAudioComp);
@@ -35,8 +35,6 @@ ACreature::ACreature(const FObjectInitializer& ObjectInitializer)
 	LeftEye->SetupAttachment(WhaleAudioComp);
 	RightEye = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RightEye"));
 	RightEye->SetupAttachment(WhaleAudioComp);
-
-
 }
 
 /*
@@ -83,8 +81,13 @@ void ACreature::BeginPlay()
 
 	SetActorRotation(PlayerRot);
 
-	OnActorBeginOverlap.AddDynamic(this, &ACreature::EnterEvent);
-	OnActorEndOverlap.AddDynamic(this, &ACreature::ExitEvent);
+	for (int i = 0; i < projectilesShootedThroughCreatureCacheSize; i++) {
+		UStaticMeshComponent* NewComponent = NewObject<UStaticMeshComponent>(this);
+		projectilesShootedThroughCreature.Add(NewComponent);
+	}
+
+	OnActorBeginOverlap.AddUniqueDynamic(this, &ACreature::EnterEvent);
+	OnActorEndOverlap.AddUniqueDynamic(this, &ACreature::ExitEvent);
 
 	huggableComp->OnComponentBeginOverlap.AddUniqueDynamic(this, &ACreature::TriggerEnter);
 	huggableComp->OnComponentEndOverlap.AddUniqueDynamic(this, &ACreature::TriggerExit);
@@ -93,6 +96,9 @@ void ACreature::BeginPlay()
 void ACreature::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	Super::EndPlay(EndPlayReason);
+
+	OnActorBeginOverlap.RemoveDynamic(this, &ACreature::EnterEvent);
+	OnActorEndOverlap.RemoveDynamic(this, &ACreature::ExitEvent);
 
 	huggableComp->OnComponentBeginOverlap.RemoveDynamic(this, &ACreature::TriggerEnter);
 	huggableComp->OnComponentEndOverlap.RemoveDynamic(this, &ACreature::TriggerExit);
@@ -113,7 +119,11 @@ void ACreature::StepTargetIndex() {
 
 void ACreature::SetupProjectile(FRotator rotator, FVector scale, UStaticMesh* mesh, UMaterialInterface* material, FVector offset) {
 
-	UStaticMeshComponent* NewComponent = NewObject<UStaticMeshComponent>(this);
+	if (projectileShootedThroughCreatureCacheIndex >= projectilesShootedThroughCreature.Num()) {
+		UE_LOG(LogTemp, Warning, TEXT("no cached projectile elements in creature"));
+	}
+
+	UStaticMeshComponent* NewComponent = projectilesShootedThroughCreature[projectileShootedThroughCreatureCacheIndex];
 	NewComponent->RegisterComponent();
 	NewComponent->SetStaticMesh(mesh);
 	NewComponent->AttachToComponent(WhaleAudioComp, FAttachmentTransformRules::KeepRelativeTransform);
@@ -128,6 +138,13 @@ void ACreature::SetupProjectile(FRotator rotator, FVector scale, UStaticMesh* me
 
 	NewComponent->SetRelativeRotation(rotator);
 	NewComponent->SetMaterial(0, material);
+
+	projectileShootedThroughCreatureCacheIndex += 1;
+
+	if (projectileShootedThroughCreatureCacheIndex >= projectilesShootedThroughCreature.Num()) {
+		UStaticMeshComponent* createdComp = NewObject<UStaticMeshComponent>(this);
+		projectilesShootedThroughCreature.Add(createdComp);
+	}
 
 	originalLifeBeforeAttack = Health;
 	Health = Health > 0 ? Health - damageAfterSting : 0;
