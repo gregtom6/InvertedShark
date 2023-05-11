@@ -315,7 +315,7 @@ void AEnemy::StateManagement() {
 }
 
 void AEnemy::MovingToCreatureEnded() {
-
+	//child classes overriding this
 }
 
 /*

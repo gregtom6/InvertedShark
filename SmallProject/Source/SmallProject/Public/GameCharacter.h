@@ -9,7 +9,7 @@
 
 DECLARE_DELEGATE(FOnDieHappenedSignature);
 
-UCLASS(BlueprintType)
+UCLASS()
 class SMALLPROJECT_API AGameCharacter : public APawn
 {
 	GENERATED_BODY()
@@ -64,9 +64,9 @@ private:
 	bool isHugging;
 
 	UPROPERTY()
-	class ACreature* creature;
+		class ACreature* creature;
 	UPROPERTY()
-	class AActor* bossEnemy;
+		class AActor* bossEnemy;
 
 	GameCharacterStatus actualStatus;
 	GameCharacterStatus prevStatus;
@@ -224,25 +224,25 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		class UAudioComponent* SneezeAudio;
 
-	UPROPERTY(EditAnywhere) 
+	UPROPERTY(EditAnywhere)
 		TSubclassOf<UPauseUserWidget> widgetPauseMenu;
 
 	UPROPERTY()
-	class UNiagaraComponent* leftNoseSneezeNiagara;
+		class UNiagaraComponent* leftNoseSneezeNiagara;
 	UPROPERTY()
-	class UNiagaraComponent* rightNoseSneezeNiagara;
+		class UNiagaraComponent* rightNoseSneezeNiagara;
 	UPROPERTY()
-	class UPauseUserWidget* widgetPauseMenuInstance;
+		class UPauseUserWidget* widgetPauseMenuInstance;
 	UPROPERTY()
-	class UActorSequencePlayer* loopedEyePlayer;
+		class UActorSequencePlayer* loopedEyePlayer;
 	UPROPERTY()
-	class UActorSequencePlayer* sneezeBlinkPlayer;
+		class UActorSequencePlayer* sneezeBlinkPlayer;
 	UPROPERTY()
-	class UActorSequencePlayer* leftDashPlayer;
+		class UActorSequencePlayer* leftDashPlayer;
 	UPROPERTY()
-	class UActorSequencePlayer* rightDashPlayer;
+		class UActorSequencePlayer* rightDashPlayer;
 	UPROPERTY()
-	class UActorSequencePlayer* wingPlayer;
+		class UActorSequencePlayer* wingPlayer;
 
 	UFUNCTION()
 		bool GetOverlapInfluenceSphere(class UStaticMeshComponent* StaticMeshComponent, FVector& Actor1ClosestPoint, FVector& Actor2ClosestPoint);

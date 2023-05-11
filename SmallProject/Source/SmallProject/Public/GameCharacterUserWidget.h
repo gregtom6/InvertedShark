@@ -7,7 +7,7 @@
 #include "GameCharacterUserWidget.generated.h"
 
 /**
- * 
+ *
  */
 UCLASS()
 class SMALLPROJECT_API UGameCharacterUserWidget : public UUserWidget
@@ -29,7 +29,7 @@ protected:
 
 public:
 	UPROPERTY()
-	class AGameCharacter* player;
+		class AGameCharacter* player;
 };
 
 UENUM()

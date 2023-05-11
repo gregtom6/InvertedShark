@@ -21,7 +21,6 @@ AProjectile::AProjectile(const FObjectInitializer& ObjectInitializer) :Super(Obj
 	SetRootComponent(projectileHittedTargetAudioComp);
 
 	creatureHitBloodNiagara = CreateDefaultSubobject<UNiagaraComponent>(TEXT("creatureHitBloodNiagara"));
-	//creatureHitBloodNiagara->AttachToComponent(projectileHittedTargetAudioComp, FAttachmentTransformRules::KeepRelativeTransform);
 
 	staticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("staticMesh"));
 	staticMesh->AttachToComponent(projectileHittedTargetAudioComp, FAttachmentTransformRules::KeepRelativeTransform);
@@ -115,11 +114,6 @@ void AProjectile::Event(class AActor* overlappedActor, class AActor* otherActor)
 	if (otherActor && otherActor != this) {
 		if (otherActor->IsA(ACreature::StaticClass()) || otherActor->IsA(AGameCharacter::StaticClass())) {
 			startDistance = FVector::Distance(otherActor->GetActorLocation(), GetActorLocation());
-
-
-			//creatureHitBloodNiagara->SetWorldLocation(otherActor->GetActorLocation());
-			//creatureHitBloodNiagara->Activate();
-			//startTimeForBloodFlow = GetWorld()->GetTimeSeconds();
 
 			targetedActor = otherActor;
 

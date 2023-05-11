@@ -123,21 +123,21 @@ void ACreature::SetupProjectile(FRotator rotator, FVector scale, UStaticMesh* me
 		UE_LOG(LogTemp, Warning, TEXT("no cached projectile elements in creature"));
 	}
 
-	UStaticMeshComponent* NewComponent = projectilesShootedThroughCreature[projectileShootedThroughCreatureCacheIndex];
-	NewComponent->RegisterComponent();
-	NewComponent->SetStaticMesh(mesh);
-	NewComponent->AttachToComponent(WhaleAudioComp, FAttachmentTransformRules::KeepRelativeTransform);
-	NewComponent->SetRelativeScale3D(scale);
+	UStaticMeshComponent* cachedShootedProjectile = projectilesShootedThroughCreature[projectileShootedThroughCreatureCacheIndex];
+	cachedShootedProjectile->RegisterComponent();
+	cachedShootedProjectile->SetStaticMesh(mesh);
+	cachedShootedProjectile->AttachToComponent(WhaleAudioComp, FAttachmentTransformRules::KeepRelativeTransform);
+	cachedShootedProjectile->SetRelativeScale3D(scale);
 
-	NewComponent->SetWorldLocation(offset);
+	cachedShootedProjectile->SetWorldLocation(offset);
 
-	NewComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-	NewComponent->SetCollisionObjectType(ECollisionChannel::ECC_WorldDynamic);
-	NewComponent->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Overlap);
-	NewComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_WorldDynamic, ECollisionResponse::ECR_Overlap);
+	cachedShootedProjectile->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	cachedShootedProjectile->SetCollisionObjectType(ECollisionChannel::ECC_WorldDynamic);
+	cachedShootedProjectile->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Overlap);
+	cachedShootedProjectile->SetCollisionResponseToChannel(ECollisionChannel::ECC_WorldDynamic, ECollisionResponse::ECR_Overlap);
 
-	NewComponent->SetRelativeRotation(rotator);
-	NewComponent->SetMaterial(0, material);
+	cachedShootedProjectile->SetRelativeRotation(rotator);
+	cachedShootedProjectile->SetMaterial(0, material);
 
 	projectileShootedThroughCreatureCacheIndex += 1;
 
@@ -150,7 +150,6 @@ void ACreature::SetupProjectile(FRotator rotator, FVector scale, UStaticMesh* me
 	Health = Health > 0 ? Health - damageAfterSting : 0;
 	bigDeltaDamageHappenedDelegate.ExecuteIfBound(originalLifeBeforeAttack);
 
-	WhaleCryAudio->Stop();
 	WhaleCryAudio->Play();
 }
 

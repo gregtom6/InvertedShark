@@ -115,7 +115,6 @@ void AGameCharacter::WingBeat() {
 
 	AudioComp->Play(0.f);
 
-	wingPlayer->Play();
 	wingPlayer->Stop();
 	FRotator rot = CameraMesh->GetComponentRotation();
 	rot.Roll = 0.f;
@@ -346,9 +345,6 @@ void AGameCharacter::UpDash() {
 		}
 	}
 
-	//FFrameTime FirstFrameTime(0);
-	//C:\WORK\Sajat\SmallProject\SmallProject\Source\SmallProject\Private\GameCharacter.cpp(274): warning C4996: 'UMovieSceneSequencePlayer::JumpToFrame': JumpToFrame is deprecated, use SetPlaybackPosition. Please update your code to the new API before upgrading to the next release, otherwise your project will no longer compile.
-	//loopedEyePlayer->JumpToFrame(FirstFrameTime);
 	FMovieSceneSequencePlaybackParams FirstFrame(0.f, EUpdatePositionMethod::Play);
 	loopedEyePlayer->SetPlaybackPosition(FirstFrame);
 	loopedEyePlayer->Stop();
@@ -675,6 +671,7 @@ void AGameCharacter::VelocityManagement(FVector& currentVelocity) {
 	if (actualStatus != GameCharacterStatus::Dead &&
 		actualStatus != GameCharacterStatus::UpDash && actualStatus != GameCharacterStatus::DownDash
 		&& actualStatus != GameCharacterStatus::LeftDash && actualStatus != GameCharacterStatus::RightDash) {
+
 		FVector clampedVelocity = currentVelocity.GetClampedToMaxSize(velocityLimit);
 		CameraMesh->SetPhysicsLinearVelocity(clampedVelocity);
 	}
