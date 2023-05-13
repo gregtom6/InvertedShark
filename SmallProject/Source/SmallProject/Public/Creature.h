@@ -79,10 +79,10 @@ protected:
 
 	int actualTargetIndex = 0;
 
-	int projectileShootedThroughCreatureCacheIndex;
+	int projectileShootedThroughMeCacheIndex;
 
 	UPROPERTY()
-		TArray<UStaticMeshComponent*> projectilesShootedThroughCreature;
+		TArray<UStaticMeshComponent*> projectilesShootedThroughMe;
 
 
 	UFUNCTION()
@@ -155,7 +155,7 @@ protected:
 		float lookAtPlayerBorder;
 
 	UPROPERTY(EditAnywhere)
-		int projectilesShootedThroughCreatureCacheSize;
+		int projectilesShootedThroughMeCacheSize;
 
 public:
 	UPROPERTY(EditAnywhere)

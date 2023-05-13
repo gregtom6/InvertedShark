@@ -113,6 +113,14 @@ private:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 
+	int projectileShootedThroughMeCacheIndex;
+
+	UPROPERTY()
+		TArray<UStaticMeshComponent*> projectilesShootedThroughMe;
+
+	UPROPERTY(EditAnywhere)
+		int projectilesShootedThroughMeCacheSize;
+
 protected:
 
 	//main pawn camera

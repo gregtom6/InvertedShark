@@ -92,7 +92,7 @@ void AGameCharacter::RotateLR(float rotateDelta) {
 
 	FRotator actualRotation = GetActorRotation();
 	actualRotation.Yaw += rotateDelta * RotateSpeed;
-	CameraMesh-> SetRelativeRotation(actualRotation);
+	CameraMesh->SetRelativeRotation(actualRotation);
 }
 
 
@@ -256,7 +256,7 @@ void AGameCharacter::DownDash() {
 }
 
 void AGameCharacter::LeftDash() {
-	FVector actorUpVector = (GetActorUpVector() + -GetActorRightVector()) * (dashStrength/2.f);
+	FVector actorUpVector = (GetActorUpVector() + -GetActorRightVector()) * (dashStrength / 2.f);
 	FVector impulseDirection = actorUpVector;
 
 	positionBeforeDash = GetActorLocation();
@@ -284,7 +284,7 @@ void AGameCharacter::LeftDash() {
 }
 
 void AGameCharacter::RightDash() {
-	FVector actorUpVector = (GetActorUpVector() + GetActorRightVector()) * (dashStrength/2.f);
+	FVector actorUpVector = (GetActorUpVector() + GetActorRightVector()) * (dashStrength / 2.f);
 	FVector impulseDirection = actorUpVector;
 
 	positionBeforeDash = GetActorLocation();
@@ -432,7 +432,7 @@ void AGameCharacter::BeginPlay()
 
 	slowdownStatus = SlowDownStatus::NormalTime;
 
-  	if (IsValid(widgetclass)) {
+	if (IsValid(widgetclass)) {
 
 		UE_LOG(LogTemp, Warning, TEXT("energy1"));
 		energyuserwidget = Cast<UGameCharacterUserWidget>(CreateWidget(GetWorld(), widgetclass));
@@ -518,6 +518,11 @@ void AGameCharacter::BeginPlay()
 			rightNoseSneezeNiagara = niagaraComponents[i];
 		}
 	}
+
+	for (int i = 0; i < projectilesShootedThroughMeCacheSize; i++) {
+		UStaticMeshComponent* NewComponent = NewObject<UStaticMeshComponent>(this);
+		projectilesShootedThroughMe.Add(NewComponent);
+	}
 }
 
 void AGameCharacter::SneezeBlinkEnded() {
@@ -556,13 +561,15 @@ void AGameCharacter::Tick(float DeltaTime)
 
 void AGameCharacter::SetupProjectile(FRotator rotator, FVector scale, UStaticMesh* mesh, UMaterialInterface* material, FVector offset) {
 
- 	UStaticMeshComponent* cachedShootedProjectile = NewObject<UStaticMeshComponent>(this);
+	if (projectileShootedThroughMeCacheIndex >= projectilesShootedThroughMe.Num()) {
+		UE_LOG(LogTemp, Warning, TEXT("no cached projectile elements in me"));
+	}
+
+	UStaticMeshComponent* cachedShootedProjectile = projectilesShootedThroughMe[projectileShootedThroughMeCacheIndex];
 	cachedShootedProjectile->RegisterComponent();
 	cachedShootedProjectile->SetStaticMesh(mesh);
 	cachedShootedProjectile->AttachToComponent(GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
-	FVector newScale = scale *1.25f;
-	FVector nScale = newScale*1.25f;
-	cachedShootedProjectile->SetRelativeScale3D(nScale);
+	cachedShootedProjectile->SetRelativeScale3D(scale);
 
 	cachedShootedProjectile->SetWorldLocation(offset);
 
@@ -576,6 +583,13 @@ void AGameCharacter::SetupProjectile(FRotator rotator, FVector scale, UStaticMes
 
 	FName NewName = MakeUniqueObjectName(this, UStaticMeshComponent::StaticClass(), TEXT("InnerProjectile"));
 	cachedShootedProjectile->Rename(*NewName.ToString());
+
+	projectileShootedThroughMeCacheIndex += 1;
+
+	if (projectileShootedThroughMeCacheIndex >= projectilesShootedThroughMe.Num()) {
+		UStaticMeshComponent* createdComp = NewObject<UStaticMeshComponent>(this);
+		projectilesShootedThroughMe.Add(createdComp);
+	}
 }
 
 void AGameCharacter::DoAfterGettingHitFromProjectile(FVector direction) {
@@ -709,7 +723,7 @@ void AGameCharacter::StateManagement() {
 
 		float currentTime = GetWorld()->GetTimeSeconds() - startTime;
 
-		if (currentTime >= dashCooldownTime/2.f) {
+		if (currentTime >= dashCooldownTime / 2.f) {
 			actualStatus = GameCharacterStatus::Calm;
 			SpringArm->bInheritYaw = true;
 			FRotator rotator = FRotator::ZeroRotator;
@@ -721,7 +735,7 @@ void AGameCharacter::StateManagement() {
 
 		float currentTime = GetWorld()->GetTimeSeconds() - startTime;
 
-		if (currentTime >= dashCooldownTime/2.f) {
+		if (currentTime >= dashCooldownTime / 2.f) {
 			actualStatus = GameCharacterStatus::Calm;
 			SpringArm->bInheritYaw = true;
 			FRotator rotator = FRotator::ZeroRotator;

@@ -159,7 +159,10 @@ void AProjectile::Event(class AActor* overlappedActor, class AActor* otherActor)
 								}
 
  								status = ProjectileStatus::MoveInsideTarget;
- 								gameCharacter->SetupProjectile(sum, staticMesh->GetComponentScale(), staticMesh->GetStaticMesh(), staticMesh->GetMaterial(0), target);
+								UStaticMeshComponent* gameCharacterStaticMesh = gameCharacter->GetStaticMeshComponent();
+								FVector compScale = staticMesh->GetComponentScale() * 1.f + (1.f - gameCharacterStaticMesh->GetComponentScale().X);
+								FVector scale = compScale * compScale;
+ 								gameCharacter->SetupProjectile(sum, scale, staticMesh->GetStaticMesh(), staticMesh->GetMaterial(0), target);
 								gameCharacter->DoAfterGettingHitFromProjectile(direction);
 								staticMesh->SetMaterial(0, invisibleMaterial);
 							}

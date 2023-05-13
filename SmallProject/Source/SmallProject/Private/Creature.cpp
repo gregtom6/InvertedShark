@@ -81,9 +81,9 @@ void ACreature::BeginPlay()
 
 	SetActorRotation(PlayerRot);
 
-	for (int i = 0; i < projectilesShootedThroughCreatureCacheSize; i++) {
+	for (int i = 0; i < projectilesShootedThroughMeCacheSize; i++) {
 		UStaticMeshComponent* NewComponent = NewObject<UStaticMeshComponent>(this);
-		projectilesShootedThroughCreature.Add(NewComponent);
+		projectilesShootedThroughMe.Add(NewComponent);
 	}
 
 	OnActorBeginOverlap.AddUniqueDynamic(this, &ACreature::EnterEvent);
@@ -119,11 +119,11 @@ void ACreature::StepTargetIndex() {
 
 void ACreature::SetupProjectile(FRotator rotator, FVector scale, UStaticMesh* mesh, UMaterialInterface* material, FVector offset) {
 
-	if (projectileShootedThroughCreatureCacheIndex >= projectilesShootedThroughCreature.Num()) {
-		UE_LOG(LogTemp, Warning, TEXT("no cached projectile elements in creature"));
+	if (projectileShootedThroughMeCacheIndex >= projectilesShootedThroughMe.Num()) {
+		UE_LOG(LogTemp, Warning, TEXT("no cached projectile elements in me"));
 	}
 
-	UStaticMeshComponent* cachedShootedProjectile = projectilesShootedThroughCreature[projectileShootedThroughCreatureCacheIndex];
+	UStaticMeshComponent* cachedShootedProjectile = projectilesShootedThroughMe[projectileShootedThroughMeCacheIndex];
 	cachedShootedProjectile->RegisterComponent();
 	cachedShootedProjectile->SetStaticMesh(mesh);
 	cachedShootedProjectile->AttachToComponent(GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
@@ -142,11 +142,11 @@ void ACreature::SetupProjectile(FRotator rotator, FVector scale, UStaticMesh* me
 	FName NewName = MakeUniqueObjectName(this, UStaticMeshComponent::StaticClass(), TEXT("InnerProjectile"));
 	cachedShootedProjectile->Rename(*NewName.ToString());
 
-	projectileShootedThroughCreatureCacheIndex += 1;
+	projectileShootedThroughMeCacheIndex += 1;
 
-	if (projectileShootedThroughCreatureCacheIndex >= projectilesShootedThroughCreature.Num()) {
+	if (projectileShootedThroughMeCacheIndex >= projectilesShootedThroughMe.Num()) {
 		UStaticMeshComponent* createdComp = NewObject<UStaticMeshComponent>(this);
-		projectilesShootedThroughCreature.Add(createdComp);
+		projectilesShootedThroughMe.Add(createdComp);
 	}
 }
 
