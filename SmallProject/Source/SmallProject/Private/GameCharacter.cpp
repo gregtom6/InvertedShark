@@ -23,7 +23,7 @@
 #include "GameFramework/PlayerController.h"
 #include "Materials/MaterialInterface.h"
 #include <Kismet/KismetMathLibrary.h>
-
+#include "ProjectileCompPositioner.h"
 
 // Sets default values
 AGameCharacter::AGameCharacter(const FObjectInitializer& ObjectInitializer)
@@ -56,6 +56,7 @@ AGameCharacter::AGameCharacter(const FObjectInitializer& ObjectInitializer)
 
 	Spark = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Spark"));
 
+
 	Spark->SetupAttachment(CameraMesh);
 
 	SpringArm->SetupAttachment(CameraMesh);
@@ -81,6 +82,7 @@ AGameCharacter::AGameCharacter(const FObjectInitializer& ObjectInitializer)
 	Camera->Deactivate();
 
 	isHugging = false;
+	ProjectilePositioner = CreateDefaultSubobject<UProjectileCompPositioner>(TEXT("ProjectilePositioner"));
 }
 
 /*
@@ -518,11 +520,6 @@ void AGameCharacter::BeginPlay()
 			rightNoseSneezeNiagara = niagaraComponents[i];
 		}
 	}
-
-	for (int i = 0; i < projectilesShootedThroughMeCacheSize; i++) {
-		UStaticMeshComponent* NewComponent = NewObject<UStaticMeshComponent>(this);
-		projectilesShootedThroughMe.Add(NewComponent);
-	}
 }
 
 void AGameCharacter::SneezeBlinkEnded() {
@@ -561,35 +558,7 @@ void AGameCharacter::Tick(float DeltaTime)
 
 void AGameCharacter::SetupProjectile(FRotator rotator, FVector scale, UStaticMesh* mesh, UMaterialInterface* material, FVector offset) {
 
-	if (projectileShootedThroughMeCacheIndex >= projectilesShootedThroughMe.Num()) {
-		UE_LOG(LogTemp, Warning, TEXT("no cached projectile elements in me"));
-	}
-
-	UStaticMeshComponent* cachedShootedProjectile = projectilesShootedThroughMe[projectileShootedThroughMeCacheIndex];
-	cachedShootedProjectile->RegisterComponent();
-	cachedShootedProjectile->SetStaticMesh(mesh);
-	cachedShootedProjectile->AttachToComponent(GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
-	cachedShootedProjectile->SetRelativeScale3D(scale);
-
-	cachedShootedProjectile->SetWorldLocation(offset);
-
-	cachedShootedProjectile->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-	cachedShootedProjectile->SetCollisionObjectType(ECollisionChannel::ECC_WorldDynamic);
-	cachedShootedProjectile->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Overlap);
-	cachedShootedProjectile->SetCollisionResponseToChannel(ECollisionChannel::ECC_WorldDynamic, ECollisionResponse::ECR_Overlap);
-
-	cachedShootedProjectile->SetRelativeRotation(rotator);
-	cachedShootedProjectile->SetMaterial(0, material);
-
-	FName NewName = MakeUniqueObjectName(this, UStaticMeshComponent::StaticClass(), TEXT("InnerProjectile"));
-	cachedShootedProjectile->Rename(*NewName.ToString());
-
-	projectileShootedThroughMeCacheIndex += 1;
-
-	if (projectileShootedThroughMeCacheIndex >= projectilesShootedThroughMe.Num()) {
-		UStaticMeshComponent* createdComp = NewObject<UStaticMeshComponent>(this);
-		projectilesShootedThroughMe.Add(createdComp);
-	}
+	ProjectilePositioner->SetupProjectile(rotator, scale, mesh, material, offset);
 }
 
 void AGameCharacter::DoAfterGettingHitFromProjectile(FVector direction) {

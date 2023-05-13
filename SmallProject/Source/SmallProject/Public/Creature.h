@@ -16,6 +16,7 @@ class UBoxComponent;
 class UCurveFloat;
 class UMaterialInterface;
 class UCreatureUserWidget;
+class UProjectileCompPositioner;
 
 DECLARE_DELEGATE_OneParam(FBigDeltaDamageHappened, float);
 
@@ -79,11 +80,6 @@ protected:
 
 	int actualTargetIndex = 0;
 
-	int projectileShootedThroughMeCacheIndex;
-
-	UPROPERTY()
-		TArray<UStaticMeshComponent*> projectilesShootedThroughMe;
-
 
 	UFUNCTION()
 		void EnterEvent(class AActor* overlappedActor, class AActor* otherActor);
@@ -137,6 +133,9 @@ protected:
 		UCurveFloat* CurveFloat;
 
 	UPROPERTY(EditAnywhere)
+		UProjectileCompPositioner* projectilePositioner;
+
+	UPROPERTY(EditAnywhere)
 		float movementSpeed;
 
 	UPROPERTY(EditAnywhere)
@@ -153,9 +152,6 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 		float lookAtPlayerBorder;
-
-	UPROPERTY(EditAnywhere)
-		int projectilesShootedThroughMeCacheSize;
 
 public:
 	UPROPERTY(EditAnywhere)

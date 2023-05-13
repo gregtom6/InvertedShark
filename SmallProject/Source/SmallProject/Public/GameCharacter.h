@@ -21,6 +21,7 @@ class USpringArmComponent;
 class UCameraComponent;
 class UInputComponent;
 class ACreature;
+class UProjectileCompPositioner;
 
 DECLARE_DELEGATE(FOnDieHappenedSignature);
 
@@ -112,14 +113,6 @@ private:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
-
-	int projectileShootedThroughMeCacheIndex;
-
-	UPROPERTY()
-		TArray<UStaticMeshComponent*> projectilesShootedThroughMe;
-
-	UPROPERTY(EditAnywhere)
-		int projectilesShootedThroughMeCacheSize;
 
 protected:
 
@@ -266,6 +259,9 @@ protected:
 		UActorSequencePlayer* rightDashPlayer;
 	UPROPERTY()
 		UActorSequencePlayer* wingPlayer;
+
+	UPROPERTY(EditAnywhere)
+		UProjectileCompPositioner* ProjectilePositioner;
 
 	UFUNCTION()
 		bool GetOverlapInfluenceSphere(UStaticMeshComponent* StaticMeshComponent, FVector& Actor1ClosestPoint, FVector& Actor2ClosestPoint);

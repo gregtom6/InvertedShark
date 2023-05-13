@@ -14,6 +14,7 @@
 #include <Sound/SoundCue.h >
 #include <Kismet/KismetMathLibrary.h>
 #include "SniperEnemy.h"
+#include "ProjectileCompPositioner.h"
 
 ACreature::ACreature(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -35,6 +36,8 @@ ACreature::ACreature(const FObjectInitializer& ObjectInitializer)
 	LeftEye->SetupAttachment(WhaleAudioComp);
 	RightEye = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RightEye"));
 	RightEye->SetupAttachment(WhaleAudioComp);
+
+	projectilePositioner = CreateDefaultSubobject<UProjectileCompPositioner>(TEXT("projectilePositioner"));
 }
 
 /*
@@ -81,11 +84,6 @@ void ACreature::BeginPlay()
 
 	SetActorRotation(PlayerRot);
 
-	for (int i = 0; i < projectilesShootedThroughMeCacheSize; i++) {
-		UStaticMeshComponent* NewComponent = NewObject<UStaticMeshComponent>(this);
-		projectilesShootedThroughMe.Add(NewComponent);
-	}
-
 	OnActorBeginOverlap.AddUniqueDynamic(this, &ACreature::EnterEvent);
 	OnActorEndOverlap.AddUniqueDynamic(this, &ACreature::ExitEvent);
 
@@ -119,35 +117,7 @@ void ACreature::StepTargetIndex() {
 
 void ACreature::SetupProjectile(FRotator rotator, FVector scale, UStaticMesh* mesh, UMaterialInterface* material, FVector offset) {
 
-	if (projectileShootedThroughMeCacheIndex >= projectilesShootedThroughMe.Num()) {
-		UE_LOG(LogTemp, Warning, TEXT("no cached projectile elements in me"));
-	}
-
-	UStaticMeshComponent* cachedShootedProjectile = projectilesShootedThroughMe[projectileShootedThroughMeCacheIndex];
-	cachedShootedProjectile->RegisterComponent();
-	cachedShootedProjectile->SetStaticMesh(mesh);
-	cachedShootedProjectile->AttachToComponent(GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
-	cachedShootedProjectile->SetRelativeScale3D(scale);
-
-	cachedShootedProjectile->SetWorldLocation(offset);
-
-	cachedShootedProjectile->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-	cachedShootedProjectile->SetCollisionObjectType(ECollisionChannel::ECC_WorldDynamic);
-	cachedShootedProjectile->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Overlap);
-	cachedShootedProjectile->SetCollisionResponseToChannel(ECollisionChannel::ECC_WorldDynamic, ECollisionResponse::ECR_Overlap);
-
-	cachedShootedProjectile->SetRelativeRotation(rotator);
-	cachedShootedProjectile->SetMaterial(0, material);
-
-	FName NewName = MakeUniqueObjectName(this, UStaticMeshComponent::StaticClass(), TEXT("InnerProjectile"));
-	cachedShootedProjectile->Rename(*NewName.ToString());
-
-	projectileShootedThroughMeCacheIndex += 1;
-
-	if (projectileShootedThroughMeCacheIndex >= projectilesShootedThroughMe.Num()) {
-		UStaticMeshComponent* createdComp = NewObject<UStaticMeshComponent>(this);
-		projectilesShootedThroughMe.Add(createdComp);
-	}
+	projectilePositioner->SetupProjectile(rotator, scale, mesh, material, offset);
 }
 
 void ACreature::DoAfterGettingHitFromProjectile() {
