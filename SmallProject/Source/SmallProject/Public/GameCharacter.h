@@ -285,7 +285,8 @@ public:
 
 	void SetupProjectile(FRotator rotator, FVector scale, UStaticMesh* mesh, UMaterialInterface* material, FVector offset, FVector direction);
 
-	FOnDieHappenedSignature OnDieHappenedDelegate;
+	UPROPERTY()
+		FOnDieHappenedSignature OnDieHappenedDelegate;
 
 	USkeletalMeshComponent* GetSkeletalMeshComponent() const;
 	UStaticMeshComponent* GetStaticMeshComponent() const;
