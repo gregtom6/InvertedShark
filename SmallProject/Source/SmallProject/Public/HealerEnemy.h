@@ -28,22 +28,22 @@ protected:
 	void BodyManagement();
 
 	UFUNCTION()
-		void TriggerEnter(class UPrimitiveComponent* HitComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+		void TriggerEnter(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 	UFUNCTION()
-		void TriggerExit(class UPrimitiveComponent* HitComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+		void TriggerExit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
 	UPROPERTY(EditAnywhere)
-		class UMaterialInstanceDynamic* MaterialInstance;
+		UMaterialInstanceDynamic* MaterialInstance;
 
 	UPROPERTY(EditAnywhere)
-		class UMaterialInterface* originalSwallowSphereMaterial;
+		UMaterialInterface* originalSwallowSphereMaterial;
 
 	UPROPERTY(EditAnywhere)
-		class UMaterialInterface* healingSwallowSphereMaterial;
+		UMaterialInterface* healingSwallowSphereMaterial;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		class UAudioComponent* DeflateAudioComp;
+		UAudioComponent* DeflateAudioComp;
 
 	UPROPERTY(EditAnywhere)
 		FVector defaultBodyScale;

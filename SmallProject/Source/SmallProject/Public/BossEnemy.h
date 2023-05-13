@@ -4,8 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "Enemy.h"
-#include "Components/SplineComponent.h"
 #include "BossEnemy.generated.h"
+
+class UUserWidget;
+class UBossUserWidget;
 
 /**
  * 
@@ -24,15 +26,15 @@ protected:
 		TSubclassOf<UUserWidget> widgetclass;
 
 	UPROPERTY(VisibleInstanceOnly)
-		class UBossUserWidget* bossuserwidget;
+		UBossUserWidget* bossuserwidget;
 
 	UPROPERTY(EditAnywhere)
-		class UStaticMeshComponent* bodyMesh;
+		UStaticMeshComponent* bodyMesh;
 
 	UPROPERTY(EditAnywhere)
 		FName levelToLoadAfterDefeat;
 
-	virtual class UStaticMeshComponent* GetCurrentBodyMesh() const override;
+	virtual UStaticMeshComponent* GetCurrentBodyMesh() const override;
 	virtual FVector GetEndPosition() const override;
 	virtual void DoAfterDead() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;

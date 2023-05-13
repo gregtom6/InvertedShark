@@ -6,6 +6,8 @@
 #include "Engine/TriggerBox.h"
 #include "EnemyTriggerBox.generated.h"
 
+class AEnemy;
+
 /**
  * 
  */
@@ -19,13 +21,13 @@ protected:
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 	UPROPERTY(EditAnywhere)
-		TArray<class AEnemy*> enemiesToCome;
+		TArray<AEnemy*> enemiesToCome;
 
 	UPROPERTY(EditAnywhere)
 		float maxMoveTime = 3.f;
 public:
 
 	UFUNCTION()
-		void Event(class AActor* overlappedActor, class AActor* otherActor);
+		void Event(AActor* overlappedActor, AActor* otherActor);
 
 };

@@ -6,6 +6,8 @@
 #include "Blueprint/UserWidget.h"
 #include "DeadUserWidget.generated.h"
 
+class UButton;
+
 /**
  * 
  */
@@ -20,10 +22,10 @@ class SMALLPROJECT_API UDeadUserWidget : public UUserWidget
 protected:
 
 	UPROPERTY(meta = (BindWidget))
-		class UButton* ResurrectButton;
+		UButton* ResurrectButton;
 
 	UPROPERTY(meta = (BindWidget))
-		class UButton* BackToMenuButton;
+		UButton* BackToMenuButton;
 
 	UPROPERTY(EditAnywhere)
 		FName menuLevelToLoad;

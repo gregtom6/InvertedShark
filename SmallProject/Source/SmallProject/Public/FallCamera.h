@@ -6,6 +6,12 @@
 #include "GameFramework/Actor.h"
 #include "FallCamera.generated.h"
 
+class AGameCharacter;
+class UCameraComponent;
+class UStaticMeshComponent;
+class UUserWidget;
+class UDeadUserWidget;
+
 UCLASS()
 class SMALLPROJECT_API AFallCamera : public AActor
 {
@@ -22,22 +28,22 @@ public:
 protected:
 
 	UPROPERTY()
-		class AGameCharacter* gameCharacter;
+		AGameCharacter* gameCharacter;
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 	UPROPERTY(EditAnywhere)
-		class UCameraComponent* Camera;
+		UCameraComponent* Camera;
 
 	UPROPERTY(EditAnywhere)
-		class UStaticMeshComponent* Mesh;
+		UStaticMeshComponent* Mesh;
 
 	UPROPERTY(EditAnywhere)
 		TSubclassOf<UUserWidget> widgetclass;
 
 	UPROPERTY(VisibleInstanceOnly)
-		class UDeadUserWidget* deaduserwidget;
+		UDeadUserWidget* deaduserwidget;
 
 	UPROPERTY(EditAnywhere)
 		float showTime = 3.f;

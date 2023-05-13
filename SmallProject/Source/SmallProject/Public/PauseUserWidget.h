@@ -6,8 +6,11 @@
 #include "Blueprint/UserWidget.h"
 #include "PauseUserWidget.generated.h"
 
+class AGameCharacter;
+class UButton;
+
 /**
- * 
+ *
  */
 UCLASS()
 class SMALLPROJECT_API UPauseUserWidget : public UUserWidget
@@ -15,15 +18,15 @@ class SMALLPROJECT_API UPauseUserWidget : public UUserWidget
 	GENERATED_BODY()
 
 		UPROPERTY()
-			class AGameCharacter* gameChar;
+		AGameCharacter* gameChar;
 protected:
 	virtual void NativeDestruct() override;
 
 	UPROPERTY(meta = (BindWidget))
-		class UButton* ResumeButton;
+		UButton* ResumeButton;
 
 	UPROPERTY(meta = (BindWidget))
-		class UButton* QuitToMainMenuButton;
+		UButton* QuitToMainMenuButton;
 
 	UPROPERTY(EditAnywhere)
 		FName levelToLoad;

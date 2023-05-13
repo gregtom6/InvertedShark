@@ -6,6 +6,9 @@
 #include "Enemy.h"
 #include "SniperEnemy.generated.h"
 
+class AProjectile;
+class AWindZone;
+
 /**
  *
  */
@@ -61,40 +64,40 @@ protected:
 		float levelRemoveTime;
 
 	UPROPERTY(EditAnywhere)
-		class UAudioComponent* loopedMosquitoSound;
+		UAudioComponent* loopedMosquitoSound;
 
 	UPROPERTY(EditAnywhere)
-		class UAudioComponent* weaponOverloadingSound1;
+		UAudioComponent* weaponOverloadingSound1;
 
 	UPROPERTY(EditAnywhere)
-		class UAudioComponent* dyingBeeSound;
+		UAudioComponent* dyingBeeSound;
 
 	UPROPERTY(EditAnywhere)
-		class UNiagaraComponent* dieTornadoNiagara;
+		UNiagaraComponent* dieTornadoNiagara;
 
 	UPROPERTY(EditAnywhere)
-		class UNiagaraComponent* smokeNiagara;
+		UNiagaraComponent* smokeNiagara;
 
 	UPROPERTY(EditAnywhere)
-		class UNiagaraComponent* laserTargetingNiagara1;
+		UNiagaraComponent* laserTargetingNiagara1;
 
 	UPROPERTY(EditAnywhere)
-		class UStaticMeshComponent* ProjectileOrigin;
+		UStaticMeshComponent* ProjectileOrigin;
 
 	UPROPERTY(EditAnywhere)
-		class USkeletalMeshComponent* SkeletalBody;
+		USkeletalMeshComponent* SkeletalBody;
 
 	UPROPERTY(EditAnywhere)
-		class UMaterialInstanceDynamic* SniperMaterialInstance;
+		UMaterialInstanceDynamic* SniperMaterialInstance;
 
 	UPROPERTY(EditAnywhere)
-		class UAnimSequence* weaponLoadingSequence;
+		UAnimSequence* weaponLoadingSequence;
 
 	UPROPERTY(EditAnywhere)
-		class UAnimSequence* weaponShootingSequence;
+		UAnimSequence* weaponShootingSequence;
 
 	UPROPERTY(EditAnywhere)
-		class UAnimSequence* dieStartedSequence;
+		UAnimSequence* dieStartedSequence;
 
 	UPROPERTY(EditAnywhere)
 		FLinearColor targetColor;
@@ -106,9 +109,9 @@ protected:
 		TSubclassOf<AActor> WindzoneClass;
 
 	UPROPERTY()
-		class AProjectile* projectile;
+		AProjectile* projectile;
 	UPROPERTY()
-		class AWindZone* windZone;
+		AWindZone* windZone;
 
 	FLinearColor defaultColor;
 

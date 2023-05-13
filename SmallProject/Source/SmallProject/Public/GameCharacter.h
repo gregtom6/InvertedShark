@@ -4,8 +4,23 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
-#include "PauseUserWidget.h"
 #include "GameCharacter.generated.h"
+
+class UStaticMeshComponent;
+class USkeletalMeshComponent;
+class UStaticMesh;
+class UMaterialInterface;
+class UActorSequencePlayer;
+class UPauseUserWidget;
+class UNiagaraComponent;
+class UAudioComponent;
+class UPhysicsConstraintComponent;
+class UGameCharacterUserWidget;
+class UUserWidget;
+class USpringArmComponent;
+class UCameraComponent;
+class UInputComponent;
+class ACreature;
 
 DECLARE_DELEGATE(FOnDieHappenedSignature);
 
@@ -64,9 +79,9 @@ private:
 	bool isHugging;
 
 	UPROPERTY()
-		class ACreature* creature;
+		ACreature* creature;
 	UPROPERTY()
-		class AActor* bossEnemy;
+		AActor* bossEnemy;
 
 	GameCharacterStatus actualStatus;
 	GameCharacterStatus prevStatus;
@@ -96,31 +111,31 @@ private:
 	virtual void Tick(float DeltaTime) override;
 
 	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 
 protected:
 
 	//main pawn camera
 	UPROPERTY(EditAnywhere)
-		class UCameraComponent* Camera;
+		UCameraComponent* Camera;
 
 	UPROPERTY(EditAnywhere)
-		class UStaticMeshComponent* CameraMesh;
+		UStaticMeshComponent* CameraMesh;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		class UStaticMeshComponent* Tongue;
+		UStaticMeshComponent* Tongue;
 
 	UPROPERTY(EditAnywhere)
-		class USpringArmComponent* SpringArm;
+		USpringArmComponent* SpringArm;
 
 	UPROPERTY(EditAnywhere)
 		TSubclassOf<UUserWidget> widgetclass;
 
 	UPROPERTY(VisibleInstanceOnly)
-		class UGameCharacterUserWidget* energyuserwidget;
+		UGameCharacterUserWidget* energyuserwidget;
 
 	UPROPERTY(EditAnywhere)
-		class UNiagaraComponent* Spark;
+		UNiagaraComponent* Spark;
 
 	UPROPERTY(EditAnywhere, Category = "character settings")
 		float MovementSpeed = 1.f;
@@ -195,57 +210,57 @@ protected:
 		float timeOfTimeRestore;
 
 	UPROPERTY(EditAnywhere)
-		class USkeletalMeshComponent* skeletal;
+		USkeletalMeshComponent* skeletal;
 
 	UPROPERTY(EditAnywhere)
-		class UStaticMeshComponent* leftHandVisual;
+		UStaticMeshComponent* leftHandVisual;
 
 	UPROPERTY(EditAnywhere)
-		class UStaticMeshComponent* rightHandVisual;
+		UStaticMeshComponent* rightHandVisual;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		class UPhysicsConstraintComponent* LeftLeft;
+		UPhysicsConstraintComponent* LeftLeft;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		class UPhysicsConstraintComponent* RightArm;
+		UPhysicsConstraintComponent* RightArm;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		class UAudioComponent* AudioComp;
+		UAudioComponent* AudioComp;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		class UAudioComponent* TongueAudio;
+		UAudioComponent* TongueAudio;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		class UAudioComponent* MetalScratchAudio;
+		UAudioComponent* MetalScratchAudio;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		class UAudioComponent* DashAudio;
+		UAudioComponent* DashAudio;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		class UAudioComponent* SneezeAudio;
+		UAudioComponent* SneezeAudio;
 
 	UPROPERTY(EditAnywhere)
 		TSubclassOf<UPauseUserWidget> widgetPauseMenu;
 
 	UPROPERTY()
-		class UNiagaraComponent* leftNoseSneezeNiagara;
+		UNiagaraComponent* leftNoseSneezeNiagara;
 	UPROPERTY()
-		class UNiagaraComponent* rightNoseSneezeNiagara;
+		UNiagaraComponent* rightNoseSneezeNiagara;
 	UPROPERTY()
-		class UPauseUserWidget* widgetPauseMenuInstance;
+		UPauseUserWidget* widgetPauseMenuInstance;
 	UPROPERTY()
-		class UActorSequencePlayer* loopedEyePlayer;
+		UActorSequencePlayer* loopedEyePlayer;
 	UPROPERTY()
-		class UActorSequencePlayer* sneezeBlinkPlayer;
+		UActorSequencePlayer* sneezeBlinkPlayer;
 	UPROPERTY()
-		class UActorSequencePlayer* leftDashPlayer;
+		UActorSequencePlayer* leftDashPlayer;
 	UPROPERTY()
-		class UActorSequencePlayer* rightDashPlayer;
+		UActorSequencePlayer* rightDashPlayer;
 	UPROPERTY()
-		class UActorSequencePlayer* wingPlayer;
+		UActorSequencePlayer* wingPlayer;
 
 	UFUNCTION()
-		bool GetOverlapInfluenceSphere(class UStaticMeshComponent* StaticMeshComponent, FVector& Actor1ClosestPoint, FVector& Actor2ClosestPoint);
+		bool GetOverlapInfluenceSphere(UStaticMeshComponent* StaticMeshComponent, FVector& Actor1ClosestPoint, FVector& Actor2ClosestPoint);
 
 	UFUNCTION()
 		void SneezeBlinkEnded();
@@ -268,12 +283,12 @@ public:
 
 	void Pause();
 
-	void SetupProjectile(FRotator rotator, FVector scale, class UStaticMesh* mesh, class UMaterialInterface* material, FVector offset, FVector direction);
+	void SetupProjectile(FRotator rotator, FVector scale, UStaticMesh* mesh, UMaterialInterface* material, FVector offset, FVector direction);
 
 	FOnDieHappenedSignature OnDieHappenedDelegate;
 
-	class USkeletalMeshComponent* GetSkeletalMeshComponent() const;
-	class UStaticMeshComponent* GetStaticMeshComponent() const;
+	USkeletalMeshComponent* GetSkeletalMeshComponent() const;
+	UStaticMeshComponent* GetStaticMeshComponent() const;
 
 	void NotifyTargeting(bool iAmTargeted);
 

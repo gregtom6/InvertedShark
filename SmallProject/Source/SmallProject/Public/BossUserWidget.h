@@ -6,6 +6,9 @@
 #include "Blueprint/UserWidget.h"
 #include "BossUserWidget.generated.h"
 
+class UProgressBar;
+class ABossEnemy;
+
 UCLASS()
 class SMALLPROJECT_API UBossUserWidget : public UUserWidget
 {
@@ -16,10 +19,10 @@ protected:
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 
 	UPROPERTY(meta = (BindWidget))
-		class UProgressBar* bosslifebar;
+		UProgressBar* bosslifebar;
 
 	UPROPERTY(meta = (BindWidget))
-		class UProgressBar* bossdeltadecrease;
+		UProgressBar* bossdeltadecrease;
 
 	UPROPERTY(EditAnywhere)
 		float timeUntilDeltaDecreaseStartDisappear;
@@ -32,7 +35,7 @@ protected:
 
 public:
 	UPROPERTY()
-		class ABossEnemy* boss;
+		ABossEnemy* boss;
 };
 
 UENUM()

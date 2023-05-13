@@ -6,6 +6,10 @@
 #include "Blueprint/UserWidget.h"
 #include "MainMenu.generated.h"
 
+class USoundBase;
+class UButton;
+class UWidgetSwitcher;
+
 /**
  *
  */
@@ -14,31 +18,31 @@ class SMALLPROJECT_API UMainMenu : public UUserWidget
 {
 	GENERATED_BODY()
 
-	virtual void NativeConstruct() override; 
+		virtual void NativeConstruct() override;
 	virtual void NativeDestruct() override;
 protected:
 
-	UPROPERTY(EditDefaultsOnly, Category = "Sounds") 
-		class USoundBase* ButtonClickSound;
+	UPROPERTY(EditDefaultsOnly, Category = "Sounds")
+		USoundBase* ButtonClickSound;
 
 	UPROPERTY(meta = (BindWidget))
-		class UButton* StartButton;
+		UButton* StartButton;
 	UPROPERTY(meta = (BindWidget))
-		class UButton* ControlsButton;
+		UButton* ControlsButton;
 	UPROPERTY(meta = (BindWidget))
-		class UButton* QuitButton;
+		UButton* QuitButton;
 
 	UPROPERTY(meta = (BindWidget))
-		class UButton* BackButton;
+		UButton* BackButton;
 
 	UPROPERTY(meta = (BindWidget))
-		class UButton* HowToPlayButton;
+		UButton* HowToPlayButton;
 
 	UPROPERTY(meta = (BindWidget))
-		class UButton* BackToMainMenuButton;
+		UButton* BackToMainMenuButton;
 
 	UPROPERTY(meta = (BindWidget))
-		class UWidgetSwitcher* WidgetSwitcher;
+		UWidgetSwitcher* WidgetSwitcher;
 
 	UPROPERTY(EditAnywhere)
 		FName levelToLoad;

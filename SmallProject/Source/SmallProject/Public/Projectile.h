@@ -6,6 +6,12 @@
 #include "GameFramework/Actor.h"
 #include "Projectile.generated.h"
 
+class UStaticMeshComponent;
+class UNiagaraComponent;
+class UAudioComponent;
+class UMaterialInterface;
+class AGameCharacter;
+
 UCLASS()
 class SMALLPROJECT_API AProjectile : public AActor
 {
@@ -38,19 +44,19 @@ protected:
 		float timeUntilDestroy;
 
 	UPROPERTY(EditAnywhere)
-		class UStaticMeshComponent* staticMesh;
+		UStaticMeshComponent* staticMesh;
 
 	UPROPERTY(EditAnywhere)
-		class UNiagaraComponent* creatureHitBloodNiagara;
+		UNiagaraComponent* creatureHitBloodNiagara;
 
 	UPROPERTY(EditAnywhere)
-		class UAudioComponent* projectileHittedTargetAudioComp;
+		UAudioComponent* projectileHittedTargetAudioComp;
 
 	UPROPERTY(EditAnywhere)
-		class UMaterialInterface* originalMaterial;
+		UMaterialInterface* originalMaterial;
 
 	UPROPERTY(EditAnywhere)
-		class UMaterialInterface* invisibleMaterial;
+		UMaterialInterface* invisibleMaterial;
 
 	ProjectileStatus status;
 
@@ -63,11 +69,11 @@ protected:
 	bool isActivated;
 
 	UPROPERTY()
-		class AActor* targetedActor;
+		AActor* targetedActor;
 	UPROPERTY()
-		class AActor* shooterActor;
+		AActor* shooterActor;
 	UPROPERTY()
-		class AGameCharacter* gameChar;
+		AGameCharacter* gameChar;
 
 	float startTimeForBloodFlow;
 
@@ -77,10 +83,10 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	void SetTarget(class AActor* t, class AActor* origin);
+	void SetTarget(AActor* t, AActor* origin);
 
 	UFUNCTION()
-		void Event(class AActor* overlappedActor, class AActor* otherActor);
+		void Event(AActor* overlappedActor, AActor* otherActor);
 };
 
 UENUM()

@@ -6,6 +6,9 @@
 #include "Blueprint/UserWidget.h"
 #include "CreatureUserWidget.generated.h"
 
+class UProgressBar;
+class ACreature;
+
 UCLASS()
 class SMALLPROJECT_API UCreatureUserWidget : public UUserWidget
 {
@@ -18,12 +21,12 @@ protected:
 	void BigDeltaDamageHappened(float originalLifeBeforeAttack);
 
 	UPROPERTY(meta = (BindWidget))
-		class UProgressBar* HealthBar;
+		UProgressBar* HealthBar;
 	UPROPERTY(meta = (BindWidget))
-		class UProgressBar* IncreaseDeltaBar;
+		UProgressBar* IncreaseDeltaBar;
 
 	UPROPERTY(meta = (BindWidget))
-		class UProgressBar* DecreaseDeltaBar;
+		UProgressBar* DecreaseDeltaBar;
 
 	UPROPERTY(EditAnywhere)
 		float timeUntilDeltaDecreaseStartDisappear;
@@ -38,7 +41,7 @@ protected:
 
 public:
 	UPROPERTY()
-		class ACreature* creature;
+		ACreature* creature;
 
 };
 

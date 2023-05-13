@@ -88,8 +88,6 @@ void AEnemy::SetSpline() {
 	FVector startPoint;
 	FVector endPoint;
 
-	int j = 0;
-
 	for (int i = 0; i < SMeshComps.Num(); i++) {
 		startPoint = splineComponent->GetLocationAtSplinePoint(i, ESplineCoordinateSpace::Local);
 		FVector startTangent = splineComponent->GetTangentAtSplinePoint(i, ESplineCoordinateSpace::Local);
@@ -140,8 +138,8 @@ void AEnemy::StartEating() {
 
 		FVector direction = creature->GetActorLocation() - GetActorLocation();
 		direction.Normalize();
-		double dist = FVector::Distance(creature->GetActorLocation(), GetActorLocation());
-		double oneUnit = dist / (float)countOfInnerPointsInSpline;
+		float dist = FVector::Distance(creature->GetActorLocation(), GetActorLocation());
+		float oneUnit = dist / (float)countOfInnerPointsInSpline;
 		for (int i = 0; i < countOfInnerPointsInSpline; i++) {
 			FVector point = GetActorLocation() + direction * oneUnit * (i + 1);
 			point.Z = point.Z + FMath::FRandRange(-innerSplinePointRangeBorderZ, innerSplinePointRangeBorderZ);

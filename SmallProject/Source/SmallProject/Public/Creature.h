@@ -6,6 +6,17 @@
 #include "GameFramework/Actor.h"
 #include "Creature.generated.h"
 
+class AHealerEnemy;
+class UStaticMeshComponent;
+class UAudioComponent;
+class UUserWidget;
+class USkeletalMeshComponent;
+class UStaticMeshComponent;
+class UBoxComponent;
+class UCurveFloat;
+class UMaterialInterface;
+class UCreatureUserWidget;
+
 DECLARE_DELEGATE_OneParam(FBigDeltaDamageHappened, float);
 
 UCLASS()
@@ -37,7 +48,7 @@ protected:
 	void StateManagement();
 
 	UPROPERTY()
-		class AHealerEnemy* attackingHealer;
+		AHealerEnemy* attackingHealer;
 
 	float actualHealthWhenStartedHealing;
 
@@ -87,16 +98,16 @@ protected:
 		void TriggerExit(class UPrimitiveComponent* HitComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		class UAudioComponent* WhaleAudioComp;
+		UAudioComponent* WhaleAudioComp;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		class UAudioComponent* WhaleCryAudio;
+		UAudioComponent* WhaleCryAudio;
 
 	UPROPERTY(EditAnywhere)
 		TSubclassOf<UUserWidget> widgetclass;
 
 	UPROPERTY(VisibleInstanceOnly)
-		class UCreatureUserWidget* creatureuserwidget;
+		UCreatureUserWidget* creatureuserwidget;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "settings")
 		float deltaDamage;
@@ -108,22 +119,22 @@ protected:
 		float MaxHealth = 120.f;
 
 	UPROPERTY(EditAnywhere)
-		TArray<class AActor*> positionsToMove;
+		TArray<AActor*> positionsToMove;
 
 	UPROPERTY(EditAnywhere)
-		class USkeletalMeshComponent* headMesh;
+		USkeletalMeshComponent* headMesh;
 
 	UPROPERTY(EditAnywhere)
-		class UStaticMeshComponent* LeftEye;
+		UStaticMeshComponent* LeftEye;
 
 	UPROPERTY(EditAnywhere)
-		class UStaticMeshComponent* RightEye;
+		UStaticMeshComponent* RightEye;
 
 	UPROPERTY(EditAnywhere)
-		class UBoxComponent* huggableComp;
+		UBoxComponent* huggableComp;
 
 	UPROPERTY(EditAnywhere)
-		class UCurveFloat* CurveFloat;
+		UCurveFloat* CurveFloat;
 
 	UPROPERTY(EditAnywhere)
 		float movementSpeed;
@@ -148,7 +159,7 @@ protected:
 
 public:
 	UPROPERTY(EditAnywhere)
-		TArray<class AActor*> enemiesActuallyAttacking;
+		TArray<AActor*> enemiesActuallyAttacking;
 
 
 	float GetHealth() const { return Health; }
@@ -160,7 +171,7 @@ public:
 	void HealingStarted();
 	Status GetStatus() const;
 
-	void SetupProjectile(FRotator rotator, FVector scale, class UStaticMesh* mesh, class UMaterialInterface* material, FVector offset);
+	void SetupProjectile(FRotator rotator, FVector scale, UStaticMesh* mesh, UMaterialInterface* material, FVector offset);
 
 	float GetOriginalLifeBeforeAttack() const;
 

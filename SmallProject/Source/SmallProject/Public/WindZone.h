@@ -6,6 +6,8 @@
 #include "Engine/TriggerBox.h"
 #include "WindZone.generated.h"
 
+class AGameCharacter;
+
 UCLASS()
 class SMALLPROJECT_API AWindZone : public ATriggerBox
 {
@@ -32,17 +34,17 @@ protected:
 	bool isActivated;
 
 	UPROPERTY()
-		class AGameCharacter* gameCharacter;
+		AGameCharacter* gameCharacter;
 
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	UFUNCTION()
-		virtual void EnterEvent(class AActor* overlappedActor, class AActor* otherActor);
+		virtual void EnterEvent(AActor* overlappedActor, AActor* otherActor);
 
 	UFUNCTION()
-		virtual void ExitEvent(class AActor* overlappedActor, class AActor* otherActor);
+		virtual void ExitEvent(AActor* overlappedActor, AActor* otherActor);
 
 	void Activate(bool isActive);
 

@@ -6,6 +6,9 @@
 #include "Blueprint/UserWidget.h"
 #include "GameCharacterUserWidget.generated.h"
 
+class UProgressBar;
+class AGameCharacter;
+
 /**
  *
  */
@@ -22,14 +25,14 @@ protected:
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 
 	UPROPERTY(meta = (BindWidget))
-		class UProgressBar* Energybar;
+		UProgressBar* Energybar;
 
 	UPROPERTY(EditAnywhere)
 		float fadeTime;
 
 public:
 	UPROPERTY()
-		class AGameCharacter* player;
+		AGameCharacter* player;
 };
 
 UENUM()

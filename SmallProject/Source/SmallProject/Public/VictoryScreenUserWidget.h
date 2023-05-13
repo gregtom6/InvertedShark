@@ -6,24 +6,27 @@
 #include "Blueprint/UserWidget.h"
 #include "VictoryScreenUserWidget.generated.h"
 
+class USoundBase;
+class UButton;
+
 /**
- * 
+ *
  */
 UCLASS()
 class SMALLPROJECT_API UVictoryScreenUserWidget : public UUserWidget
 {
 	GENERATED_BODY()
-	
+
 private:
 	virtual void NativeConstruct() override;
 	virtual void NativeDestruct() override;
 protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Sounds")
-		class USoundBase* ButtonClickSound;
+		USoundBase* ButtonClickSound;
 
 	UPROPERTY(meta = (BindWidget))
-		class UButton* ReturnToMenuButton;
+		UButton* ReturnToMenuButton;
 
 	UPROPERTY(EditAnywhere)
 		FName levelToLoad;

@@ -6,6 +6,7 @@
 #include <Kismet/GameplayStatics.h>
 #include <Blueprint/WidgetLayoutLibrary.h>
 #include "Creature.h"
+#include "Components/SplineComponent.h"
 
 ABossEnemy::ABossEnemy(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)

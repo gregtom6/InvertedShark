@@ -7,6 +7,14 @@
 #include "Components/SplineMeshComponent.h"
 #include "Enemy.generated.h"
 
+class USplineComponent;
+class USplineMeshComponent;
+class UStaticMeshComponent;
+class AGameCharacter;
+class UNiagaraComponent;
+class ACreature;
+class UAudioComponent;
+
 UCLASS()
 class SMALLPROJECT_API AEnemy : public AActor
 {
@@ -24,7 +32,7 @@ protected:
 	virtual void Tick(float DeltaTime) override;
 	void SetSpline();
 
-	void SetSplineMeshComponent(class USplineMeshComponent* splineMeshComp, FVector startPoint, FVector startTangent, FVector endPoint, FVector endTangent);
+	void SetSplineMeshComponent(USplineMeshComponent* splineMeshComp, FVector startPoint, FVector startTangent, FVector endPoint, FVector endTangent);
 
 
 	void StateManagement();
@@ -43,11 +51,11 @@ protected:
 
 	void DestroySpline();
 
-	void DestroySplineMeshComp(class USplineMeshComponent* splineMeshComp);
+	void DestroySplineMeshComp(USplineMeshComponent* splineMeshComp);
 
-	void SplineMeshCompAttach(class USplineMeshComponent* splineMeshComp);
+	void SplineMeshCompAttach(USplineMeshComponent* splineMeshComp);
 
-	virtual class UStaticMeshComponent* GetCurrentBodyMesh() const;
+	virtual UStaticMeshComponent* GetCurrentBodyMesh() const;
 
 	virtual void DoAfterDead();
 
@@ -59,7 +67,7 @@ protected:
 
 	float originalLifeBeforeAttack;
 
-	class USplineMeshComponent* prevSplineMeshComp;
+	USplineMeshComponent* prevSplineMeshComp;
 
 	float currentTime;
 
@@ -69,11 +77,10 @@ protected:
 
 	bool canPlayerDamageMe = true;
 
-	//TODO: merge them, remove nullptr setting
 	UPROPERTY()
-		class AGameCharacter* overlappingGameCharacter;
+		AGameCharacter* overlappingGameCharacter;
 	UPROPERTY()
-		class AGameCharacter* gameCharacter;
+		AGameCharacter* gameCharacter;
 
 	EnemyStatus actualStatus;
 
@@ -88,65 +95,65 @@ protected:
 
 
 	UPROPERTY(EditAnywhere, Category = "Spline")
-		class USplineComponent* splineComponent;
+		USplineComponent* splineComponent;
 
 
 	UPROPERTY(EditAnywhere, Category = "Spline")
-		TArray<class USplineMeshComponent*> SMeshComps;
+		TArray< USplineMeshComponent*> SMeshComps;
 
 	UPROPERTY(EditAnywhere, Category = "Spline")
-		TArray<class UStaticMeshComponent*> SMeshContainers;
+		TArray< UStaticMeshComponent*> SMeshContainers;
 
 	UPROPERTY(EditAnywhere, Category = "Spline")
-		TArray<class UNiagaraComponent*> SplineNiagaras;
+		TArray< UNiagaraComponent*> SplineNiagaras;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spline")
-		class UStaticMesh* Mesh;
+		UStaticMesh* Mesh;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spline")
-		class UStaticMeshComponent* SwallowSphere;
+		UStaticMeshComponent* SwallowSphere;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spline")
-		class UStaticMeshComponent* Body12;
+		UStaticMeshComponent* Body12;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spline")
 		TEnumAsByte<ESplineMeshAxis::Type> forwardAxis;
 
 	UPROPERTY(EditAnywhere)
-		class UStaticMeshComponent* EyePivot2;
+		UStaticMeshComponent* EyePivot2;
 
 	UPROPERTY(EditAnywhere)
-		class UStaticMeshComponent* LeftEyeWhite2;
+		UStaticMeshComponent* LeftEyeWhite2;
 
 	UPROPERTY(EditAnywhere)
-		class UStaticMeshComponent* LeftEyeBlack2;
+		UStaticMeshComponent* LeftEyeBlack2;
 
 	UPROPERTY(EditAnywhere)
-		class UStaticMeshComponent* LeftEyeLid12;
+		UStaticMeshComponent* LeftEyeLid12;
 
 	UPROPERTY(EditAnywhere)
-		class UStaticMeshComponent* LeftEyeLid22;
+		UStaticMeshComponent* LeftEyeLid22;
 
 	UPROPERTY(EditAnywhere)
-		class UStaticMeshComponent* RightEyeWhite2;
+		UStaticMeshComponent* RightEyeWhite2;
 
 	UPROPERTY(EditAnywhere)
-		class UStaticMeshComponent* RightEyeBlack2;
+		UStaticMeshComponent* RightEyeBlack2;
 
 	UPROPERTY(EditAnywhere)
-		class UStaticMeshComponent* RightEyeLid12;
+		UStaticMeshComponent* RightEyeLid12;
 
 	UPROPERTY(EditAnywhere)
-		class UStaticMeshComponent* RightEyeLid22;
+		UStaticMeshComponent* RightEyeLid22;
 
 	UPROPERTY(EditAnywhere)
-		class ACreature* creature;
+		ACreature* creature;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		class UAudioComponent* PopAudioComp;
+		UAudioComponent* PopAudioComp;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		class UAudioComponent* SlurpAudioComp;
+		UAudioComponent* SlurpAudioComp;
 
 	UPROPERTY(EditAnywhere)
 		float movementSpeed;
@@ -174,10 +181,10 @@ protected:
 
 public:
 	UFUNCTION()
-		virtual void EnterEvent(class AActor* overlappedActor, class AActor* otherActor);
+		virtual void EnterEvent(AActor* overlappedActor, AActor* otherActor);
 
 	UFUNCTION()
-		virtual void ExitEvent(class AActor* overlappedActor, class AActor* otherActor);
+		virtual void ExitEvent(AActor* overlappedActor, AActor* otherActor);
 	// Called every frame
 
 	virtual void MoveToCreature(float timeToStart);
