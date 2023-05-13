@@ -177,8 +177,7 @@ public:
 
 	void OriginalLifeRepresentationEnded();
 
-	UPROPERTY()
-		FBigDeltaDamageHappened bigDeltaDamageHappenedDelegate;
+	FBigDeltaDamageHappened bigDeltaDamageHappenedDelegate;
 };
 
 UENUM()
