@@ -126,7 +126,7 @@ void ACreature::SetupProjectile(FRotator rotator, FVector scale, UStaticMesh* me
 	UStaticMeshComponent* cachedShootedProjectile = projectilesShootedThroughCreature[projectileShootedThroughCreatureCacheIndex];
 	cachedShootedProjectile->RegisterComponent();
 	cachedShootedProjectile->SetStaticMesh(mesh);
-	cachedShootedProjectile->AttachToComponent(WhaleAudioComp, FAttachmentTransformRules::KeepRelativeTransform);
+	cachedShootedProjectile->AttachToComponent(GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
 	cachedShootedProjectile->SetRelativeScale3D(scale);
 
 	cachedShootedProjectile->SetWorldLocation(offset);
@@ -139,13 +139,18 @@ void ACreature::SetupProjectile(FRotator rotator, FVector scale, UStaticMesh* me
 	cachedShootedProjectile->SetRelativeRotation(rotator);
 	cachedShootedProjectile->SetMaterial(0, material);
 
+	FName NewName = MakeUniqueObjectName(this, UStaticMeshComponent::StaticClass(), TEXT("InnerProjectile"));
+	cachedShootedProjectile->Rename(*NewName.ToString());
+
 	projectileShootedThroughCreatureCacheIndex += 1;
 
 	if (projectileShootedThroughCreatureCacheIndex >= projectilesShootedThroughCreature.Num()) {
 		UStaticMeshComponent* createdComp = NewObject<UStaticMeshComponent>(this);
 		projectilesShootedThroughCreature.Add(createdComp);
 	}
+}
 
+void ACreature::DoAfterGettingHitFromProjectile() {
 	originalLifeBeforeAttack = Health;
 	Health = Health > 0 ? Health - damageAfterSting : 0;
 	bigDeltaDamageHappenedDelegate.ExecuteIfBound(originalLifeBeforeAttack);

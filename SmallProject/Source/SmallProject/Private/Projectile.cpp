@@ -159,7 +159,8 @@ void AProjectile::Event(class AActor* overlappedActor, class AActor* otherActor)
 								}
 
  								status = ProjectileStatus::MoveInsideTarget;
- 								gameCharacter->SetupProjectile(sum, staticMesh->GetComponentScale(), staticMesh->GetStaticMesh(), staticMesh->GetMaterial(0), target, direction);
+ 								gameCharacter->SetupProjectile(sum, staticMesh->GetComponentScale(), staticMesh->GetStaticMesh(), staticMesh->GetMaterial(0), target);
+								gameCharacter->DoAfterGettingHitFromProjectile(direction);
 								staticMesh->SetMaterial(0, invisibleMaterial);
 							}
 							else {
@@ -192,6 +193,7 @@ void AProjectile::Event(class AActor* overlappedActor, class AActor* otherActor)
 							projectileHittedTargetAudioComp->Play(0.f);
   							status = ProjectileStatus::MoveInsideTarget;
  							creature->SetupProjectile(sum, staticMesh->GetComponentScale(), staticMesh->GetStaticMesh(), staticMesh->GetMaterial(0), target);
+							creature->DoAfterGettingHitFromProjectile();
 							staticMesh->SetMaterial(0, invisibleMaterial);
 
 						}

@@ -173,6 +173,8 @@ public:
 
 	void SetupProjectile(FRotator rotator, FVector scale, UStaticMesh* mesh, UMaterialInterface* material, FVector offset);
 
+	void DoAfterGettingHitFromProjectile();
+
 	float GetOriginalLifeBeforeAttack() const;
 
 	void OriginalLifeRepresentationEnded();

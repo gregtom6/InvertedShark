@@ -554,39 +554,41 @@ void AGameCharacter::Tick(float DeltaTime)
 	TimeManagement();
 }
 
-void AGameCharacter::SetupProjectile(FRotator rotator, FVector scale, UStaticMesh* mesh, UMaterialInterface* material, FVector offset, FVector direction) {
+void AGameCharacter::SetupProjectile(FRotator rotator, FVector scale, UStaticMesh* mesh, UMaterialInterface* material, FVector offset) {
 
- 	UStaticMeshComponent* NewComponent = NewObject<UStaticMeshComponent>(this);
-	NewComponent->RegisterComponent();
-	NewComponent->SetStaticMesh(mesh);
-	NewComponent->AttachToComponent(CameraMesh, FAttachmentTransformRules::KeepRelativeTransform);
+ 	UStaticMeshComponent* cachedShootedProjectile = NewObject<UStaticMeshComponent>(this);
+	cachedShootedProjectile->RegisterComponent();
+	cachedShootedProjectile->SetStaticMesh(mesh);
+	cachedShootedProjectile->AttachToComponent(GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
 	FVector newScale = scale *1.25f;
 	FVector nScale = newScale*1.25f;
-	NewComponent->SetRelativeScale3D(nScale);
+	cachedShootedProjectile->SetRelativeScale3D(nScale);
 
-	NewComponent->SetWorldLocation(offset);
+	cachedShootedProjectile->SetWorldLocation(offset);
 
-	NewComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-	NewComponent->SetCollisionObjectType(ECollisionChannel::ECC_WorldDynamic);
-	NewComponent->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Overlap);
-	NewComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_WorldDynamic, ECollisionResponse::ECR_Overlap);
+	cachedShootedProjectile->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	cachedShootedProjectile->SetCollisionObjectType(ECollisionChannel::ECC_WorldDynamic);
+	cachedShootedProjectile->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Overlap);
+	cachedShootedProjectile->SetCollisionResponseToChannel(ECollisionChannel::ECC_WorldDynamic, ECollisionResponse::ECR_Overlap);
 
-	NewComponent->SetRelativeRotation(rotator);
-	NewComponent->SetMaterial(0, material);
+	cachedShootedProjectile->SetRelativeRotation(rotator);
+	cachedShootedProjectile->SetMaterial(0, material);
 
 	FName NewName = MakeUniqueObjectName(this, UStaticMeshComponent::StaticClass(), TEXT("InnerProjectile"));
-	NewComponent->Rename(*NewName.ToString());
+	cachedShootedProjectile->Rename(*NewName.ToString());
+}
 
+void AGameCharacter::DoAfterGettingHitFromProjectile(FVector direction) {
 	if (actualStatus == GameCharacterStatus::Dead) { return; }
 
 	SetDieState();
 
 	CameraMesh->SetAllPhysicsLinearVelocity(FVector::ZeroVector);
 
-	CameraMesh->AddImpulse(direction*150.f);
+	CameraMesh->AddImpulse(direction * 150.f);
 	CameraMesh->SetConstraintMode(EDOFMode::Type::SixDOF);
 
-	CameraMesh->AddAngularImpulseInRadians(direction*1000.f);
+	CameraMesh->AddAngularImpulseInRadians(direction * 1000.f);
 }
 
 /*
