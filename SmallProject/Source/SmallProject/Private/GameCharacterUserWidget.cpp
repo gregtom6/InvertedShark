@@ -10,7 +10,7 @@
 void UGameCharacterUserWidget::NativeConstruct() {
 	Super::NativeConstruct();
 
-	fadeStatus = FadeStatus::Invisible;
+	fadeStatus = EFadeStatus::Invisible;
 	Energybar->SetRenderOpacity(0.f);
 }
 
@@ -26,35 +26,35 @@ void UGameCharacterUserWidget::NativeTick(const FGeometry& MyGeometry, float InD
 
 		Energybar->SetPercent(percentage);
 
-		if (fadeStatus == FadeStatus::Visible) {
+		if (fadeStatus == EFadeStatus::Visible) {
 
 			if (percentage >= 1.f) {
-				fadeStatus = FadeStatus::VisibleToInvisible;
+				fadeStatus = EFadeStatus::VisibleToInvisible;
 				fadeStartTime = GetWorld()->GetTimeSeconds();
 			}
 		}
-		else if (fadeStatus == FadeStatus::Invisible) {
+		else if (fadeStatus == EFadeStatus::Invisible) {
 			if (percentage < 1.f) {
-				fadeStatus = FadeStatus::InvisibleToVisible;
+				fadeStatus = EFadeStatus::InvisibleToVisible;
 				fadeStartTime = GetWorld()->GetTimeSeconds();
 			}
 		}
-		else if (fadeStatus == FadeStatus::InvisibleToVisible) {
+		else if (fadeStatus == EFadeStatus::InvisibleToVisible) {
 			float current = GetWorld()->GetTimeSeconds() - fadeStartTime;
 			float fadePercent = current / fadeTime;
 			Energybar->SetRenderOpacity(FMath::Lerp(0.f, 1.f, fadePercent));
 
 			if (fadePercent >= 1.f) {
-				fadeStatus = FadeStatus::Visible;
+				fadeStatus = EFadeStatus::Visible;
 			}
 		}
-		else if (fadeStatus == FadeStatus::VisibleToInvisible) {
+		else if (fadeStatus == EFadeStatus::VisibleToInvisible) {
 			float current = GetWorld()->GetTimeSeconds() - fadeStartTime;
 			float fadePercent = current / fadeTime;
 			Energybar->SetRenderOpacity(FMath::Lerp(1.f, 0.f, fadePercent));
 
 			if (fadePercent >= 1.f) {
-				fadeStatus = FadeStatus::Invisible;
+				fadeStatus = EFadeStatus::Invisible;
 			}
 		}
 	}

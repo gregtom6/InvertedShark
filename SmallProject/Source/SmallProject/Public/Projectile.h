@@ -60,7 +60,7 @@ protected:
 	UPROPERTY(EditAnywhere)
 		UMaterialInterface* invisibleMaterial;
 
-	ProjectileStatus status;
+	EProjectileStatus status;
 
 	FVector target;
 
@@ -92,7 +92,7 @@ public:
 };
 
 UENUM()
-enum class ProjectileStatus : uint8
+enum class EProjectileStatus : uint8
 {
 	Initial,
 	FlyToTarget,

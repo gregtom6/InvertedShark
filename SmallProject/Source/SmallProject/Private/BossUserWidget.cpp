@@ -9,7 +9,7 @@ void UBossUserWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	bossLifeStatus = BossLifeStatus::Normal;
+	bossLifeStatus = EBossLifeStatus::Normal;
 
 	bossdeltadecrease->SetPercent(0.f);
 }
@@ -29,21 +29,21 @@ void UBossUserWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 
 	bosslifebar->SetPercent(currentLifePercentage);
 
-	if (bossLifeStatus==BossLifeStatus::Normal && currentLifePercentage != deltaLifePercentage) {
-		bossLifeStatus = BossLifeStatus::WaitUntilDecrease;
+	if (bossLifeStatus==EBossLifeStatus::Normal && currentLifePercentage != deltaLifePercentage) {
+		bossLifeStatus = EBossLifeStatus::WaitUntilDecrease;
 		bossdeltadecrease->SetPercent(deltaLifePercentage);
 		startTime = GetWorld()->GetTimeSeconds();
 	}
 
-	if (bossLifeStatus == BossLifeStatus::WaitUntilDecrease) {
+	if (bossLifeStatus == EBossLifeStatus::WaitUntilDecrease) {
 		float currentTime = GetWorld()->GetTimeSeconds() - startTime;
 
 		if (currentTime >= timeUntilDeltaDecreaseStartDisappear) {
-			bossLifeStatus = BossLifeStatus::Decrease;
+			bossLifeStatus = EBossLifeStatus::Decrease;
 			startTime= GetWorld()->GetTimeSeconds();
 		}
 	}
-	else if (bossLifeStatus == BossLifeStatus::Decrease) {
+	else if (bossLifeStatus == EBossLifeStatus::Decrease) {
 		float currentTime = GetWorld()->GetTimeSeconds() - startTime;
 
 		currentTime /= timeForDisappear;
@@ -51,7 +51,7 @@ void UBossUserWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
  		bossdeltadecrease->SetPercent(FMath::Lerp(deltaLifePercentage, currentLifePercentage,currentTime));
 
 		if (currentTime >= timeForDisappear) {
-			bossLifeStatus = BossLifeStatus::Normal;
+			bossLifeStatus = EBossLifeStatus::Normal;
 			bossdeltadecrease->SetPercent(currentLifePercentage);
 			boss->OriginalLifeRepresentationEnded();
 		}

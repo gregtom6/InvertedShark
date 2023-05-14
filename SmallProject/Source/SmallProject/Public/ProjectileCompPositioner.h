@@ -26,13 +26,13 @@ protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
-	int32 projectileShootedThroughMeCacheIndex;
+	int32 projectileShotThroughMeCacheIndex;
 
 	UPROPERTY()
-		TArray<UStaticMeshComponent*> projectilesShootedThroughMe;
+		TArray<UStaticMeshComponent*> projectilesShotThroughMe;
 
 	UPROPERTY(EditAnywhere)
-		int32 projectilesShootedThroughMeCacheSize;
+		int32 projectilesShotThroughMeCacheSize;
 
 public:	
 

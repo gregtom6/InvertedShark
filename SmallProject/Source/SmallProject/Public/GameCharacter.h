@@ -86,12 +86,12 @@ private:
 	UPROPERTY()
 		AActor* bossEnemy;
 
-	GameCharacterStatus actualStatus;
-	GameCharacterStatus prevStatus;
+	EGameCharacterStatus actualStatus;
+	EGameCharacterStatus prevStatus;
 
-	PauseStatus pauseStatus;
+	EPauseStatus pauseStatus;
 
-	SlowDownStatus slowdownStatus;
+	ESlowDownStatus slowdownStatus;
 
 	float startTime;
 
@@ -275,9 +275,9 @@ public:
 	UFUNCTION()
 		void SlowdownTime();
 
-	GameCharacterStatus GetStatus() const;
+	EGameCharacterStatus GetStatus() const;
 
-	GameCharacterStatus GetPrevStatus() const;
+	EGameCharacterStatus GetPrevStatus() const;
 
 	float GetEnergy() const;
 
@@ -308,7 +308,7 @@ public:
 };
 
 UENUM()
-enum class GameCharacterStatus : uint8
+enum class EGameCharacterStatus : uint8
 {
 	Calm,
 	Attack,
@@ -320,14 +320,14 @@ enum class GameCharacterStatus : uint8
 };
 
 UENUM()
-enum class PauseStatus : uint8
+enum class EPauseStatus : uint8
 {
 	Played,
 	Paused,
 };
 
 UENUM()
-enum class SlowDownStatus : uint8 {
+enum class ESlowDownStatus : uint8 {
 	NormalTime,
 	SlowDownTime,
 	StaySlowedDownTime,

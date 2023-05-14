@@ -18,7 +18,7 @@ class SMALLPROJECT_API UGameCharacterUserWidget : public UUserWidget
 	GENERATED_BODY()
 
 private:
-	FadeStatus fadeStatus;
+	EFadeStatus fadeStatus;
 	float fadeStartTime;
 protected:
 	virtual void NativeConstruct() override;
@@ -36,7 +36,7 @@ public:
 };
 
 UENUM()
-enum class FadeStatus : uint8
+enum class EFadeStatus : uint8
 {
 	Visible,
 	Invisible,

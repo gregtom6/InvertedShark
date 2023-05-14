@@ -85,7 +85,7 @@ protected:
 	UPROPERTY()
 		AGameCharacter* gameCharacter;
 
-	EnemyStatus actualStatus;
+	EEnemyStatus actualStatus;
 
 	FVector actualStartPosition;
 
@@ -200,7 +200,7 @@ public:
 };
 
 UENUM()
-enum class EnemyStatus : uint8
+enum class EEnemyStatus : uint8
 {
 	Initial,
 	WaitBeforeMoving,

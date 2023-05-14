@@ -33,7 +33,7 @@ protected:
 
 	float currentTime;
 
-	EnemyTargeting enemyTargeting;
+	EEnemyTargeting enemyTargeting;
 
 	UPROPERTY(EditAnywhere)
 		float distanceFromCreature;
@@ -45,10 +45,10 @@ protected:
 		float shootTime;
 
 	UPROPERTY(EditAnywhere)
-		float targetingPercentageWhenSmokeNeeds;
+		float percentageSmokeAppears;
 
 	UPROPERTY(EditAnywhere)
-		float targetingPercentageWhenAudioNeeds;
+		float percentageAudioAppears;
 
 	UPROPERTY(EditAnywhere)
 		float startWeaponOverloadingSoundPercentage;
@@ -132,7 +132,7 @@ public:
 };
 
 UENUM()
-enum class EnemyTargeting : uint8
+enum class EEnemyTargeting : uint8
 {
 	CreatureTargeting,
 	PlayerTargeting,

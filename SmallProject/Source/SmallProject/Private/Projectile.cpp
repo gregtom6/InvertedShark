@@ -31,7 +31,7 @@ void AProjectile::BeginPlay()
 {
 	Super::BeginPlay();
 
-	status = ProjectileStatus::Initial;
+	status = EProjectileStatus::Initial;
 
 
 	APlayerController* OurPlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
@@ -55,20 +55,20 @@ void AProjectile::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (status == ProjectileStatus::FlyToTarget && target != FVector::Zero()) {
+	if (status == EProjectileStatus::FlyToTarget && target != FVector::Zero()) {
 
 		FVector newLocation = GetActorLocation() + directionVector * speed;
 
 		SetActorLocation(newLocation);
 	}
-	else if (status == ProjectileStatus::MoveInsideTarget && target != FVector::Zero()) {
+	else if (status == EProjectileStatus::MoveInsideTarget && target != FVector::Zero()) {
 
 		FVector newLocation = GetActorLocation() + directionVector * speed;
 
 		float currentDistance = FVector::Distance(target, newLocation);
 
 		if (currentDistance >= distanceToProceedInsideTarget + startDistance) {
-			status = ProjectileStatus::StopMovement;
+			status = EProjectileStatus::StopMovement;
 			startTime = GetWorld()->GetTimeSeconds();
 			staticMesh->SetMaterial(0, invisibleMaterial);
 		}
@@ -76,11 +76,11 @@ void AProjectile::Tick(float DeltaTime)
 			SetActorLocation(newLocation);
 		}
 	}
-	else if (status == ProjectileStatus::StopMovement) {
+	else if (status == EProjectileStatus::StopMovement) {
 		float currentTime = GetWorld()->GetTimeSeconds() - startTime;
 		currentTime /= timeUntilDestroy;
 		if (currentTime >= 1.f) {
-  			status = ProjectileStatus::Initial;
+  			status = EProjectileStatus::Initial;
 			SetActorLocation(shooterActor->GetActorLocation());
 			staticMesh->SetMaterial(0, invisibleMaterial);
 			isActivated = false;
@@ -106,7 +106,7 @@ void AProjectile::TimeManagement() {
 
 void AProjectile::Event(class AActor* overlappedActor, class AActor* otherActor) {
 
-	if (status !=ProjectileStatus::FlyToTarget || !isActivated) { return; }
+	if (status !=EProjectileStatus::FlyToTarget || !isActivated) { return; }
 
 	if (otherActor && otherActor != this) {
 		if (otherActor->IsA(ACreature::StaticClass()) || otherActor->IsA(AGameCharacter::StaticClass())) {
@@ -128,7 +128,7 @@ void AProjectile::Event(class AActor* overlappedActor, class AActor* otherActor)
 
 					AGameCharacter* gameCharacter = Cast<AGameCharacter>(targetedActor);
 
-					if (gameCharacter->GetStatus() == GameCharacterStatus::Dead) { return; }
+					if (gameCharacter->GetStatus() == EGameCharacterStatus::Dead) { return; }
 
 					TArray<UPrimitiveComponent*> OverlappingComponents;
 					staticMesh->GetOverlappingComponents(OverlappingComponents);
@@ -151,7 +151,7 @@ void AProjectile::Event(class AActor* overlappedActor, class AActor* otherActor)
 
 								projectileHittedTargetAudioComp->Play(0.f);
 
- 								status = ProjectileStatus::MoveInsideTarget;
+ 								status = EProjectileStatus::MoveInsideTarget;
 								UStaticMeshComponent* gameCharacterStaticMesh = gameCharacter->GetStaticMeshComponent();
 								FVector compScale = staticMesh->GetComponentScale() * 1.f + (1.f - gameCharacterStaticMesh->GetComponentScale().X);
 								FVector scale = compScale * compScale;
@@ -187,7 +187,7 @@ void AProjectile::Event(class AActor* overlappedActor, class AActor* otherActor)
 
 
 							projectileHittedTargetAudioComp->Play(0.f);
-  							status = ProjectileStatus::MoveInsideTarget;
+  							status = EProjectileStatus::MoveInsideTarget;
  							creature->SetupProjectile(sum, staticMesh->GetComponentScale(), staticMesh->GetStaticMesh(), staticMesh->GetMaterial(0), target);
 							creature->DoAfterGettingHitFromProjectile();
 							staticMesh->SetMaterial(0, invisibleMaterial);
@@ -212,7 +212,7 @@ void AProjectile::SetTarget(AActor* tar, AActor* origin) {
 
 		AGameCharacter* gameCharacter = Cast<AGameCharacter>(tar);
 
-		if (gameCharacter->GetStatus() != GameCharacterStatus::Calm) {
+		if (gameCharacter->GetStatus() != EGameCharacterStatus::Calm) {
 			actorLocation = gameCharacter->GetBackBeforeDashLocation();
 		}
 	}
@@ -226,7 +226,7 @@ void AProjectile::SetTarget(AActor* tar, AActor* origin) {
 	FRotator targetRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), target);
 	SetActorRotation(targetRotation);
 
-	status = ProjectileStatus::FlyToTarget;
+	status = EProjectileStatus::FlyToTarget;
 
 	directionVector = target - GetActorLocation();
 	directionVector.Normalize();

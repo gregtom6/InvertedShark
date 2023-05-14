@@ -61,11 +61,11 @@ protected:
 	FRotator startActorRotation;
 	FRotator targetActorRotation;
 
-	HeadState prevHeadState;
-	HeadState headState;
+	EHeadState prevHeadState;
+	EHeadState headState;
 	float headRotationStartTime;
 
-	Status actualStatus;
+	EStatus actualStatus;
 
 	FVector actualStartPosition;
 	FVector actualEndPosition;
@@ -167,7 +167,7 @@ public:
 	bool IsCharacterInFur() const;
 	void GetHugged();
 	void HealingStarted();
-	Status GetStatus() const;
+	EStatus GetStatus() const;
 
 	void SetupProjectile(FRotator rotator, FVector scale, UStaticMesh* mesh, UMaterialInterface* material, FVector offset);
 
@@ -181,7 +181,7 @@ public:
 };
 
 UENUM()
-enum class Status : uint8
+enum class EStatus : uint8
 {
 	Initial,
 	Stopped,
@@ -195,7 +195,7 @@ enum class Status : uint8
 };
 
 UENUM()
-enum class HeadState : uint8
+enum class EHeadState : uint8
 {
 	ForwardLooking,
 	FollowingPlayer,

@@ -45,7 +45,7 @@ AEnemy::AEnemy(const FObjectInitializer& ObjectInitializer)
 	SwallowSphere = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SwallowSphere"));
 	SwallowSphere->SetupAttachment(RootComponent);
 
-	actualStatus = EnemyStatus::Initial;
+	actualStatus = EEnemyStatus::Initial;
 
 	Body12 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Body12"));
 	Body12->SetupAttachment(RootComponent);
@@ -116,7 +116,7 @@ void AEnemy::MoveToCreature(float timeToStart) {
 	timeBeforeActualMoving = timeToStart;
 	startTime = GetWorld()->GetTimeSeconds();
 	actualStartPosition = GetActorLocation();
-	actualStatus = EnemyStatus::WaitBeforeMoving;
+	actualStatus = EEnemyStatus::WaitBeforeMoving;
 }
 
 /*
@@ -124,11 +124,11 @@ setting up the Eating state, starting slurp sound. Creating spline between fur c
 */
 void AEnemy::StartEating() {
 
-	if (actualStatus == EnemyStatus::StartEating || actualStatus == EnemyStatus::Eating) { return; }
+	if (actualStatus == EEnemyStatus::StartEating || actualStatus == EEnemyStatus::Eating) { return; }
 
 	startTime = GetWorld()->GetTimeSeconds();
 	actualStartPosition = GetActorLocation();
-	actualStatus = EnemyStatus::StartEating;
+	actualStatus = EEnemyStatus::StartEating;
 
 	FTransform transform = splineComponent->GetTransformAtSplinePoint(1, ESplineCoordinateSpace::World);
 	if (transform.GetLocation() != lastCurveEndPosition) {
@@ -161,7 +161,7 @@ void AEnemy::StartEating() {
 }
 
 void AEnemy::StartActualEating() {
-	actualStatus = EnemyStatus::Eating;
+	actualStatus = EEnemyStatus::Eating;
 
 	SlurpAudioComp->Play(FMath::FRandRange(0.f, 3.f));
 }
@@ -240,12 +240,12 @@ Removes widgets from viewport.
 */
 void AEnemy::StateManagement() {
 
-	if (actualStatus == EnemyStatus::WaitBeforeMoving && creature != nullptr) {
+	if (actualStatus == EEnemyStatus::WaitBeforeMoving && creature != nullptr) {
 
 		currentTime = GetWorld()->GetTimeSeconds() - startTime;
 		if (currentTime >= timeBeforeActualMoving) {
 			startTime = GetWorld()->GetTimeSeconds();
-			actualStatus = EnemyStatus::Moving;
+			actualStatus = EEnemyStatus::Moving;
 
 			if (EyePivot2 != nullptr) {
 				FVector Direction = creature->GetActorLocation() - EyePivot2->GetComponentLocation();
@@ -259,7 +259,7 @@ void AEnemy::StateManagement() {
 
 	}
 
-	else if (actualStatus == EnemyStatus::Moving && creature != nullptr) {
+	else if (actualStatus == EEnemyStatus::Moving && creature != nullptr) {
 		currentTime = GetWorld()->GetTimeSeconds() - startTime;
 
 		currentTime *= movementSpeed;
@@ -274,7 +274,7 @@ void AEnemy::StateManagement() {
 		SetActorLocation(FMath::Lerp(actualStartPosition, actualEndPosition, currentTime));
 	}
 
-	else if (actualStatus == EnemyStatus::Eating) {
+	else if (actualStatus == EEnemyStatus::Eating) {
 
 		currentTime = GetWorld()->GetTimeSeconds() - startTime;
 		if (currentTime >= 1.f)
@@ -288,7 +288,7 @@ void AEnemy::StateManagement() {
 			SwallowSphere->SetWorldLocation(Position);
 	}
 
-	else if (actualStatus == EnemyStatus::SpecialDying) {
+	else if (actualStatus == EEnemyStatus::SpecialDying) {
 		currentTime = GetWorld()->GetTimeSeconds() - startTime;
 
 		currentTime /= dyingTime;
@@ -322,12 +322,12 @@ manages life decrease when getting attacked by player, for both the enemy and th
 void AEnemy::LifeManagement() {
 	if (overlappingGameCharacter != nullptr) {
 
-		if (overlappingGameCharacter->GetStatus() == GameCharacterStatus::Attack && overlappingGameCharacter->GetPrevStatus() == GameCharacterStatus::Calm) {
+		if (overlappingGameCharacter->GetStatus() == EGameCharacterStatus::Attack && overlappingGameCharacter->GetPrevStatus() == EGameCharacterStatus::Calm) {
 			canPlayerDamageMe = true;
 			overlappingGameCharacter->SetPrevStatusToActualStatus();
 		}
 
-		if (overlappingGameCharacter->GetStatus() == GameCharacterStatus::Attack && canPlayerDamageMe) {
+		if (overlappingGameCharacter->GetStatus() == EGameCharacterStatus::Attack && canPlayerDamageMe) {
 			DecreaseLife();
 			canPlayerDamageMe = false;
 		}
@@ -346,7 +346,7 @@ void AEnemy::TimeManagement() {
 
 void AEnemy::SplineManagement() {
 
-	if (actualStatus != EnemyStatus::StartEating) { return; }
+	if (actualStatus != EEnemyStatus::StartEating) { return; }
 
 	currentTime = GetWorld()->GetTimeSeconds() - startTime;
 
@@ -434,7 +434,7 @@ managing life decrease for both enemy and bossenemy.
 */
 void AEnemy::DecreaseLife() {
 
-	if (actualStatus == EnemyStatus::SpecialDying) { return; }
+	if (actualStatus == EEnemyStatus::SpecialDying) { return; }
 
 	actualLife -= lifeDecreaseAfterAttack;
 
@@ -459,7 +459,7 @@ void AEnemy::RemoveEnemy() {
 	startTime = GetWorld()->GetTimeSeconds();
 	startScale = GetCurrentBodyMesh()->GetComponentScale();
 	endScale = FVector(0.001f, 0.001f, 0.001f);
-	actualStatus = EnemyStatus::SpecialDying;
+	actualStatus = EEnemyStatus::SpecialDying;
 
 	GetCurrentBodyMesh()->SetSimulatePhysics(true);
 

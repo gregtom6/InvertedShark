@@ -33,7 +33,7 @@ protected:
 	UPROPERTY(EditAnywhere)
 		float timeForDisappear;
 
-	BossLifeStatus bossLifeStatus;
+	EBossLifeStatus bossLifeStatus;
 	float startTime;
 
 public:
@@ -42,7 +42,7 @@ public:
 };
 
 UENUM()
-enum class BossLifeStatus : uint8
+enum class EBossLifeStatus : uint8
 {
 	Normal,
 	WaitUntilDecrease,

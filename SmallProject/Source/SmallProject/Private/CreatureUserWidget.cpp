@@ -8,7 +8,7 @@
 void UCreatureUserWidget::NativeConstruct() {
 	Super::NativeConstruct();
 
-	creatureLifeStatus = CreatureLifeStatus::Normal;
+	creatureLifeStatus = ECreatureLifeStatus::Normal;
 
 	IncreaseDeltaBar->SetPercent(0.f);
 
@@ -31,22 +31,22 @@ void UCreatureUserWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaT
 
 	HealthBar->SetPercent(creature->GetHealth() / creature->GetMaxHealth());
 
-	if (creature->GetStatus() == Status::Healing) {
+	if (creature->GetStatus() == EStatus::Healing) {
 		IncreaseDeltaBar->SetPercent(creature->GetDeltaIncreaseHealth());
 	}
 	else if (IncreaseDeltaBar->GetPercent() != 0.f) {
 		IncreaseDeltaBar->SetPercent(0.f);
 	}
 
-	if (creatureLifeStatus == CreatureLifeStatus::WaitUntilDecrease) {
+	if (creatureLifeStatus == ECreatureLifeStatus::WaitUntilDecrease) {
 		float currentTime = GetWorld()->GetTimeSeconds() - startTime;
 
 		if (currentTime >= timeUntilDeltaDecreaseStartDisappear) {
-			creatureLifeStatus = CreatureLifeStatus::Decrease;
+			creatureLifeStatus = ECreatureLifeStatus::Decrease;
 			startTime = GetWorld()->GetTimeSeconds();
 		}
 	}
-	else if (creatureLifeStatus == CreatureLifeStatus::Decrease) {
+	else if (creatureLifeStatus == ECreatureLifeStatus::Decrease) {
 		float currentTime = GetWorld()->GetTimeSeconds() - startTime;
 
 		currentTime /= timeForDisappear;
@@ -54,7 +54,7 @@ void UCreatureUserWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaT
 		DecreaseDeltaBar->SetPercent(FMath::Lerp(deltaLifePercentage, currentLifePercentage, currentTime));
 
 		if (currentTime >= timeForDisappear) {
-			creatureLifeStatus = CreatureLifeStatus::Normal;
+			creatureLifeStatus = ECreatureLifeStatus::Normal;
 			DecreaseDeltaBar->SetPercent(0.f);
 			creature->OriginalLifeRepresentationEnded();
 		}
@@ -62,11 +62,11 @@ void UCreatureUserWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaT
 }
 
 void UCreatureUserWidget::BigDeltaDamageHappened(float originalLifeBeforeAttack) {
-	if (creatureLifeStatus != CreatureLifeStatus::Normal) { return; }
+	if (creatureLifeStatus != ECreatureLifeStatus::Normal) { return; }
 	
 	deltaLifePercentage = originalLifeBeforeAttack / creature->GetMaxHealth();
 
-	creatureLifeStatus = CreatureLifeStatus::WaitUntilDecrease;
+	creatureLifeStatus = ECreatureLifeStatus::WaitUntilDecrease;
 	DecreaseDeltaBar->SetPercent(deltaLifePercentage);
 	startTime = GetWorld()->GetTimeSeconds();
 }

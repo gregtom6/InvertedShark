@@ -17,9 +17,9 @@ void UProjectileCompPositioner::BeginPlay()
 {
 	Super::BeginPlay();
 
-	for (int i = 0; i < projectilesShootedThroughMeCacheSize; i++) {
+	for (int i = 0; i < projectilesShotThroughMeCacheSize; i++) {
 		UStaticMeshComponent* NewComponent = NewObject<UStaticMeshComponent>(GetOwner());
-		projectilesShootedThroughMe.Add(NewComponent);
+		projectilesShotThroughMe.Add(NewComponent);
 	}
 
 }
@@ -27,11 +27,11 @@ void UProjectileCompPositioner::BeginPlay()
 
 void UProjectileCompPositioner::SetupProjectile(FRotator rotator, FVector scale, UStaticMesh* mesh, UMaterialInterface* material, FVector offset) {
 
-	if (projectileShootedThroughMeCacheIndex >= projectilesShootedThroughMe.Num()) {
+	if (projectileShotThroughMeCacheIndex >= projectilesShotThroughMe.Num()) {
 		UE_LOG(LogTemp, Warning, TEXT("no cached projectile elements in me"));
 	}
 
-	UStaticMeshComponent* cachedShootedProjectile = projectilesShootedThroughMe[projectileShootedThroughMeCacheIndex];
+	UStaticMeshComponent* cachedShootedProjectile = projectilesShotThroughMe[projectileShotThroughMeCacheIndex];
 	cachedShootedProjectile->RegisterComponent();
 	cachedShootedProjectile->SetStaticMesh(mesh);
 	cachedShootedProjectile->AttachToComponent(GetOwner()->GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
@@ -50,11 +50,11 @@ void UProjectileCompPositioner::SetupProjectile(FRotator rotator, FVector scale,
 	FName NewName = MakeUniqueObjectName(GetOwner(), UStaticMeshComponent::StaticClass(), TEXT("InnerProjectile"));
 	cachedShootedProjectile->Rename(*NewName.ToString());
 
-	projectileShootedThroughMeCacheIndex += 1;
+	projectileShotThroughMeCacheIndex += 1;
 
-	if (projectileShootedThroughMeCacheIndex >= projectilesShootedThroughMe.Num()) {
+	if (projectileShotThroughMeCacheIndex >= projectilesShotThroughMe.Num()) {
 		UStaticMeshComponent* createdComp = NewObject<UStaticMeshComponent>(GetOwner());
-		projectilesShootedThroughMe.Add(createdComp);
+		projectilesShotThroughMe.Add(createdComp);
 	}
 }
 

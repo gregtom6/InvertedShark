@@ -41,8 +41,8 @@ void AHealerEnemy::TriggerEnter(class UPrimitiveComponent* HitComp, class AActor
 
 	overlappingGameCharacter = Cast<AGameCharacter>(OtherActor);
 
-	if (canHealingStarted && actualStatus != EnemyStatus::Healing && actualStatus != EnemyStatus::SpecialDying && overlappingGameCharacter != nullptr && overlappingGameCharacter->GetStatus() == GameCharacterStatus::DownDash) {
-		actualStatus = EnemyStatus::Healing;
+	if (canHealingStarted && actualStatus != EEnemyStatus::Healing && actualStatus != EEnemyStatus::SpecialDying && overlappingGameCharacter != nullptr && overlappingGameCharacter->GetStatus() == EGameCharacterStatus::DownDash) {
+		actualStatus = EEnemyStatus::Healing;
 		startTime = GetWorld()->GetTimeSeconds();
 		startScale = GetCurrentBodyMesh()->GetRelativeScale3D();
 		endScale = FVector::OneVector;
@@ -70,7 +70,7 @@ void AHealerEnemy::TriggerExit(class UPrimitiveComponent* HitComp, class AActor*
 void AHealerEnemy::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
 
-	if (actualStatus == EnemyStatus::Healing) {
+	if (actualStatus == EEnemyStatus::Healing) {
 
 		HealingSphereManagement();
 
@@ -82,7 +82,7 @@ void AHealerEnemy::Tick(float DeltaTime) {
 
 		if (currentTime >= 1.f) {
 			currentTime = 1.f;
-			actualStatus = EnemyStatus::Eating;
+			actualStatus = EEnemyStatus::Eating;
 			SwallowSphere->SetRelativeScale3D(originalHealingSphereScale);
 			SwallowSphere->SetMaterial(0, originalSwallowSphereMaterial);
 

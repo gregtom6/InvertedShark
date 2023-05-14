@@ -22,8 +22,8 @@ ASniperEnemy::ASniperEnemy(const FObjectInitializer& ObjectInitializer)
 
 	PrimaryActorTick.bCanEverTick = true;
 
-	actualStatus = EnemyStatus::Initial;
-	enemyTargeting = EnemyTargeting::CreatureTargeting;
+	actualStatus = EEnemyStatus::Initial;
+	enemyTargeting = EEnemyTargeting::CreatureTargeting;
 
 	ProjectileOrigin = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ProjectileOrigin"));
 	ProjectileOrigin->SetupAttachment(RootComponent);
@@ -74,12 +74,12 @@ void ASniperEnemy::BeginPlay() {
 void ASniperEnemy::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
 
-	if (actualStatus == EnemyStatus::Moving) {
+	if (actualStatus == EEnemyStatus::Moving) {
 		FRotator targetRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), creature->GetActorLocation());
 		SetActorRotation(targetRotation);
 	}
 
-	else if (actualStatus == EnemyStatus::Targeting) {
+	else if (actualStatus == EEnemyStatus::Targeting) {
 
 		currentTime = GetWorld()->GetTimeSeconds() - startTime;
 
@@ -88,7 +88,7 @@ void ASniperEnemy::Tick(float DeltaTime) {
 		FLinearColor currentColor = FMath::Lerp(defaultColor, targetColor, currentTime);
 		SniperMaterialInstance->SetVectorParameterValue("Color", currentColor);
 
-		if (currentTime >= targetingPercentageWhenSmokeNeeds) {
+		if (currentTime >= percentageSmokeAppears) {
 			smokeNiagara->Activate();
 
 			laserTargetingNiagara1->Activate();
@@ -99,7 +99,7 @@ void ASniperEnemy::Tick(float DeltaTime) {
 			}
 		}
 
-		if (currentTime >= targetingPercentageWhenAudioNeeds && !soundAlreadyStartedPlaying) {
+		if (currentTime >= percentageAudioAppears && !soundAlreadyStartedPlaying) {
 			weaponOverloadingSound1->Play(startWeaponOverloadingSoundPercentage);
 			soundAlreadyStartedPlaying = true;
 		}
@@ -123,26 +123,26 @@ void ASniperEnemy::Tick(float DeltaTime) {
 
 		float relatedDist = distanceBetweenMeAndPlayer / distanceBetweenMeAndCreature;
 		if (relatedDist <= distancePercentageAfterTargetingPlayer) {
-			enemyTargeting = EnemyTargeting::PlayerTargeting;
+			enemyTargeting = EEnemyTargeting::PlayerTargeting;
 			gameCharacter->NotifyTargeting(true);
 			currentTarget = gameCharacter->GetActorLocation();
 		}
 		else {
-			enemyTargeting = EnemyTargeting::CreatureTargeting;
+			enemyTargeting = EEnemyTargeting::CreatureTargeting;
 			gameCharacter->NotifyTargeting(false);
 			currentTarget = creature->GetActorLocation();
 		}
 
-		if (enemyTargeting == EnemyTargeting::PlayerTargeting) {
+		if (enemyTargeting == EEnemyTargeting::PlayerTargeting) {
 			FRotator targetRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), gameCharacter->GetActorLocation());
 			SetActorRotation(targetRotation);
 		}
-		else if (enemyTargeting == EnemyTargeting::CreatureTargeting) {
+		else if (enemyTargeting == EEnemyTargeting::CreatureTargeting) {
 			FRotator targetRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), creature->GetActorLocation());
 			SetActorRotation(targetRotation);
 		}
 	}
-	else if (actualStatus == EnemyStatus::SniperDying) {
+	else if (actualStatus == EEnemyStatus::SniperDying) {
 		currentTime = GetWorld()->GetTimeSeconds() - startTime;
 
 		currentTime /= dieRotatingTime;
@@ -175,12 +175,12 @@ void ASniperEnemy::Tick(float DeltaTime) {
 
 			dieTornadoNiagara->Deactivate();
 
-			actualStatus = EnemyStatus::SniperDead;
+			actualStatus = EEnemyStatus::SniperDead;
 
 			startTime = GetWorld()->GetTimeSeconds();
 		}
 	}
-	else if (actualStatus == EnemyStatus::SniperDead) {
+	else if (actualStatus == EEnemyStatus::SniperDead) {
 		currentTime = GetWorld()->GetTimeSeconds() - startTime;
 
 		currentTime /= levelRemoveTime;
@@ -228,9 +228,9 @@ void ASniperEnemy::CreateProjectile() {
 
 	laserTargetingNiagara1->Deactivate();
 
-	if (enemyTargeting == EnemyTargeting::CreatureTargeting)
+	if (enemyTargeting == EEnemyTargeting::CreatureTargeting)
 		projectile->SetTarget(creature, this);
-	else if (enemyTargeting == EnemyTargeting::PlayerTargeting) {
+	else if (enemyTargeting == EEnemyTargeting::PlayerTargeting) {
 		projectile->SetTarget(gameCharacter, this);
 	}
 }
@@ -249,14 +249,14 @@ void ASniperEnemy::MovingToCreatureEnded() {
 
 void ASniperEnemy::TargetingCreature() {
 	startTime = GetWorld()->GetTimeSeconds();
-	actualStatus = EnemyStatus::Targeting;
+	actualStatus = EEnemyStatus::Targeting;
 
 	loopedMosquitoSound->Play();
 }
 
 void ASniperEnemy::RemoveEnemy() {
 
-	actualStatus = EnemyStatus::SniperDying;
+	actualStatus = EEnemyStatus::SniperDying;
 
 	startTime = GetWorld()->GetTimeSeconds();
 

@@ -36,7 +36,7 @@ protected:
 	UPROPERTY(EditAnywhere)
 		float timeForDisappear;
 
-	CreatureLifeStatus creatureLifeStatus;
+	ECreatureLifeStatus creatureLifeStatus;
 	float startTime;
 
 	float deltaLifePercentage;
@@ -49,7 +49,7 @@ public:
 
 
 UENUM()
-enum class CreatureLifeStatus : uint8
+enum class ECreatureLifeStatus : uint8
 {
 	Normal,
 	WaitUntilDecrease,

@@ -90,7 +90,7 @@ left right rotations of game character
 */
 void AGameCharacter::RotateLR(float rotateDelta) {
 
-	if (isHugging || actualStatus == GameCharacterStatus::Dead) { return; }
+	if (isHugging || actualStatus == EGameCharacterStatus::Dead) { return; }
 
 	FRotator actualRotation = GetActorRotation();
 	actualRotation.Yaw += rotateDelta * RotateSpeed;
@@ -103,7 +103,7 @@ wing beat movement of game character
 */
 void AGameCharacter::WingBeat() {
 
-	if (isHugging || actualStatus == GameCharacterStatus::Dead || actualStatus == GameCharacterStatus::UpDash) { return; }
+	if (isHugging || actualStatus == EGameCharacterStatus::Dead || actualStatus == EGameCharacterStatus::UpDash) { return; }
 
 	if (actualEnergy < energyDecreaseAfterWingBeat) { return; }
 
@@ -205,14 +205,14 @@ attack ability
 */
 void AGameCharacter::Attack() {
 
-	if (actualStatus == GameCharacterStatus::Attack || isHugging || actualStatus == GameCharacterStatus::Dead || actualStatus == GameCharacterStatus::UpDash) { return; }
+	if (actualStatus == EGameCharacterStatus::Attack || isHugging || actualStatus == EGameCharacterStatus::Dead || actualStatus == EGameCharacterStatus::UpDash) { return; }
 
 	UE_LOG(LogTemp, Warning, TEXT("attack happened"));
 
 	Tongue->SetVisibility(true);
 	startTime = GetWorld()->GetTimeSeconds();
 	prevStatus = actualStatus;
-	actualStatus = GameCharacterStatus::Attack;
+	actualStatus = EGameCharacterStatus::Attack;
 
 	TongueAudio->Play(0.f);
 }
@@ -221,24 +221,24 @@ void AGameCharacter::Attack() {
 dash ability
 */
 void AGameCharacter::Dash() {
-	if (isHugging || actualStatus == GameCharacterStatus::Dead || actualStatus == GameCharacterStatus::UpDash || actualStatus == GameCharacterStatus::Attack) { return; }
+	if (isHugging || actualStatus == EGameCharacterStatus::Dead || actualStatus == EGameCharacterStatus::UpDash || actualStatus == EGameCharacterStatus::Attack) { return; }
 
 
 	APlayerController* thisCont = GetWorld()->GetFirstPlayerController();
 	if (thisCont->IsInputKeyDown(EKeys::S)) {
-		actualStatus = GameCharacterStatus::DownDash;
+		actualStatus = EGameCharacterStatus::DownDash;
 		DownDash();
 	}
 	else if (thisCont->IsInputKeyDown(EKeys::Q)) {
-		actualStatus = GameCharacterStatus::LeftDash;
+		actualStatus = EGameCharacterStatus::LeftDash;
 		LeftDash();
 	}
 	else if (thisCont->IsInputKeyDown(EKeys::E)) {
-		actualStatus = GameCharacterStatus::RightDash;
+		actualStatus = EGameCharacterStatus::RightDash;
 		RightDash();
 	}
 	else {
-		actualStatus = GameCharacterStatus::UpDash;
+		actualStatus = EGameCharacterStatus::UpDash;
 		UpDash();
 	}
 }
@@ -366,10 +366,10 @@ game can be paused with this function. Managing cursor state and adding or remov
 */
 void AGameCharacter::Pause() {
 
-	if (pauseStatus == PauseStatus::Played) {
+	if (pauseStatus == EPauseStatus::Played) {
 		UE_LOG(LogTemp, Warning, TEXT("pause activate"));
 		UGameplayStatics::SetGamePaused(GetWorld(), true);
-		pauseStatus = PauseStatus::Paused;
+		pauseStatus = EPauseStatus::Paused;
 
 		APlayerController* PC = Cast<APlayerController>(GetController());
 
@@ -391,10 +391,10 @@ void AGameCharacter::Pause() {
 
 		UE_LOG(LogTemp, Warning, TEXT("pause activate4"));
 	}
-	else if (pauseStatus == PauseStatus::Paused) {
+	else if (pauseStatus == EPauseStatus::Paused) {
 		UE_LOG(LogTemp, Warning, TEXT("pause deactivate"));
 		UGameplayStatics::SetGamePaused(GetWorld(), false);
-		pauseStatus = PauseStatus::Played;
+		pauseStatus = EPauseStatus::Played;
 
 		APlayerController* PC = Cast<APlayerController>(GetController());
 
@@ -427,12 +427,12 @@ void AGameCharacter::BeginPlay()
 
 	actualEnergy = maxEnergy;
 
-	actualStatus = GameCharacterStatus::Calm;
-	prevStatus = GameCharacterStatus::Calm;
+	actualStatus = EGameCharacterStatus::Calm;
+	prevStatus = EGameCharacterStatus::Calm;
 
-	pauseStatus = PauseStatus::Played;
+	pauseStatus = EPauseStatus::Played;
 
-	slowdownStatus = SlowDownStatus::NormalTime;
+	slowdownStatus = ESlowDownStatus::NormalTime;
 
 	if (IsValid(widgetclass)) {
 
@@ -562,7 +562,7 @@ void AGameCharacter::SetupProjectile(FRotator rotator, FVector scale, UStaticMes
 }
 
 void AGameCharacter::DoAfterGettingHitFromProjectile(FVector direction) {
-	if (actualStatus == GameCharacterStatus::Dead) { return; }
+	if (actualStatus == EGameCharacterStatus::Dead) { return; }
 
 	SetDieState();
 
@@ -580,7 +580,7 @@ calling delegate, when death happened, setting velocity and state
 void AGameCharacter::DeadManagement() {
 	FVector actorLocation = GetActorLocation();
 
-	if (actualStatus == GameCharacterStatus::Dead) { return; }
+	if (actualStatus == EGameCharacterStatus::Dead) { return; }
 
 	if (actorLocation.Z <= heightToDie) {
 		SetDieState();
@@ -590,7 +590,7 @@ void AGameCharacter::DeadManagement() {
 void AGameCharacter::SetDieState() {
 	CameraMesh->SetAllPhysicsLinearVelocity(FVector::ZeroVector);
 	CameraMesh->SetAllPhysicsAngularVelocityInDegrees(FVector::ZeroVector);
-	actualStatus = GameCharacterStatus::Dead;
+	actualStatus = EGameCharacterStatus::Dead;
 
 	OnDieHappenedDelegate.ExecuteIfBound();
 }
@@ -598,7 +598,7 @@ void AGameCharacter::SetDieState() {
 void AGameCharacter::TimeManagement() {
 	if (!canSlowdownTimeStarted) { return; }
 
-	if (slowdownStatus == SlowDownStatus::SlowDownTime) {
+	if (slowdownStatus == ESlowDownStatus::SlowDownTime) {
 		float currentTime = GetWorld()->GetTimeSeconds() - slowdownStartTime;
 
 		float percentage = currentTime / timeOfSlowDown;
@@ -615,18 +615,18 @@ void AGameCharacter::TimeManagement() {
 		SneezeAudio->SetPitchMultiplier(actualSoundPitchMultiplier);
 
 		if (percentage >= 1.f) {
-			slowdownStatus = SlowDownStatus::StaySlowedDownTime;
+			slowdownStatus = ESlowDownStatus::StaySlowedDownTime;
 			slowdownStartTime = GetWorld()->GetTimeSeconds();
 		}
 	}
-	else if (slowdownStatus == SlowDownStatus::StaySlowedDownTime) {
+	else if (slowdownStatus == ESlowDownStatus::StaySlowedDownTime) {
 		float currentTime = GetWorld()->GetTimeSeconds() - slowdownStartTime;
 		if (currentTime >= timeOfStaySlowedDown) {
-			slowdownStatus = SlowDownStatus::RestoreTime;
+			slowdownStatus = ESlowDownStatus::RestoreTime;
 			slowdownStartTime = GetWorld()->GetTimeSeconds();
 		}
 	}
-	else if (slowdownStatus == SlowDownStatus::RestoreTime) {
+	else if (slowdownStatus == ESlowDownStatus::RestoreTime) {
 		float currentTime = GetWorld()->GetTimeSeconds() - slowdownStartTime;
 
 		float percentage = currentTime / timeOfSlowDown;
@@ -643,7 +643,7 @@ void AGameCharacter::TimeManagement() {
 		SneezeAudio->SetPitchMultiplier(actualSoundPitchMultiplier);
 
 		if (percentage >= 1.f) {
-			slowdownStatus = SlowDownStatus::NormalTime;
+			slowdownStatus = ESlowDownStatus::NormalTime;
 			canSlowdownTimeStarted = false;
 		}
 	}
@@ -653,9 +653,9 @@ void AGameCharacter::TimeManagement() {
 slowing down velocity of player, when it needs
 */
 void AGameCharacter::VelocityManagement(FVector& currentVelocity) {
-	if (actualStatus != GameCharacterStatus::Dead &&
-		actualStatus != GameCharacterStatus::UpDash && actualStatus != GameCharacterStatus::DownDash
-		&& actualStatus != GameCharacterStatus::LeftDash && actualStatus != GameCharacterStatus::RightDash) {
+	if (actualStatus != EGameCharacterStatus::Dead &&
+		actualStatus != EGameCharacterStatus::UpDash && actualStatus != EGameCharacterStatus::DownDash
+		&& actualStatus != EGameCharacterStatus::LeftDash && actualStatus != EGameCharacterStatus::RightDash) {
 
 		FVector clampedVelocity = currentVelocity.GetClampedToMaxSize(velocityLimit);
 		CameraMesh->SetPhysicsLinearVelocity(clampedVelocity);
@@ -668,56 +668,56 @@ calm: when player is just flying around
 dash: when player dashes upwards
 */
 void AGameCharacter::StateManagement() {
-	if (actualStatus == GameCharacterStatus::Attack) {
+	if (actualStatus == EGameCharacterStatus::Attack) {
 
 		float currentTime = GetWorld()->GetTimeSeconds() - startTime;
 
 		if (currentTime >= attackTime) {
 			Tongue->SetVisibility(false);
 			prevStatus = actualStatus;
-			actualStatus = GameCharacterStatus::Calm;
+			actualStatus = EGameCharacterStatus::Calm;
 		}
 	}
 
-	else if (actualStatus == GameCharacterStatus::UpDash) {
+	else if (actualStatus == EGameCharacterStatus::UpDash) {
 
 		float currentTime = GetWorld()->GetTimeSeconds() - startTime;
 
 		if (currentTime >= dashCooldownTime) {
-			actualStatus = GameCharacterStatus::Calm;
+			actualStatus = EGameCharacterStatus::Calm;
 		}
 	}
 
-	else if (actualStatus == GameCharacterStatus::LeftDash) {
+	else if (actualStatus == EGameCharacterStatus::LeftDash) {
 
 		float currentTime = GetWorld()->GetTimeSeconds() - startTime;
 
 		if (currentTime >= dashCooldownTime / 2.f) {
-			actualStatus = GameCharacterStatus::Calm;
+			actualStatus = EGameCharacterStatus::Calm;
 			SpringArm->bInheritYaw = true;
 			FRotator rotator = FRotator::ZeroRotator;
 			SpringArm->SetRelativeRotation(rotator);
 		}
 	}
 
-	else if (actualStatus == GameCharacterStatus::RightDash) {
+	else if (actualStatus == EGameCharacterStatus::RightDash) {
 
 		float currentTime = GetWorld()->GetTimeSeconds() - startTime;
 
 		if (currentTime >= dashCooldownTime / 2.f) {
-			actualStatus = GameCharacterStatus::Calm;
+			actualStatus = EGameCharacterStatus::Calm;
 			SpringArm->bInheritYaw = true;
 			FRotator rotator = FRotator::ZeroRotator;
 			SpringArm->SetRelativeRotation(rotator);
 		}
 	}
 
-	else if (actualStatus == GameCharacterStatus::DownDash) {
+	else if (actualStatus == EGameCharacterStatus::DownDash) {
 
 		float currentTime = GetWorld()->GetTimeSeconds() - startTime;
 
 		if (currentTime >= dashCooldownTime) {
-			actualStatus = GameCharacterStatus::Calm;
+			actualStatus = EGameCharacterStatus::Calm;
 		}
 	}
 }
@@ -857,7 +857,7 @@ void AGameCharacter::SetPrevStatusToActualStatus() {
 void AGameCharacter::SlowdownTime() {
 	canSlowdownTimeStarted = true;
 	slowdownStartTime = GetWorld()->GetTimeSeconds();
-	slowdownStatus = SlowDownStatus::SlowDownTime;
+	slowdownStatus = ESlowDownStatus::SlowDownTime;
 }
 
 
@@ -904,11 +904,11 @@ float AGameCharacter::GetMaxEnergy() const {
 	return maxEnergy;
 }
 
-GameCharacterStatus AGameCharacter::GetStatus() const {
+EGameCharacterStatus AGameCharacter::GetStatus() const {
 	return actualStatus;
 }
 
-GameCharacterStatus AGameCharacter::GetPrevStatus() const {
+EGameCharacterStatus AGameCharacter::GetPrevStatus() const {
 	return prevStatus;
 }
 

@@ -47,7 +47,7 @@ void AFallCamera::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (gameCharacter == nullptr || gameCharacter->GetStatus()!=GameCharacterStatus::Dead) { return; }
+	if (gameCharacter == nullptr || gameCharacter->GetStatus()!=EGameCharacterStatus::Dead) { return; }
 
 	FRotator targetRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), gameCharacter->GetActorLocation());
 

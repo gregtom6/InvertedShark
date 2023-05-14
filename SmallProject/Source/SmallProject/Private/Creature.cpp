@@ -75,10 +75,10 @@ void ACreature::BeginPlay()
 
 	startTime = GetWorld()->GetTimeSeconds();
 
-	actualStatus = Status::Initial;
+	actualStatus = EStatus::Initial;
 
-	prevHeadState = HeadState::ForwardLooking;
-	headState = HeadState::ForwardLooking;
+	prevHeadState = EHeadState::ForwardLooking;
+	headState = EHeadState::ForwardLooking;
 
 	FRotator PlayerRot = UKismetMathLibrary::FindLookAtRotation(this->GetActorLocation(), positionsToMove[0]->GetActorLocation());
 
@@ -160,19 +160,19 @@ RotatingTowardsTarget status: before creature would move to its new location, we
 MovingFast status: the fast travel status of the creature.
 */
 void ACreature::StateManagement() {
-	if (actualStatus == Status::Initial) {
+	if (actualStatus == EStatus::Initial) {
 		float currentTime = GetWorld()->GetTimeSeconds() - startTime;
 		if (currentTime >= waitTimeBeforeFirstMove) {
 			startTime = GetWorld()->GetTimeSeconds();
-			actualStatus = Status::Moving;
+			actualStatus = EStatus::Moving;
 		}
 	}
-	else if (actualStatus == Status::Moving) {
+	else if (actualStatus == EStatus::Moving) {
 		float currentTime = GetWorld()->GetTimeSeconds() - startTime;
 		currentTime *= movementSpeed;
 		if (currentTime > 1.f) {
 
-			actualStatus = Status::Stopped;
+			actualStatus = EStatus::Stopped;
 			currentTime = 1.f;
 		}
 
@@ -182,26 +182,26 @@ void ACreature::StateManagement() {
 
 		SetActorLocation(FMath::Lerp(actualStartPosition, actualEndPosition, currentTime));
 	}
-	else if (actualStatus == Status::WaitBeforeMoveFast) {
+	else if (actualStatus == EStatus::WaitBeforeMoveFast) {
 		float currentTime = GetWorld()->GetTimeSeconds() - startTime;
 
 		if (currentTime > waitingTimeToMoveForwardAfterDefeatingEnemies) {
 			SwitchingToMovingFast();
 		}
 	}
-	else if (actualStatus == Status::WaitAfterHuggedByPlayer) {
+	else if (actualStatus == EStatus::WaitAfterHuggedByPlayer) {
 		float currentTime = GetWorld()->GetTimeSeconds() - startTime;
 
 		if (currentTime > waitTimeAfterHuggedToMoveForward) {
 			SwitchingToMovingFast();
 		}
 	}
-	else if (actualStatus == Status::RotatingTowardsTarget) {
+	else if (actualStatus == EStatus::RotatingTowardsTarget) {
 
 		float currentTime = GetWorld()->GetTimeSeconds() - startTime;
 		if (currentTime > 1.f) {
 
-			actualStatus = Status::MovingFast;
+			actualStatus = EStatus::MovingFast;
 			currentTime = 1.f;
 		}
 
@@ -211,12 +211,12 @@ void ACreature::StateManagement() {
 		SetActorRotation(rotator);
 
 	}
-	else if (actualStatus == Status::MovingFast) {
+	else if (actualStatus == EStatus::MovingFast) {
 		float currentTime = GetWorld()->GetTimeSeconds() - startTime;
 		currentTime *= fastMovementSpeed;
 		if (currentTime > 1.f) {
 
-			actualStatus = Status::Stopped;
+			actualStatus = EStatus::Stopped;
 			currentTime = 1.f;
 		}
 
@@ -245,29 +245,29 @@ void ACreature::HeadStateManagement() {
 
 		if (degree > lookAtPlayerBorder) {
 
-			if (headState == HeadState::ForwardLooking) {
+			if (headState == EHeadState::ForwardLooking) {
 				startHeadRotation = UKismetMathLibrary::FindLookAtRotation(WhaleAudioComp->GetComponentLocation(), headMesh->GetComponentLocation());
 				targetHeadRotation = HeadRot;
 
 				prevHeadState = headState;
-				headState = HeadState::FollowingPlayer;
+				headState = EHeadState::FollowingPlayer;
 				headRotationStartTime = GetWorld()->GetTimeSeconds();
 			}
 		}
 		else {
-			if (headState == HeadState::FollowingPlayer) {
+			if (headState == EHeadState::FollowingPlayer) {
 				startHeadRotation = HeadRot;
 				targetHeadRotation = UKismetMathLibrary::FindLookAtRotation(WhaleAudioComp->GetComponentLocation(), headMesh->GetComponentLocation());
 
 				prevHeadState = headState;
-				headState = HeadState::ForwardLooking;
+				headState = EHeadState::ForwardLooking;
 				headRotationStartTime = GetWorld()->GetTimeSeconds();
 			}
 		}
 	}
 
 	if (prevHeadState == headState) {
-		if (headState == HeadState::FollowingPlayer) {
+		if (headState == EHeadState::FollowingPlayer) {
 			FRotator HeadRot = UKismetMathLibrary::FindLookAtRotation(this->GetActorLocation(), gameCharacter->GetActorLocation());
 
 			headMesh->SetWorldRotation(HeadRot);
@@ -277,7 +277,7 @@ void ACreature::HeadStateManagement() {
 	}
 	else {
 
-		if (headState == HeadState::FollowingPlayer) {
+		if (headState == EHeadState::FollowingPlayer) {
 			targetHeadRotation = UKismetMathLibrary::FindLookAtRotation(this->GetActorLocation(), gameCharacter->GetActorLocation());
 		}
 
@@ -300,11 +300,11 @@ creature health management. Decrease depends on the currently attacking enemy co
 */
 void ACreature::HealthManagement(float DeltaTime) {
 
-	if (actualStatus == Status::UnderAttack) {
+	if (actualStatus == EStatus::UnderAttack) {
 		originalLifeBeforeAttack = Health;
 		Health = Health > 0 ? Health - (deltaDamage * DeltaTime * enemiesActuallyAttacking.Num()) : 0;
 	}
-	else if (actualStatus == Status::Healing && attackingHealer != nullptr) {
+	else if (actualStatus == EStatus::Healing && attackingHealer != nullptr) {
 
 		deltaHeal = MaxHealth * attackingHealer->GetPercentageOfMaxLifeToHealBack();
 
@@ -319,8 +319,8 @@ void ACreature::HealthManagement(float DeltaTime) {
 		Health = Health < MaxHealth ? actualHealthWhenStartedHealing + (deltaHeal * actualTime) : MaxHealth;
 	}
 
-	if (actualStatus == Status::Healing && Health == MaxHealth && enemiesActuallyAttacking.Num() > 0) {
-		actualStatus = Status::UnderAttack;
+	if (actualStatus == EStatus::Healing && Health == MaxHealth && enemiesActuallyAttacking.Num() > 0) {
+		actualStatus = EStatus::UnderAttack;
 	}
 
 	if (Health <= 0) {
@@ -347,7 +347,7 @@ void ACreature::EnterEvent(class AActor* overlappedActor, class AActor* otherAct
 				attackingHealer = Cast<AHealerEnemy>(attackingEnemy);
 			}
 
-			actualStatus = Status::UnderAttack;
+			actualStatus = EStatus::UnderAttack;
 		}
 	}
 }
@@ -362,10 +362,10 @@ void ACreature::ExitEvent(class AActor* overlappedActor, class AActor* otherActo
 			if (enemiesActuallyAttacking.Contains(attackingEnemy))
 				enemiesActuallyAttacking.Remove(attackingEnemy);
 
-			if (actualStatus == Status::UnderAttack && enemiesActuallyAttacking.Num() == 0) {
+			if (actualStatus == EStatus::UnderAttack && enemiesActuallyAttacking.Num() == 0) {
 				WhaleAudioComp->Play(0.f);
 				startTime = GetWorld()->GetTimeSeconds();
-				actualStatus = Status::WaitBeforeMoveFast;
+				actualStatus = EStatus::WaitBeforeMoveFast;
 			}
 
 			if (attackingEnemy->IsA(AHealerEnemy::StaticClass())) {
@@ -409,7 +409,7 @@ void ACreature::TriggerExit(class UPrimitiveComponent* HitComp, class AActor* Ot
 }
 
 void ACreature::HealingStarted() {
-	actualStatus = Status::Healing;
+	actualStatus = EStatus::Healing;
 	startTime = GetWorld()->GetTimeSeconds();
 	actualHealthWhenStartedHealing = Health;
 }
@@ -420,16 +420,16 @@ these methods are for setting values for state changes
 
 void ACreature::GetHugged() {
 
-	if (actualStatus == Status::WaitBeforeMoveFast) {
+	if (actualStatus == EStatus::WaitBeforeMoveFast) {
 		startTime = GetWorld()->GetTimeSeconds();
-		actualStatus = Status::WaitAfterHuggedByPlayer;
+		actualStatus = EStatus::WaitAfterHuggedByPlayer;
 	}
 }
 
 void ACreature::SwitchingToMovingFast() {
 	startTime = GetWorld()->GetTimeSeconds();
 	StepTargetIndex();
-	actualStatus = Status::RotatingTowardsTarget;
+	actualStatus = EStatus::RotatingTowardsTarget;
 
 	startActorRotation = UKismetMathLibrary::FindLookAtRotation(WhaleAudioComp->GetComponentLocation(), headMesh->GetComponentLocation());
 	targetActorRotation = UKismetMathLibrary::FindLookAtRotation(WhaleAudioComp->GetComponentLocation(), actualEndPosition);
@@ -443,6 +443,6 @@ bool ACreature::IsCharacterInFur() const {
 	return isCharInFur;
 }
 
-Status ACreature::GetStatus() const {
+EStatus ACreature::GetStatus() const {
 	return actualStatus;
 }
