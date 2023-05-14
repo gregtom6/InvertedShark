@@ -151,13 +151,6 @@ void AProjectile::Event(class AActor* overlappedActor, class AActor* otherActor)
 
 								projectileHittedTargetAudioComp->Play(0.f);
 
-								const UEnum* EnumPtr = FindObject<UEnum>(ANY_PACKAGE, TEXT("ProjectileStatus"), true);
-								if (EnumPtr)
-								{
-									FString EnumValueString = EnumPtr->GetNameStringByIndex(static_cast<uint8>(status));
-									UE_LOG(LogTemp, Log, TEXT("overlapping enum value: %s"), *EnumValueString);
-								}
-
  								status = ProjectileStatus::MoveInsideTarget;
 								UStaticMeshComponent* gameCharacterStaticMesh = gameCharacter->GetStaticMeshComponent();
 								FVector compScale = staticMesh->GetComponentScale() * 1.f + (1.f - gameCharacterStaticMesh->GetComponentScale().X);
