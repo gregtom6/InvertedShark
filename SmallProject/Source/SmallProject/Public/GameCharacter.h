@@ -25,6 +25,8 @@ class UProjectileCompPositioner;
 
 DECLARE_DELEGATE(FOnDieHappenedSignature);
 
+//this is the player character
+
 UCLASS()
 class SMALLPROJECT_API AGameCharacter : public APawn
 {

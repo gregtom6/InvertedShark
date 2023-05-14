@@ -9,6 +9,8 @@
 class UProgressBar;
 class ACreature;
 
+//shows the life of the Creature, which player needs to defend constantly
+
 UCLASS()
 class SMALLPROJECT_API UCreatureUserWidget : public UUserWidget
 {

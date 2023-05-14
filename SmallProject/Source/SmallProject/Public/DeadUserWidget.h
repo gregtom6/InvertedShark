@@ -9,7 +9,7 @@
 class UButton;
 
 /**
- * 
+ * game over screen, shown, when player either falls down or dies from an enemy
  */
 UCLASS()
 class SMALLPROJECT_API UDeadUserWidget : public UUserWidget

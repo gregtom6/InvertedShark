@@ -10,7 +10,9 @@ class UUserWidget;
 class UBossUserWidget;
 
 /**
- * 
+ * special type of Enemy
+ * has unique visuals, has a different path towards creature
+ * his life is also shown
  */
 UCLASS()
 class SMALLPROJECT_API ABossEnemy : public AEnemy

@@ -11,7 +11,7 @@ class UButton;
 class UWidgetSwitcher;
 
 /**
- *
+ * the main menu of the game
  */
 UCLASS()
 class SMALLPROJECT_API UMainMenu : public UUserWidget

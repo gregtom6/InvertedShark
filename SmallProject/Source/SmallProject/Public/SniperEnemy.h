@@ -10,7 +10,9 @@ class AProjectile;
 class AWindZone;
 
 /**
- *
+ * Sniper enemy type. Shoots Creature from distance and shoots
+ * player, if player is close enough. 
+ * Creates WindZone, when being defeated. (player can go back with that)
  */
 UCLASS()
 class SMALLPROJECT_API ASniperEnemy : public AEnemy

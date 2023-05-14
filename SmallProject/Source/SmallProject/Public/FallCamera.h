@@ -12,6 +12,8 @@ class UStaticMeshComponent;
 class UUserWidget;
 class UDeadUserWidget;
 
+//this is the death camera, used to follow player while it dies
+
 UCLASS()
 class SMALLPROJECT_API AFallCamera : public AActor
 {

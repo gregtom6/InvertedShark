@@ -10,7 +10,7 @@ class UProgressBar;
 class AGameCharacter;
 
 /**
- *
+ * shows only the current energy level of the player character
  */
 UCLASS()
 class SMALLPROJECT_API UGameCharacterUserWidget : public UUserWidget

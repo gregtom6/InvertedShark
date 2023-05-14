@@ -10,7 +10,7 @@ class USoundBase;
 class UButton;
 
 /**
- *
+ * this screen appears, when player defeats the boss in the end of the game
  */
 UCLASS()
 class SMALLPROJECT_API UVictoryScreenUserWidget : public UUserWidget

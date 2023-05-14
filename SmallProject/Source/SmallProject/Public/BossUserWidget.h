@@ -9,6 +9,9 @@
 class UProgressBar;
 class ABossEnemy;
 
+//shows the life of the boss enemy
+//only appears, when player (and creature) reaches the last area
+
 UCLASS()
 class SMALLPROJECT_API UBossUserWidget : public UUserWidget
 {

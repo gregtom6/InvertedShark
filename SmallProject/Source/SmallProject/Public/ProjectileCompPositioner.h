@@ -10,6 +10,9 @@ class UStaticMeshComponent;
 class UStaticMesh;
 class UMaterialInterface;
 
+//this component is used for positioning the impacted projectile
+//on its target actor. 
+
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class SMALLPROJECT_API UProjectileCompPositioner : public UActorComponent
 {

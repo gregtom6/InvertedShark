@@ -20,6 +20,8 @@ class UProjectileCompPositioner;
 
 DECLARE_DELEGATE_OneParam(FBigDeltaDamageHappened, float);
 
+//player needs to defent this Creature constantly
+
 UCLASS()
 class SMALLPROJECT_API ACreature : public AActor
 {

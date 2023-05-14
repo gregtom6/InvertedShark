@@ -8,6 +8,12 @@
 
 class AGameCharacter;
 
+//created by SniperEnemy, blows wind upwards 
+// 
+//used for blow player upwards after defeating SniperEnemy
+//player can return to the creature, because he will ran out of energy
+//after defeating SniperEnemy
+
 UCLASS()
 class SMALLPROJECT_API AWindZone : public ATriggerBox
 {

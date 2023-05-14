@@ -9,7 +9,8 @@
 class AEnemy;
 
 /**
- * 
+ * when Creature reaches one of these, the enemies assigned to
+ * enemiesToCome will come and attack the Creature
  */
 UCLASS()
 class SMALLPROJECT_API AEnemyTriggerBox : public ATriggerBox

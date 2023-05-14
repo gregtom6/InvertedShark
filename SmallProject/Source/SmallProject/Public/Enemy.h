@@ -15,6 +15,9 @@ class UNiagaraComponent;
 class ACreature;
 class UAudioComponent;
 
+//base class of all enemy types
+//simplest enemies are also these
+
 UCLASS()
 class SMALLPROJECT_API AEnemy : public AActor
 {

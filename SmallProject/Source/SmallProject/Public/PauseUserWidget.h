@@ -10,7 +10,7 @@ class AGameCharacter;
 class UButton;
 
 /**
- *
+ * pause menu of the game
  */
 UCLASS()
 class SMALLPROJECT_API UPauseUserWidget : public UUserWidget

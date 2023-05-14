@@ -7,7 +7,8 @@
 #include "HealerEnemy.generated.h"
 
 /**
- *
+ * healer enemy, which constantly decreases life of Creature
+ * but heals also, when player down dashes on its top
  */
 UCLASS()
 class SMALLPROJECT_API AHealerEnemy : public AEnemy

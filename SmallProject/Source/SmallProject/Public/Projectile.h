@@ -12,6 +12,8 @@ class UAudioComponent;
 class UMaterialInterface;
 class AGameCharacter;
 
+// projectile fired by the SniperEnemy
+
 UCLASS()
 class SMALLPROJECT_API AProjectile : public AActor
 {
