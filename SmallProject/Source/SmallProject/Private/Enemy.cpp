@@ -358,9 +358,7 @@ void AEnemy::SplineManagement() {
 	if (currentTime > globalSettings->FullPercent) {
 		currentTime = globalSettings->FullPercent;
 
-		for (int i = 0; i < SMeshComps.Num(); i++) {
-			SMeshComps[i]->SetRelativeLocation(SMeshComps[i]->GetRelativeLocation() + FVector(0.01f, 0.f, 0.f));
-		}
+		TriggerActorOverlapWithSplines();
 
 		StartActualEating();
 	}
@@ -392,6 +390,13 @@ void AEnemy::SplineManagement() {
 		}
 
 		SplineNiagaras[i]->AttachToComponent(SMeshComps[j], FAttachmentTransformRules::KeepRelativeTransform);
+	}
+}
+
+void AEnemy::TriggerActorOverlapWithSplines() {
+
+	for (int i = 0; i < SMeshComps.Num(); i++) {
+		SMeshComps[i]->SetRelativeLocation(SMeshComps[i]->GetRelativeLocation() + FVector(0.01f, 0.f, 0.f));
 	}
 }
 

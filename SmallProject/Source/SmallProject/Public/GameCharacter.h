@@ -196,7 +196,10 @@ protected:
 		float energyDecreaseAfterDash;
 
 	UPROPERTY(EditAnywhere, Category = "character settings")
-		float dashStrength;
+		float upDownDashStrength;
+
+	UPROPERTY(EditAnywhere, Category = "character settings")
+		float leftRightDashStrength;
 
 	UPROPERTY(EditAnywhere, Category = "character settings")
 		float dashCooldownTime;

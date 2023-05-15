@@ -13,6 +13,10 @@ ABossEnemy::ABossEnemy(const FObjectInitializer& ObjectInitializer)
 {
 	bodyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("bodyMesh"));
 	bodyMesh->SetupAttachment(splineComponent);
+}
+
+void ABossEnemy::BeginPlay() {
+	Super::BeginPlay();
 
 	OnActorBeginOverlap.AddUniqueDynamic(this, &AEnemy::EnterEvent);
 	OnActorEndOverlap.AddUniqueDynamic(this, &AEnemy::ExitEvent);

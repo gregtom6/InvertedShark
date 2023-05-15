@@ -25,7 +25,10 @@ protected:
 		TArray<AEnemy*> enemiesToCome;
 
 	UPROPERTY(EditAnywhere)
-		float maxMoveTime = 3.f;
+		float minMoveTime = 3.f;
+
+	UPROPERTY(EditAnywhere)
+		float maxMoveTime = 5.f;
 public:
 
 	UFUNCTION()

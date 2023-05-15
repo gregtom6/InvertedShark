@@ -39,6 +39,7 @@ protected:
 	virtual UStaticMeshComponent* GetCurrentBodyMesh() const override;
 	virtual FVector GetEndPosition() const override;
 	virtual void DoAfterDead() override;
+	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 public:
 

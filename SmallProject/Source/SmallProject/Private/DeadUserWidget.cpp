@@ -9,7 +9,6 @@ void UDeadUserWidget::NativeConstruct() {
 	Super::NativeConstruct();
 
 	ResurrectButton->OnClicked.AddUniqueDynamic(this, &UDeadUserWidget::OnResurrectClick);
-
 	BackToMenuButton->OnClicked.AddUniqueDynamic(this, &UDeadUserWidget::OnBackToMenuClick);
 }
 

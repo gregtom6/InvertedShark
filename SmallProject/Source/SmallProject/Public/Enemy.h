@@ -51,6 +51,8 @@ protected:
 
 	void SplineManagement();
 
+	void TriggerActorOverlapWithSplines();
+
 	void StartActualEating();
 
 	void DestroySpline();

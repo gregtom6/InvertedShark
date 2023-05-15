@@ -248,7 +248,7 @@ void AGameCharacter::Dash() {
 
 void AGameCharacter::DownDash() {
 
-	FVector actorDownVector = -GetActorUpVector() * dashStrength;
+	FVector actorDownVector = -GetActorUpVector() * upDownDashStrength;
 	FVector impulseDirection = actorDownVector;
 
 	positionBeforeDash = GetActorLocation();
@@ -261,7 +261,7 @@ void AGameCharacter::DownDash() {
 }
 
 void AGameCharacter::LeftDash() {
-	FVector actorUpVector = (GetActorUpVector() + -GetActorRightVector()) * (dashStrength / 2.f);
+	FVector actorUpVector = (GetActorUpVector() + -GetActorRightVector()) * leftRightDashStrength;
 	FVector impulseDirection = actorUpVector;
 
 	positionBeforeDash = GetActorLocation();
@@ -289,7 +289,7 @@ void AGameCharacter::LeftDash() {
 }
 
 void AGameCharacter::RightDash() {
-	FVector actorUpVector = (GetActorUpVector() + GetActorRightVector()) * (dashStrength / 2.f);
+	FVector actorUpVector = (GetActorUpVector() + GetActorRightVector()) * leftRightDashStrength;
 	FVector impulseDirection = actorUpVector;
 
 	positionBeforeDash = GetActorLocation();
@@ -318,7 +318,7 @@ void AGameCharacter::RightDash() {
 
 void AGameCharacter::UpDash() {
 	if (actualEnergy < energyDecreaseAfterDash) { return; }
-	FVector actorUpVector = GetActorUpVector() * dashStrength;
+	FVector actorUpVector = GetActorUpVector() * upDownDashStrength;
 	FVector impulseDirection = actorUpVector;
 
 	positionBeforeDash = GetActorLocation();
