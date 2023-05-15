@@ -31,6 +31,10 @@ protected:
 
 	void TimeManagement();
 
+	void CheckOverlappingComponents(AActor* currentlyTargetedActor, FVector direction, FRotator sum);
+
+	FVector SettingUpScale(AActor* currentTargetedActor);
+
 	UPROPERTY(EditAnywhere)
 		float speed;
 
