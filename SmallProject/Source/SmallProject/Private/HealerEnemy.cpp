@@ -97,15 +97,15 @@ void AHealerEnemy::Tick(float DeltaTime) {
 
 void AHealerEnemy::HealingSphereManagement() {
 	currentTime = GetWorld()->GetTimeSeconds() - startTimeForHealingSphere;
-	currentTime *= 2.f;
-	if (currentTime >= globalSettings->FullPercent) {
+	float fasterCurrentTime = currentTime * 2.f;
+	if (fasterCurrentTime >= globalSettings->FullPercent) {
 		startTimeForHealingSphere = GetWorld()->GetTimeSeconds();
 		SwallowSphere->SetRelativeScale3D(originalHealingSphereScale * 2.f);
 		SwallowSphere->SetMaterial(0, healingSwallowSphereMaterial);
 	}
 
 	float SplineLength = splineComponent->GetSplineLength();
-	float SplineDistance = SplineLength * currentTime;
+	float SplineDistance = SplineLength * fasterCurrentTime;
 	FVector Position = splineComponent->GetLocationAtDistanceAlongSpline(SplineDistance, ESplineCoordinateSpace::World);
 
 	SwallowSphere->SetWorldLocation(Position);

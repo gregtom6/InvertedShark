@@ -39,7 +39,7 @@ void AWindZone::Tick(float DeltaTime)
 
 	UStaticMeshComponent* skeletal = gameCharacter->GetStaticMeshComponent();
 
-	FVector WindDirection = FVector(0.0f, 0.0f, 1.0f) * FMath::RandRange(minWindStrength,maxWindStrength);
+	FVector WindDirection = direction * FMath::RandRange(minWindStrength,maxWindStrength);
  	skeletal->AddImpulse(WindDirection);
 
 	float currentTime = GetWorld()->GetTimeSeconds() - startTime;

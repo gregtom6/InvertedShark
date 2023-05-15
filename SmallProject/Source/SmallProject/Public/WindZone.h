@@ -28,6 +28,9 @@ protected:
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 	UPROPERTY(EditAnywhere)
+		FVector direction;
+
+	UPROPERTY(EditAnywhere)
 		float minWindStrength;
 
 	UPROPERTY(EditAnywhere)
