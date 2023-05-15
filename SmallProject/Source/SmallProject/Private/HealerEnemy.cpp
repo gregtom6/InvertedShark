@@ -8,6 +8,7 @@
 #include <Sound/SoundCue.h>
 #include "Creature.h"
 #include "Materials/MaterialInterface.h"
+#include "ResourceDataAsset.h"
 
 AHealerEnemy::AHealerEnemy(const FObjectInitializer& ObjectInitializer) :Super(ObjectInitializer) {
 	DeflateAudioComp = CreateDefaultSubobject<UAudioComponent>(TEXT("DeflateAudioComp"));
@@ -80,8 +81,8 @@ void AHealerEnemy::Tick(float DeltaTime) {
 
 		currentTime /= timeForHeal;
 
-		if (currentTime >= 1.f) {
-			currentTime = 1.f;
+		if (currentTime >= globalSettings->FullPercent) {
+			currentTime = globalSettings->FullPercent;
 			actualStatus = EEnemyStatus::Eating;
 			SwallowSphere->SetRelativeScale3D(originalHealingSphereScale);
 			SwallowSphere->SetMaterial(0, originalSwallowSphereMaterial);
@@ -97,7 +98,7 @@ void AHealerEnemy::Tick(float DeltaTime) {
 void AHealerEnemy::HealingSphereManagement() {
 	currentTime = GetWorld()->GetTimeSeconds() - startTimeForHealingSphere;
 	currentTime *= 2.f;
-	if (currentTime >= 1.f) {
+	if (currentTime >= globalSettings->FullPercent) {
 		startTimeForHealingSphere = GetWorld()->GetTimeSeconds();
 		SwallowSphere->SetRelativeScale3D(originalHealingSphereScale * 2.f);
 		SwallowSphere->SetMaterial(0, healingSwallowSphereMaterial);

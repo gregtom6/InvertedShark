@@ -11,6 +11,7 @@ class UCameraComponent;
 class UStaticMeshComponent;
 class UUserWidget;
 class UDeadUserWidget;
+class UResourceDataAsset;
 
 //this is the death camera, used to follow player while it dies
 
@@ -46,6 +47,9 @@ protected:
 
 	UPROPERTY(VisibleInstanceOnly)
 		UDeadUserWidget* deaduserwidget;
+
+	UPROPERTY(EditAnywhere)
+		UResourceDataAsset* globalSettings;
 
 	UPROPERTY(EditAnywhere)
 		float showTime = 3.f;

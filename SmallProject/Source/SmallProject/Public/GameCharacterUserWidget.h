@@ -8,6 +8,7 @@
 
 class UProgressBar;
 class AGameCharacter;
+class UResourceDataAsset;
 
 /**
  * shows only the current energy level of the player character
@@ -26,6 +27,9 @@ protected:
 
 	UPROPERTY(meta = (BindWidget))
 		UProgressBar* Energybar;
+
+	UPROPERTY(EditAnywhere)
+		UResourceDataAsset* globalSettings;
 
 	UPROPERTY(EditAnywhere)
 		float fadeTime;

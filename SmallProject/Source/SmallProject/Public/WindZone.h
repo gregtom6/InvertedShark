@@ -7,6 +7,7 @@
 #include "WindZone.generated.h"
 
 class AGameCharacter;
+class UResourceDataAsset;
 
 //created by SniperEnemy, blows wind upwards 
 // 
@@ -34,6 +35,9 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 		float dieTime;
+
+	UPROPERTY(EditAnywhere)
+		UResourceDataAsset* globalSettings;
 
 	float startTime;
 

@@ -17,6 +17,7 @@ class UCurveFloat;
 class UMaterialInterface;
 class UCreatureUserWidget;
 class UProjectileCompPositioner;
+class UResourceDataAsset;
 
 DECLARE_DELEGATE_OneParam(FBigDeltaDamageHappened, float);
 
@@ -136,6 +137,9 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 		UProjectileCompPositioner* projectilePositioner;
+
+	UPROPERTY(EditAnywhere)
+		UResourceDataAsset* globalSettings;
 
 	UPROPERTY(EditAnywhere)
 		float movementSpeed;

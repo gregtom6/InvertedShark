@@ -14,6 +14,7 @@ class AGameCharacter;
 class UNiagaraComponent;
 class ACreature;
 class UAudioComponent;
+class UResourceDataAsset;
 
 //base class of all enemy types
 //simplest enemies are also these
@@ -157,6 +158,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		UAudioComponent* SlurpAudioComp;
+
+	UPROPERTY(EditAnywhere)
+		UResourceDataAsset* globalSettings;
 
 	UPROPERTY(EditAnywhere)
 		float movementSpeed;

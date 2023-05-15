@@ -10,6 +10,7 @@
 #include "GameCharacter.h"
 #include <Sound/SoundCue.h >
 #include "NiagaraComponent.h"
+#include "ResourceDataAsset.h"
 
 AEnemy::AEnemy() {}
 
@@ -77,6 +78,8 @@ AEnemy::AEnemy(const FObjectInitializer& ObjectInitializer)
 	RightEyeBlack2->AttachToComponent(RightEyeWhite2, FAttachmentTransformRules::KeepRelativeTransform);
 	RightEyeLid22->AttachToComponent(RightEyeWhite2, FAttachmentTransformRules::KeepRelativeTransform);
 	RightEyeLid12->AttachToComponent(RightEyeWhite2, FAttachmentTransformRules::KeepRelativeTransform);
+
+	globalSettings = NewObject<UResourceDataAsset>(GetTransientPackage(), FName("globalSettings"));
 }
 
 /*
@@ -266,8 +269,8 @@ void AEnemy::StateManagement() {
 
 		actualEndPosition = GetEndPosition();
 
-		if (currentTime > 1.f) {
-			currentTime = 1.f;
+		if (currentTime > globalSettings->FullPercent) {
+			currentTime = globalSettings->FullPercent;
 			MovingToCreatureEnded();
 		}
 
@@ -277,11 +280,11 @@ void AEnemy::StateManagement() {
 	else if (actualStatus == EEnemyStatus::Eating) {
 
 		currentTime = GetWorld()->GetTimeSeconds() - startTime;
-		if (currentTime >= 1.f)
+		if (currentTime >= globalSettings->FullPercent)
 			startTime = GetWorld()->GetTimeSeconds();
 
 		float SplineLength = splineComponent->GetSplineLength();
-		float SplineDistance = SplineLength * (1.f - currentTime);
+		float SplineDistance = SplineLength * (globalSettings->FullPercent - currentTime);
 		FVector Position = splineComponent->GetLocationAtDistanceAlongSpline(SplineDistance, ESplineCoordinateSpace::World);
 
 		if (SwallowSphere != nullptr)
@@ -293,8 +296,8 @@ void AEnemy::StateManagement() {
 
 		currentTime /= dyingTime;
 
-		if (currentTime >= 1.f)
-			currentTime = 1.f;
+		if (currentTime >= globalSettings->FullPercent)
+			currentTime = globalSettings->FullPercent;
 
 
 		FVector newScale = FMath::Lerp(startScale, endScale, currentTime);
@@ -306,7 +309,7 @@ void AEnemy::StateManagement() {
 		}
 
 
-		if (currentTime >= 1.f) {
+		if (currentTime >= globalSettings->FullPercent) {
 			DoAfterDead();
 		}
 	}
@@ -352,8 +355,8 @@ void AEnemy::SplineManagement() {
 
 	currentTime /= splineGrowTime;
 
-	if (currentTime > 1.f) {
-		currentTime = 1.f;
+	if (currentTime > globalSettings->FullPercent) {
+		currentTime = globalSettings->FullPercent;
 
 		for (int i = 0; i < SMeshComps.Num(); i++) {
 			SMeshComps[i]->SetRelativeLocation(SMeshComps[i]->GetRelativeLocation() + FVector(0.01f, 0.f, 0.f));

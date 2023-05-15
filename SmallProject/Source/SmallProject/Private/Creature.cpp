@@ -15,6 +15,7 @@
 #include <Kismet/KismetMathLibrary.h>
 #include "SniperEnemy.h"
 #include "ProjectileCompPositioner.h"
+#include "ResourceDataAsset.h"
 
 ACreature::ACreature(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -38,6 +39,8 @@ ACreature::ACreature(const FObjectInitializer& ObjectInitializer)
 	RightEye->SetupAttachment(WhaleAudioComp);
 
 	projectilePositioner = CreateDefaultSubobject<UProjectileCompPositioner>(TEXT("projectilePositioner"));
+
+	globalSettings = NewObject<UResourceDataAsset>(GetTransientPackage(), FName("globalSettings"));
 }
 
 /*
@@ -170,10 +173,10 @@ void ACreature::StateManagement() {
 	else if (actualStatus == EStatus::Moving) {
 		float currentTime = GetWorld()->GetTimeSeconds() - startTime;
 		currentTime *= movementSpeed;
-		if (currentTime > 1.f) {
+		if (currentTime > globalSettings->FullPercent) {
 
 			actualStatus = EStatus::Stopped;
-			currentTime = 1.f;
+			currentTime = globalSettings->FullPercent;
 		}
 
 		FRotator PlayerRot = UKismetMathLibrary::FindLookAtRotation(this->GetActorLocation(), actualEndPosition);
@@ -199,10 +202,10 @@ void ACreature::StateManagement() {
 	else if (actualStatus == EStatus::RotatingTowardsTarget) {
 
 		float currentTime = GetWorld()->GetTimeSeconds() - startTime;
-		if (currentTime > 1.f) {
+		if (currentTime > globalSettings->FullPercent) {
 
 			actualStatus = EStatus::MovingFast;
-			currentTime = 1.f;
+			currentTime = globalSettings->FullPercent;
 		}
 
 		FQuat newRot = FQuat::Slerp(startActorRotation.Quaternion(), targetActorRotation.Quaternion(), currentTime);
@@ -214,10 +217,10 @@ void ACreature::StateManagement() {
 	else if (actualStatus == EStatus::MovingFast) {
 		float currentTime = GetWorld()->GetTimeSeconds() - startTime;
 		currentTime *= fastMovementSpeed;
-		if (currentTime > 1.f) {
+		if (currentTime > globalSettings->FullPercent) {
 
 			actualStatus = EStatus::Stopped;
-			currentTime = 1.f;
+			currentTime = globalSettings->FullPercent;
 		}
 
 		SetActorLocation(FMath::Lerp(actualStartPosition, actualEndPosition, CurveFloat->GetFloatValue(currentTime)));
@@ -290,7 +293,7 @@ void ACreature::HeadStateManagement() {
 		LeftEye->SetWorldRotation(rotator);
 		RightEye->SetWorldRotation(rotator);
 
-		if (currentTime >= 1.f) {
+		if (currentTime >= globalSettings->FullPercent) {
 			prevHeadState = headState;
 		}
 	}

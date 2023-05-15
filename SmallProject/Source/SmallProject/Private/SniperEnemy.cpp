@@ -15,6 +15,7 @@
 #include "ActorSequenceComponent.h"
 #include "ActorSequencePlayer.h"
 #include <WindZone.h>
+#include "ResourceDataAsset.h"
 
 
 ASniperEnemy::ASniperEnemy(const FObjectInitializer& ObjectInitializer) 
@@ -104,8 +105,8 @@ void ASniperEnemy::Tick(float DeltaTime) {
 			soundAlreadyStartedPlaying = true;
 		}
 
-		if (currentTime >= 1.f) {
-			currentTime = 1.f;
+		if (currentTime >= globalSettings->FullPercent) {
+			currentTime = globalSettings->FullPercent;
 			startTime = GetWorld()->GetTimeSeconds();
 			CreateProjectile();
 			smokeNiagara->Deactivate();
@@ -153,7 +154,7 @@ void ASniperEnemy::Tick(float DeltaTime) {
 
 		Body12->AddRelativeRotation(rotatorDelta);
 
-		if (currentTime >= 1.f) {
+		if (currentTime >= globalSettings->FullPercent) {
 
 			if (SwallowSphere != nullptr)
 				SwallowSphere->DestroyComponent();
@@ -185,7 +186,7 @@ void ASniperEnemy::Tick(float DeltaTime) {
 
 		currentTime /= levelRemoveTime;
 
-		if (currentTime >= 1.f) {
+		if (currentTime >= globalSettings->FullPercent) {
 			projectile->Destroy();
 			Destroy();
 		}

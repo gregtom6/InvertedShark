@@ -22,6 +22,7 @@ class UCameraComponent;
 class UInputComponent;
 class ACreature;
 class UProjectileCompPositioner;
+class UResourceDataAsset;
 
 DECLARE_DELEGATE(FOnDieHappenedSignature);
 
@@ -264,6 +265,9 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 		UProjectileCompPositioner* ProjectilePositioner;
+
+	UPROPERTY(EditAnywhere)
+		UResourceDataAsset* globalSettings;
 
 	UFUNCTION()
 		bool GetOverlapInfluenceSphere(UStaticMeshComponent* StaticMeshComponent, FVector& Actor1ClosestPoint, FVector& Actor2ClosestPoint);

@@ -3,9 +3,12 @@
 
 #include "WindZone.h"
 #include "GameCharacter.h"
+#include "ResourceDataAsset.h"
 
 AWindZone::AWindZone(const FObjectInitializer& ObjectInitializer) :Super(ObjectInitializer) {
 	PrimaryActorTick.bCanEverTick = true;
+
+	globalSettings = NewObject<UResourceDataAsset>(GetTransientPackage(), FName("globalSettings"));
 }
 
 // Called when the game starts or when spawned
@@ -42,7 +45,7 @@ void AWindZone::Tick(float DeltaTime)
 	float currentTime = GetWorld()->GetTimeSeconds() - startTime;
 	currentTime /= dieTime;
 
-	if (currentTime >= 1.f) {
+	if (currentTime >= globalSettings->FullPercent) {
 		Destroy();
 	}
 }

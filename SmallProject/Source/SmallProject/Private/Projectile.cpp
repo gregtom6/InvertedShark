@@ -10,6 +10,7 @@
 #include "GameCharacter.h"
 #include "Materials/MaterialInterface.h"
 #include <Kismet/GameplayStatics.h>
+#include "ResourceDataAsset.h"
 
 // Sets default values
 AProjectile::AProjectile(const FObjectInitializer& ObjectInitializer) :Super(ObjectInitializer)
@@ -24,6 +25,8 @@ AProjectile::AProjectile(const FObjectInitializer& ObjectInitializer) :Super(Obj
 
 	staticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("staticMesh"));
 	staticMesh->AttachToComponent(projectileHittedTargetAudioComp, FAttachmentTransformRules::KeepRelativeTransform);
+
+	globalSettings = NewObject<UResourceDataAsset>(GetTransientPackage(), FName("globalSettings"));
 }
 
 // Called when the game starts or when spawned
@@ -79,7 +82,7 @@ void AProjectile::Tick(float DeltaTime)
 	else if (status == EProjectileStatus::StopMovement) {
 		float currentTime = GetWorld()->GetTimeSeconds() - startTime;
 		currentTime /= timeUntilDestroy;
-		if (currentTime >= 1.f) {
+		if (currentTime >= globalSettings->FullPercent) {
   			status = EProjectileStatus::Initial;
 			SetActorLocation(shooterActor->GetActorLocation());
 			staticMesh->SetMaterial(0, invisibleMaterial);

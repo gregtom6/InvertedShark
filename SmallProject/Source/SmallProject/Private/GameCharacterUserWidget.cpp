@@ -5,6 +5,7 @@
 #include <GameCharacter.h>
 #include "Components/ProgressBar.h"
 #include "Components/CanvasPanel.h"
+#include "ResourceDataAsset.h"
 
 
 void UGameCharacterUserWidget::NativeConstruct() {
@@ -12,6 +13,8 @@ void UGameCharacterUserWidget::NativeConstruct() {
 
 	fadeStatus = EFadeStatus::Invisible;
 	Energybar->SetRenderOpacity(0.f);
+
+	globalSettings = NewObject<UResourceDataAsset>(GetTransientPackage(), FName("globalSettings"));
 }
 
 /*
@@ -28,13 +31,13 @@ void UGameCharacterUserWidget::NativeTick(const FGeometry& MyGeometry, float InD
 
 		if (fadeStatus == EFadeStatus::Visible) {
 
-			if (percentage >= 1.f) {
+			if (percentage >= globalSettings->FullPercent) {
 				fadeStatus = EFadeStatus::VisibleToInvisible;
 				fadeStartTime = GetWorld()->GetTimeSeconds();
 			}
 		}
 		else if (fadeStatus == EFadeStatus::Invisible) {
-			if (percentage < 1.f) {
+			if (percentage < globalSettings->FullPercent) {
 				fadeStatus = EFadeStatus::InvisibleToVisible;
 				fadeStartTime = GetWorld()->GetTimeSeconds();
 			}
@@ -44,7 +47,7 @@ void UGameCharacterUserWidget::NativeTick(const FGeometry& MyGeometry, float InD
 			float fadePercent = current / fadeTime;
 			Energybar->SetRenderOpacity(FMath::Lerp(0.f, 1.f, fadePercent));
 
-			if (fadePercent >= 1.f) {
+			if (fadePercent >= globalSettings->FullPercent) {
 				fadeStatus = EFadeStatus::Visible;
 			}
 		}
@@ -53,7 +56,7 @@ void UGameCharacterUserWidget::NativeTick(const FGeometry& MyGeometry, float InD
 			float fadePercent = current / fadeTime;
 			Energybar->SetRenderOpacity(FMath::Lerp(1.f, 0.f, fadePercent));
 
-			if (fadePercent >= 1.f) {
+			if (fadePercent >= globalSettings->FullPercent) {
 				fadeStatus = EFadeStatus::Invisible;
 			}
 		}

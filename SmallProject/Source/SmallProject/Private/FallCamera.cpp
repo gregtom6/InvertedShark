@@ -8,6 +8,7 @@
 #include <GameCharacter.h>
 #include "DeadUserWidget.h"
 #include <Kismet/KismetMathLibrary.h>
+#include "ResourceDataAsset.h"
 
 // Sets default values
 AFallCamera::AFallCamera(const FObjectInitializer& ObjectInitializer):Super(ObjectInitializer)
@@ -17,6 +18,8 @@ AFallCamera::AFallCamera(const FObjectInitializer& ObjectInitializer):Super(Obje
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	Camera->SetupAttachment(Mesh);
+
+	globalSettings = NewObject<UResourceDataAsset>(GetTransientPackage(), FName("globalSettings"));
 }
 
 /*
@@ -57,7 +60,7 @@ void AFallCamera::Tick(float DeltaTime)
 
 	currentTime /= showTime;
 
-	if (currentTime >= 1.f && !deaduserwidget->IsInViewport()) {
+	if (currentTime >= globalSettings->FullPercent && !deaduserwidget->IsInViewport()) {
 		deaduserwidget->AddToViewport(0);
 	}
 }

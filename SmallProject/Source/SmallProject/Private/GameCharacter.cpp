@@ -24,6 +24,7 @@
 #include "Materials/MaterialInterface.h"
 #include <Kismet/KismetMathLibrary.h>
 #include "ProjectileCompPositioner.h"
+#include "ResourceDataAsset.h"
 
 // Sets default values
 AGameCharacter::AGameCharacter(const FObjectInitializer& ObjectInitializer)
@@ -83,6 +84,8 @@ AGameCharacter::AGameCharacter(const FObjectInitializer& ObjectInitializer)
 
 	isHugging = false;
 	ProjectilePositioner = CreateDefaultSubobject<UProjectileCompPositioner>(TEXT("ProjectilePositioner"));
+
+	globalSettings = NewObject<UResourceDataAsset>(GetTransientPackage(), FName("globalSettings"));
 }
 
 /*
@@ -603,18 +606,18 @@ void AGameCharacter::TimeManagement() {
 
 		float percentage = currentTime / timeOfSlowDown;
 
-		if (percentage > 1.f)
-			percentage = 1.f;
+		if (percentage > globalSettings->FullPercent)
+			percentage = globalSettings->FullPercent;
 
 		UGameplayStatics::SetGlobalTimeDilation(GetWorld(), FMath::Lerp(1.f, minSlowdownTimeMultiplier, percentage));
-		actualSoundPitchMultiplier = 1.f - percentage;
+		actualSoundPitchMultiplier = globalSettings->FullPercent - percentage;
 		AudioComp->SetPitchMultiplier(actualSoundPitchMultiplier);
 		TongueAudio->SetPitchMultiplier(actualSoundPitchMultiplier);
 		MetalScratchAudio->SetPitchMultiplier(actualSoundPitchMultiplier);
 		DashAudio->SetPitchMultiplier(actualSoundPitchMultiplier);
 		SneezeAudio->SetPitchMultiplier(actualSoundPitchMultiplier);
 
-		if (percentage >= 1.f) {
+		if (percentage >= globalSettings->FullPercent) {
 			slowdownStatus = ESlowDownStatus::StaySlowedDownTime;
 			slowdownStartTime = GetWorld()->GetTimeSeconds();
 		}
@@ -631,8 +634,8 @@ void AGameCharacter::TimeManagement() {
 
 		float percentage = currentTime / timeOfSlowDown;
 
-		if (percentage > 1.f)
-			percentage = 1.f;
+		if (percentage > globalSettings->FullPercent)
+			percentage = globalSettings->FullPercent;
 
 		UGameplayStatics::SetGlobalTimeDilation(GetWorld(), FMath::Lerp(minSlowdownTimeMultiplier, 1.f, percentage));
 		actualSoundPitchMultiplier = percentage;
@@ -642,7 +645,7 @@ void AGameCharacter::TimeManagement() {
 		DashAudio->SetPitchMultiplier(actualSoundPitchMultiplier);
 		SneezeAudio->SetPitchMultiplier(actualSoundPitchMultiplier);
 
-		if (percentage >= 1.f) {
+		if (percentage >= globalSettings->FullPercent) {
 			slowdownStatus = ESlowDownStatus::NormalTime;
 			canSlowdownTimeStarted = false;
 		}
@@ -745,8 +748,8 @@ lerping camera between two spring arm lengths
 void AGameCharacter::CameraManagement() {
 	float currentTimeForSpringArm = GetWorld()->GetTimeSeconds() - startTimeForSpringArm;
 	currentTimeForSpringArm *= springArmLengthSpeed;
-	if (currentTimeForSpringArm > 1.f)
-		currentTimeForSpringArm = 1.f;
+	if (currentTimeForSpringArm > globalSettings->FullPercent)
+		currentTimeForSpringArm = globalSettings->FullPercent;
 
 	SpringArm->TargetArmLength = FMath::Lerp(startArmLength, targetArmLength, currentTimeForSpringArm);
 }

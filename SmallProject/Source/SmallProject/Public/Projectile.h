@@ -11,6 +11,7 @@ class UNiagaraComponent;
 class UAudioComponent;
 class UMaterialInterface;
 class AGameCharacter;
+class UResourceDataAsset;
 
 // projectile fired by the SniperEnemy
 
@@ -59,6 +60,9 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 		UMaterialInterface* invisibleMaterial;
+
+	UPROPERTY(EditAnywhere)
+		UResourceDataAsset* globalSettings;
 
 	EProjectileStatus status;
 
