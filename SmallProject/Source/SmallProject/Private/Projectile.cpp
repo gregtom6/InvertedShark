@@ -83,10 +83,10 @@ void AProjectile::Tick(float DeltaTime)
 		float currentTime = GetWorld()->GetTimeSeconds() - startTime;
 		currentTime /= timeUntilDestroy;
 		if (currentTime >= globalSettings->FullPercent) {
+			isActivated = false;
 			status = EProjectileStatus::Initial;
 			SetActorLocation(shooterActor->GetActorLocation());
 			staticMesh->SetMaterial(0, invisibleMaterial);
-			isActivated = false;
 		}
 	}
 

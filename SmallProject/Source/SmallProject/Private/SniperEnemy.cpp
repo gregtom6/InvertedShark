@@ -70,6 +70,8 @@ void ASniperEnemy::BeginPlay() {
 	windZone = GetWorld()->SpawnActor<AWindZone>(WindzoneClass, SpawnTransform);
 
 	projectile = GetWorld()->SpawnActor<AProjectile>(ProjectileClass, SpawnTransform);
+
+	laserTargetingNiagara1->Deactivate();
 }
 
 void ASniperEnemy::Tick(float DeltaTime) {
@@ -135,7 +137,12 @@ void ASniperEnemy::Tick(float DeltaTime) {
 		}
 
 		if (enemyTargeting == EEnemyTargeting::PlayerTargeting) {
-			FRotator targetRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), gameCharacter->GetActorLocation());
+			FVector gameCharLocation = gameCharacter->GetActorLocation();
+			if (gameCharacter->GetStatus() != EGameCharacterStatus::Calm) {
+				gameCharLocation = gameCharacter->GetBackBeforeDashLocation();
+			}
+
+			FRotator targetRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), gameCharLocation);
 			SetActorRotation(targetRotation);
 		}
 		else if (enemyTargeting == EEnemyTargeting::CreatureTargeting) {
@@ -245,6 +252,9 @@ FVector ASniperEnemy::GetEndPosition() const {
 }
 
 void ASniperEnemy::MovingToCreatureEnded() {
+
+	laserTargetingNiagara1->Activate();
+
 	TargetingCreature();
 }
 
