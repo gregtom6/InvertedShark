@@ -34,4 +34,6 @@ public:
 	UFUNCTION()
 		void Event(AActor* overlappedActor, AActor* otherActor);
 
+	UFUNCTION()
+		bool AreAllEnemiesDefeated();
 };

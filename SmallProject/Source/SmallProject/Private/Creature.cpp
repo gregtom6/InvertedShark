@@ -16,6 +16,7 @@
 #include "SniperEnemy.h"
 #include "ProjectileCompPositioner.h"
 #include "ResourceDataAsset.h"
+#include "EnemyTriggerBox.h"
 
 ACreature::ACreature(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -185,6 +186,10 @@ void ACreature::StateManagement() {
 
 		SetActorLocation(FMath::Lerp(actualStartPosition, actualEndPosition, currentTime));
 	}
+	else if (actualStatus == EStatus::UnderAttack) {
+
+		SwitchingToWaitBeforeMoveFastWhenEnemiesCleared();
+	}
 	else if (actualStatus == EStatus::WaitBeforeMoveFast) {
 		float currentTime = GetWorld()->GetTimeSeconds() - startTime;
 
@@ -352,6 +357,9 @@ void ACreature::EnterEvent(class AActor* overlappedActor, class AActor* otherAct
 
 			actualStatus = EStatus::UnderAttack;
 		}
+		else if (otherActor->IsA(AEnemyTriggerBox::StaticClass())) {
+			currentEnemyTriggerBox = Cast<AEnemyTriggerBox>(otherActor);
+		}
 	}
 }
 
@@ -365,16 +373,22 @@ void ACreature::ExitEvent(class AActor* overlappedActor, class AActor* otherActo
 			if (enemiesActuallyAttacking.Contains(attackingEnemy))
 				enemiesActuallyAttacking.Remove(attackingEnemy);
 
-			if (actualStatus == EStatus::UnderAttack && enemiesActuallyAttacking.Num() == 0) {
-				WhaleAudioComp->Play(0.f);
-				startTime = GetWorld()->GetTimeSeconds();
-				actualStatus = EStatus::WaitBeforeMoveFast;
-			}
+			SwitchingToWaitBeforeMoveFastWhenEnemiesCleared();
 
 			if (attackingEnemy->IsA(AHealerEnemy::StaticClass())) {
 				attackingHealer = nullptr;
 			}
 		}
+	}
+}
+
+void ACreature::SwitchingToWaitBeforeMoveFastWhenEnemiesCleared() {
+	if (actualStatus == EStatus::UnderAttack && enemiesActuallyAttacking.Num() == 0 &&
+		currentEnemyTriggerBox != nullptr && currentEnemyTriggerBox->AreAllEnemiesDefeated()) {
+
+		WhaleAudioComp->Play(0.f);
+		startTime = GetWorld()->GetTimeSeconds();
+		actualStatus = EStatus::WaitBeforeMoveFast;
 	}
 }
 

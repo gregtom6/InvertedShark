@@ -18,6 +18,7 @@ class UMaterialInterface;
 class UCreatureUserWidget;
 class UProjectileCompPositioner;
 class UResourceDataAsset;
+class AEnemyTriggerBox;
 
 DECLARE_DELEGATE_OneParam(FBigDeltaDamageHappened, float);
 
@@ -43,6 +44,8 @@ protected:
 
 	void StepTargetIndex();
 
+	void SwitchingToWaitBeforeMoveFastWhenEnemiesCleared();
+
 	void SwitchingToMovingFast();
 
 	void HeadStateManagement();
@@ -53,6 +56,9 @@ protected:
 
 	UPROPERTY()
 		AHealerEnemy* attackingHealer;
+
+	UPROPERTY()
+		AEnemyTriggerBox* currentEnemyTriggerBox;
 
 	float actualHealthWhenStartedHealing;
 

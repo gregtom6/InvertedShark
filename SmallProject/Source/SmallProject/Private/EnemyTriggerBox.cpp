@@ -49,3 +49,14 @@ void AEnemyTriggerBox::Event(class AActor* overlappedActor, class AActor* otherA
 		
 	}
 }
+
+bool AEnemyTriggerBox::AreAllEnemiesDefeated() {
+	for (int i = 0; i < enemiesToCome.Num(); i++) {
+		
+		if (enemiesToCome[i] != nullptr && !enemiesToCome[i]->IsPendingKill()) {
+			return false;
+		}
+	}
+
+	return true;
+}
