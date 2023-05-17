@@ -25,6 +25,7 @@
 #include <Kismet/KismetMathLibrary.h>
 #include "ProjectileCompPositioner.h"
 #include "ResourceDataAsset.h"
+#include "Camera/CameraShakeBase.h"
 
 // Sets default values
 AGameCharacter::AGameCharacter(const FObjectInitializer& ObjectInitializer)
@@ -57,6 +58,9 @@ AGameCharacter::AGameCharacter(const FObjectInitializer& ObjectInitializer)
 
 	Spark = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Spark"));
 
+	ProjectilePositioner = CreateDefaultSubobject<UProjectileCompPositioner>(TEXT("ProjectilePositioner"));
+
+	globalSettings = NewObject<UResourceDataAsset>(GetTransientPackage(), FName("globalSettings"));
 
 	Spark->SetupAttachment(CameraMesh);
 
@@ -83,9 +87,6 @@ AGameCharacter::AGameCharacter(const FObjectInitializer& ObjectInitializer)
 	Camera->Deactivate();
 
 	isHugging = false;
-	ProjectilePositioner = CreateDefaultSubobject<UProjectileCompPositioner>(TEXT("ProjectilePositioner"));
-
-	globalSettings = NewObject<UResourceDataAsset>(GetTransientPackage(), FName("globalSettings"));
 }
 
 /*
@@ -863,6 +864,12 @@ void AGameCharacter::SlowdownTime() {
 	slowdownStatus = ESlowDownStatus::SlowDownTime;
 }
 
+void AGameCharacter::PlayCameraShake() {
+	APlayerCameraManager* PlayerCameraManager = UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0);
+	if (PlayerCameraManager) {
+		PlayerCameraManager->StartCameraShake(CameraShake);
+	}
+}
 
 /*
 subscribing to controls

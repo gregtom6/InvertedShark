@@ -489,8 +489,10 @@ void AEnemy::RemoveEnemy() {
 	SlurpAudioComp->Stop();
 	PopAudioComp->Play(0.f);
 
-	if (gameCharacter != nullptr)
+	if (gameCharacter != nullptr) {
 		gameCharacter->SlowdownTime();
+		gameCharacter->PlayCameraShake();
+	}
 }
 
 UStaticMeshComponent* AEnemy::GetCurrentBodyMesh() const {

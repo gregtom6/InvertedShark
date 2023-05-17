@@ -52,6 +52,7 @@ void AHealerEnemy::TriggerEnter(class UPrimitiveComponent* HitComp, class AActor
 		DeflateAudioComp->Play(0.f);
 
 		overlappingGameCharacter->SlowdownTime();
+		overlappingGameCharacter->PlayCameraShake();
 
 		canHealingStarted = false;
 	}

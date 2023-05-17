@@ -23,6 +23,7 @@ class UInputComponent;
 class ACreature;
 class UProjectileCompPositioner;
 class UResourceDataAsset;
+class UCameraShakeBase;
 
 DECLARE_DELEGATE(FOnDieHappenedSignature);
 
@@ -272,6 +273,9 @@ protected:
 	UPROPERTY(EditAnywhere)
 		UResourceDataAsset* globalSettings;
 
+	UPROPERTY(EditAnywhere)
+		TSubclassOf<UCameraShakeBase> CameraShake;
+
 	UFUNCTION()
 		bool GetOverlapInfluenceSphere(UStaticMeshComponent* StaticMeshComponent, FVector& Actor1ClosestPoint, FVector& Actor2ClosestPoint);
 
@@ -281,6 +285,9 @@ protected:
 public:
 	UFUNCTION()
 		void SlowdownTime();
+
+	UFUNCTION()
+		void PlayCameraShake();
 
 	EGameCharacterStatus GetStatus() const;
 
