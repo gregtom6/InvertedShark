@@ -58,11 +58,15 @@ AGameCharacter::AGameCharacter(const FObjectInitializer& ObjectInitializer)
 
 	Spark = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Spark"));
 
+	DownDashNiagara = CreateDefaultSubobject<UNiagaraComponent>(TEXT("DownDashNiagara"));
+
 	ProjectilePositioner = CreateDefaultSubobject<UProjectileCompPositioner>(TEXT("ProjectilePositioner"));
 
 	globalSettings = NewObject<UResourceDataAsset>(GetTransientPackage(), FName("globalSettings"));
 
 	Spark->SetupAttachment(CameraMesh);
+
+	DownDashNiagara->SetupAttachment(CameraMesh);
 
 	SpringArm->SetupAttachment(CameraMesh);
 
@@ -231,6 +235,7 @@ void AGameCharacter::Dash() {
 	APlayerController* thisCont = GetWorld()->GetFirstPlayerController();
 	if (thisCont->IsInputKeyDown(EKeys::S)) {
 		actualStatus = EGameCharacterStatus::DownDash;
+		previousVelocity = CameraMesh->GetPhysicsLinearVelocity();
 		DownDash();
 	}
 	else if (thisCont->IsInputKeyDown(EKeys::Q)) {
@@ -257,6 +262,8 @@ void AGameCharacter::DownDash() {
 	CameraMesh->SetAllPhysicsLinearVelocity(FVector::ZeroVector);
 
 	CameraMesh->AddImpulse(impulseDirection);
+
+	previousVelocity= CameraMesh->GetPhysicsLinearVelocity();
 
 	startTime = GetWorld()->GetTimeSeconds();
 }
@@ -719,6 +726,15 @@ void AGameCharacter::StateManagement() {
 	else if (actualStatus == EGameCharacterStatus::DownDash) {
 
 		float currentTime = GetWorld()->GetTimeSeconds() - startTime;
+
+
+		FVector currentVelocity = CameraMesh->GetPhysicsLinearVelocity();
+
+		if (previousVelocity.Z < 0.f && currentVelocity.Z >= 0.f && !DownDashNiagara->IsActive()) {
+			DownDashNiagara->Activate();
+		}
+
+		previousVelocity = currentVelocity;
 
 		if (currentTime >= dashCooldownTime) {
 			actualStatus = EGameCharacterStatus::Calm;

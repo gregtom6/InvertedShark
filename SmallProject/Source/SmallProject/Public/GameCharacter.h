@@ -112,6 +112,8 @@ private:
 
 	FVector positionBeforeDash;
 
+	FVector previousVelocity;
+
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
@@ -275,6 +277,9 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 		TSubclassOf<UCameraShakeBase> CameraShake;
+
+	UPROPERTY(EditAnywhere)
+		UNiagaraComponent* DownDashNiagara;
 
 	UFUNCTION()
 		bool GetOverlapInfluenceSphere(UStaticMeshComponent* StaticMeshComponent, FVector& Actor1ClosestPoint, FVector& Actor2ClosestPoint);
