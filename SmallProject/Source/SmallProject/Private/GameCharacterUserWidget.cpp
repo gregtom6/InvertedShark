@@ -23,42 +23,41 @@ reading player energy and setting visuals
 void UGameCharacterUserWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime) {
 	Super::NativeTick(MyGeometry, InDeltaTime);
 
-	if (player != nullptr) {
+	if (!player) { return; }
 
-		float percentage = player->GetEnergy() / player->GetMaxEnergy();
+	float percentage = player->GetEnergy() / player->GetMaxEnergy();
 
-		Energybar->SetPercent(percentage);
+	Energybar->SetPercent(percentage);
 
-		if (fadeStatus == EFadeStatus::Visible) {
+	if (fadeStatus == EFadeStatus::Visible) {
 
-			if (percentage >= globalSettings->FullPercent) {
-				fadeStatus = EFadeStatus::VisibleToInvisible;
-				fadeStartTime = GetWorld()->GetTimeSeconds();
-			}
+		if (percentage >= globalSettings->FullPercent) {
+			fadeStatus = EFadeStatus::VisibleToInvisible;
+			fadeStartTime = GetWorld()->GetTimeSeconds();
 		}
-		else if (fadeStatus == EFadeStatus::Invisible) {
-			if (percentage < globalSettings->FullPercent) {
-				fadeStatus = EFadeStatus::InvisibleToVisible;
-				fadeStartTime = GetWorld()->GetTimeSeconds();
-			}
+	}
+	else if (fadeStatus == EFadeStatus::Invisible) {
+		if (percentage < globalSettings->FullPercent) {
+			fadeStatus = EFadeStatus::InvisibleToVisible;
+			fadeStartTime = GetWorld()->GetTimeSeconds();
 		}
-		else if (fadeStatus == EFadeStatus::InvisibleToVisible) {
-			float current = GetWorld()->GetTimeSeconds() - fadeStartTime;
-			float fadePercent = current / fadeTime;
-			Energybar->SetRenderOpacity(FMath::Lerp(0.f, 1.f, fadePercent));
+	}
+	else if (fadeStatus == EFadeStatus::InvisibleToVisible) {
+		float current = GetWorld()->GetTimeSeconds() - fadeStartTime;
+		float fadePercent = current / fadeTime;
+		Energybar->SetRenderOpacity(FMath::Lerp(0.f, 1.f, fadePercent));
 
-			if (fadePercent >= globalSettings->FullPercent) {
-				fadeStatus = EFadeStatus::Visible;
-			}
+		if (fadePercent >= globalSettings->FullPercent) {
+			fadeStatus = EFadeStatus::Visible;
 		}
-		else if (fadeStatus == EFadeStatus::VisibleToInvisible) {
-			float current = GetWorld()->GetTimeSeconds() - fadeStartTime;
-			float fadePercent = current / fadeTime;
-			Energybar->SetRenderOpacity(FMath::Lerp(1.f, 0.f, fadePercent));
+	}
+	else if (fadeStatus == EFadeStatus::VisibleToInvisible) {
+		float current = GetWorld()->GetTimeSeconds() - fadeStartTime;
+		float fadePercent = current / fadeTime;
+		Energybar->SetRenderOpacity(FMath::Lerp(1.f, 0.f, fadePercent));
 
-			if (fadePercent >= globalSettings->FullPercent) {
-				fadeStatus = EFadeStatus::Invisible;
-			}
+		if (fadePercent >= globalSettings->FullPercent) {
+			fadeStatus = EFadeStatus::Invisible;
 		}
 	}
 }

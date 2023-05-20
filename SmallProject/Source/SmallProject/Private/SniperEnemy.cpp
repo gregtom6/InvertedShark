@@ -102,9 +102,9 @@ void ASniperEnemy::Tick(float DeltaTime) {
 			}
 		}
 
-		if (currentTime >= percentageAudioAppears && !soundAlreadyStartedPlaying) {
+		if (currentTime >= percentageAudioAppears && !bSoundAlreadyStartedPlaying) {
 			weaponOverloadingSound1->Play(startWeaponOverloadingSoundPercentage);
-			soundAlreadyStartedPlaying = true;
+			bSoundAlreadyStartedPlaying = true;
 		}
 
 		if (currentTime >= globalSettings->FullPercent) {
@@ -112,7 +112,7 @@ void ASniperEnemy::Tick(float DeltaTime) {
 			startTime = GetWorld()->GetTimeSeconds();
 			CreateProjectile();
 			smokeNiagara->Deactivate();
-			soundAlreadyStartedPlaying = false;
+			bSoundAlreadyStartedPlaying = false;
 
 			if (weaponShootingSequence)
 			{
@@ -163,7 +163,7 @@ void ASniperEnemy::Tick(float DeltaTime) {
 
 		if (currentTime >= globalSettings->FullPercent) {
 
-			if (SwallowSphere != nullptr)
+			if (SwallowSphere)
 				SwallowSphere->DestroyComponent();
 
 			SkeletalBody->Stop();
@@ -177,8 +177,7 @@ void ASniperEnemy::Tick(float DeltaTime) {
 				SMeshContainers[i]->SetSimulatePhysics(true);
 			}
 
-
-			if (EyePivot2 != nullptr)
+			if (EyePivot2)
 				EyePivot2->SetSimulatePhysics(true);
 
 			dieTornadoNiagara->Deactivate();
@@ -218,7 +217,7 @@ void ASniperEnemy::Tick(float DeltaTime) {
 }
 
 void ASniperEnemy::TimeManagement() {
-	if (gameCharacter == nullptr) { return; }
+	if (!gameCharacter) { return; }
 
 	loopedMosquitoSound->SetPitchMultiplier(gameCharacter->GetCurrentSoundPitchMultiplier());
 	weaponOverloadingSound1->SetPitchMultiplier(gameCharacter->GetCurrentSoundPitchMultiplier());

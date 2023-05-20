@@ -63,7 +63,7 @@ protected:
 	float startTimeForHealingSphere;
 	FVector originalHealingSphereScale;
 
-	bool canHealingStarted = true;
+	bool bCanHealingStarted = true;
 
 public:
 	AHealerEnemy(const FObjectInitializer& ObjectInitializer);

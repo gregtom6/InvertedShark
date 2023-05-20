@@ -6,12 +6,16 @@
 #include "GameFramework/Actor.h"
 #include "FallCamera.generated.h"
 
+#pragma region Forward Declarations
+
 class AGameCharacter;
 class UCameraComponent;
 class UStaticMeshComponent;
 class UUserWidget;
 class UDeadUserWidget;
 class UResourceDataAsset;
+
+#pragma endregion
 
 //this is the death camera, used to follow player while it dies
 

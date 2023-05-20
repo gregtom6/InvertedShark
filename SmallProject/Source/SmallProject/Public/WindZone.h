@@ -44,7 +44,7 @@ protected:
 
 	float startTime;
 
-	bool isActivated;
+	bool bIsActivated;
 
 	UPROPERTY()
 		AGameCharacter* gameCharacter;
@@ -59,6 +59,6 @@ public:
 	UFUNCTION()
 		virtual void ExitEvent(AActor* overlappedActor, AActor* otherActor);
 
-	void Activate(bool isActive);
+	void Activate(const bool isActive);
 
 };

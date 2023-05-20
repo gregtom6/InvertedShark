@@ -7,6 +7,8 @@
 #include "Components/SplineMeshComponent.h"
 #include "Enemy.generated.h"
 
+#pragma region Forward Declarations
+
 class USplineComponent;
 class USplineMeshComponent;
 class UStaticMeshComponent;
@@ -15,6 +17,8 @@ class UNiagaraComponent;
 class ACreature;
 class UAudioComponent;
 class UResourceDataAsset;
+
+#pragma endregion
 
 //base class of all enemy types
 //simplest enemies are also these
@@ -36,7 +40,7 @@ protected:
 	virtual void Tick(float DeltaTime) override;
 	void SetSpline();
 
-	void SetSplineMeshComponent(USplineMeshComponent* splineMeshComp, FVector startPoint, FVector startTangent, FVector endPoint, FVector endTangent);
+	void SetSplineMeshComponent(USplineMeshComponent* splineMeshComp, const FVector startPoint, const FVector startTangent, const FVector endPoint, const FVector endTangent);
 
 
 	void StateManagement();
@@ -81,7 +85,7 @@ protected:
 
 	float timeBeforeActualMoving;
 
-	bool canPlayerDamageMe = true;
+	bool bCanPlayerDamageMe = true;
 
 	UPROPERTY()
 		AGameCharacter* overlappingGameCharacter;
@@ -196,7 +200,7 @@ public:
 		virtual void ExitEvent(AActor* overlappedActor, AActor* otherActor);
 	// Called every frame
 
-	virtual void MoveToCreature(float timeToStart);
+	virtual void MoveToCreature(const float timeToStart);
 
 	void StartEating();
 

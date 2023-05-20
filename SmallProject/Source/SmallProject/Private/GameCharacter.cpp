@@ -90,15 +90,36 @@ AGameCharacter::AGameCharacter(const FObjectInitializer& ObjectInitializer)
 
 	Camera->Deactivate();
 
-	isHugging = false;
+	bIsHugging = false;
+}
+
+/*
+subscribing to controls
+*/
+void AGameCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+{
+	Super::SetupPlayerInputComponent(PlayerInputComponent);
+
+	PlayerInputComponent->BindAxis(TEXT("RotateLR"), this, &AGameCharacter::RotateLR);
+
+	PlayerInputComponent->BindAction(TEXT("WingBeat"), IE_Pressed, this, &AGameCharacter::WingBeat);
+
+	PlayerInputComponent->BindAction(TEXT("HugCreature"), IE_Pressed, this, &AGameCharacter::HugCreature);
+
+	PlayerInputComponent->BindAction(TEXT("Attack"), IE_Pressed, this, &AGameCharacter::Attack);
+
+	PlayerInputComponent->BindAction(TEXT("Dash"), IE_Pressed, this, &AGameCharacter::Dash);
+
+	FInputActionBinding& toggle = PlayerInputComponent->BindAction(TEXT("Pause"), IE_Pressed, this, &AGameCharacter::Pause);
+	toggle.bExecuteWhenPaused = true;
 }
 
 /*
 left right rotations of game character
 */
-void AGameCharacter::RotateLR(float rotateDelta) {
+void AGameCharacter::RotateLR(const float rotateDelta) {
 
-	if (isHugging || actualStatus == EGameCharacterStatus::Dead) { return; }
+	if (bIsHugging || actualStatus == EGameCharacterStatus::Dead) { return; }
 
 	FRotator actualRotation = GetActorRotation();
 	actualRotation.Yaw += rotateDelta * RotateSpeed;
@@ -111,7 +132,7 @@ wing beat movement of game character
 */
 void AGameCharacter::WingBeat() {
 
-	if (isHugging || actualStatus == EGameCharacterStatus::Dead || actualStatus == EGameCharacterStatus::UpDash) { return; }
+	if (bIsHugging || actualStatus == EGameCharacterStatus::Dead || actualStatus == EGameCharacterStatus::UpDash) { return; }
 
 	if (actualEnergy < energyDecreaseAfterWingBeat) { return; }
 
@@ -138,7 +159,7 @@ creature fur hugging ability. When under the creature, player can hug its fur fo
 */
 void AGameCharacter::HugCreature() {
 
-	if (!isHugging) {
+	if (!bIsHugging) {
 
 		if (creature != nullptr && creature->IsCharacterInFur()) {
 
@@ -165,7 +186,7 @@ void AGameCharacter::HugCreature() {
 
 			CameraMesh->AddImpulse(impulseDirection);
 
-			isHugging = true;
+			bIsHugging = true;
 
 			startArmLength = SpringArm->TargetArmLength;
 			targetArmLength = zoomedOutArmLength;
@@ -186,7 +207,7 @@ void AGameCharacter::HugCreature() {
 
 		CameraMesh->SetAngularDamping(normalAngularDampling);
 
-		isHugging = false;
+		bIsHugging = false;
 
 		startArmLength = SpringArm->TargetArmLength;
 		targetArmLength = defaultArmLength;
@@ -198,13 +219,14 @@ void AGameCharacter::HugCreature() {
 /*
 helper method for hugging action
 */
-void AGameCharacter::SetRotationLocks(bool X, bool Y, bool Z) {
-	if (CameraMesh->GetBodyInstance())
+void AGameCharacter::SetRotationLocks(const bool X, const bool Y, const bool Z) {
+	FBodyInstance* bodyInstance = CameraMesh->GetBodyInstance();
+	if (bodyInstance)
 	{
-		CameraMesh->GetBodyInstance()->bLockXRotation = X;
-		CameraMesh->GetBodyInstance()->bLockYRotation = Y;
-		CameraMesh->GetBodyInstance()->bLockZRotation = Z;
-		CameraMesh->GetBodyInstance()->SetDOFLock(EDOFMode::SixDOF);
+		bodyInstance->bLockXRotation = X;
+		bodyInstance->bLockYRotation = Y;
+		bodyInstance->bLockZRotation = Z;
+		bodyInstance->SetDOFLock(EDOFMode::SixDOF);
 	}
 }
 
@@ -213,7 +235,7 @@ attack ability
 */
 void AGameCharacter::Attack() {
 
-	if (actualStatus == EGameCharacterStatus::Attack || isHugging || actualStatus == EGameCharacterStatus::Dead || actualStatus == EGameCharacterStatus::UpDash) { return; }
+	if (actualStatus == EGameCharacterStatus::Attack || bIsHugging || actualStatus == EGameCharacterStatus::Dead || actualStatus == EGameCharacterStatus::UpDash) { return; }
 
 	UE_LOG(LogTemp, Warning, TEXT("attack happened"));
 
@@ -229,7 +251,7 @@ void AGameCharacter::Attack() {
 dash ability
 */
 void AGameCharacter::Dash() {
-	if (isHugging || actualStatus == EGameCharacterStatus::Dead || actualStatus == EGameCharacterStatus::UpDash || actualStatus == EGameCharacterStatus::Attack) { return; }
+	if (bIsHugging || actualStatus == EGameCharacterStatus::Dead || actualStatus == EGameCharacterStatus::UpDash || actualStatus == EGameCharacterStatus::Attack) { return; }
 
 
 	APlayerController* thisCont = GetWorld()->GetFirstPlayerController();
@@ -263,7 +285,7 @@ void AGameCharacter::DownDash() {
 
 	CameraMesh->AddImpulse(impulseDirection);
 
-	previousVelocity= CameraMesh->GetPhysicsLinearVelocity();
+	previousVelocity = CameraMesh->GetPhysicsLinearVelocity();
 
 	startTime = GetWorld()->GetTimeSeconds();
 }
@@ -325,7 +347,9 @@ void AGameCharacter::RightDash() {
 }
 
 void AGameCharacter::UpDash() {
+
 	if (actualEnergy < energyDecreaseAfterDash) { return; }
+
 	FVector actorUpVector = GetActorUpVector() * upDownDashStrength;
 	FVector impulseDirection = actorUpVector;
 
@@ -367,7 +391,7 @@ void AGameCharacter::UpDash() {
 	rightNoseSneezeNiagara->Activate(true);
 }
 
-void AGameCharacter::NotifyTargeting(bool iAmTargeted) {
+void AGameCharacter::NotifyTargeting(const bool iAmTargeted) {
 	amITargeted = iAmTargeted;
 }
 
@@ -395,7 +419,7 @@ void AGameCharacter::Pause() {
 
 		InitializePause();
 
-		if (widgetPauseMenuInstance != nullptr) {
+		if (widgetPauseMenuInstance) {
 
 			widgetPauseMenuInstance->AddToViewport();
 		}
@@ -450,7 +474,7 @@ void AGameCharacter::BeginPlay()
 		UE_LOG(LogTemp, Warning, TEXT("energy1"));
 		energyuserwidget = Cast<UGameCharacterUserWidget>(CreateWidget(GetWorld(), widgetclass));
 
-		if (energyuserwidget != nullptr) {
+		if (energyuserwidget) {
 
 			energyuserwidget->player = this;
 
@@ -465,7 +489,7 @@ void AGameCharacter::BeginPlay()
 	if (FoundActors.Num() > 0) {
 		ACreature* crea = Cast<ACreature>(FoundActors[0]);
 
-		if (crea != nullptr) {
+		if (crea) {
 			creature = crea;
 		}
 	}
@@ -476,7 +500,7 @@ void AGameCharacter::BeginPlay()
 	if (FoundActors.Num() > 0) {
 		ABossEnemy* b = Cast<ABossEnemy>(FoundActors[0]);
 
-		if (b != nullptr) {
+		if (b) {
 			bossEnemy = b;
 		}
 	}
@@ -541,7 +565,7 @@ void AGameCharacter::SneezeBlinkEnded() {
 void AGameCharacter::InitializePause() {
 	widgetPauseMenuInstance = CreateWidget<UPauseUserWidget>(GetWorld(), widgetPauseMenu);
 
-	if (widgetPauseMenuInstance != nullptr)
+	if (widgetPauseMenuInstance)
 		widgetPauseMenuInstance->SetGameCharacter(this);
 }
 
@@ -567,12 +591,12 @@ void AGameCharacter::Tick(float DeltaTime)
 	TimeManagement();
 }
 
-void AGameCharacter::SetupProjectile(FRotator rotator, FVector scale, UStaticMesh* mesh, UMaterialInterface* material, FVector offset) {
+void AGameCharacter::SetupProjectile(const FRotator rotator, const FVector scale, UStaticMesh* mesh, UMaterialInterface* material, const FVector offset) {
 
 	ProjectilePositioner->SetupProjectile(rotator, scale, mesh, material, offset);
 }
 
-void AGameCharacter::DoAfterGettingHitFromProjectile(FVector direction) {
+void AGameCharacter::DoAfterGettingHitFromProjectile(const FVector direction) {
 	if (actualStatus == EGameCharacterStatus::Dead) { return; }
 
 	SetDieState();
@@ -589,9 +613,10 @@ void AGameCharacter::DoAfterGettingHitFromProjectile(FVector direction) {
 calling delegate, when death happened, setting velocity and state
 */
 void AGameCharacter::DeadManagement() {
-	FVector actorLocation = GetActorLocation();
 
 	if (actualStatus == EGameCharacterStatus::Dead) { return; }
+
+	FVector actorLocation = GetActorLocation();
 
 	if (actorLocation.Z <= heightToDie) {
 		SetDieState();
@@ -599,6 +624,7 @@ void AGameCharacter::DeadManagement() {
 }
 
 void AGameCharacter::SetDieState() {
+
 	CameraMesh->SetAllPhysicsLinearVelocity(FVector::ZeroVector);
 	CameraMesh->SetAllPhysicsAngularVelocityInDegrees(FVector::ZeroVector);
 	actualStatus = EGameCharacterStatus::Dead;
@@ -607,6 +633,7 @@ void AGameCharacter::SetDieState() {
 }
 
 void AGameCharacter::TimeManagement() {
+
 	if (!canSlowdownTimeStarted) { return; }
 
 	if (slowdownStatus == ESlowDownStatus::SlowDownTime) {
@@ -727,7 +754,6 @@ void AGameCharacter::StateManagement() {
 
 		float currentTime = GetWorld()->GetTimeSeconds() - startTime;
 
-
 		FVector currentVelocity = CameraMesh->GetPhysicsLinearVelocity();
 
 		if (previousVelocity.Z < 0.f && currentVelocity.Z >= 0.f && !DownDashNiagara->IsActive()) {
@@ -745,11 +771,11 @@ void AGameCharacter::StateManagement() {
 /*
 energy management of player, based on current restmultiplier
 */
-void AGameCharacter::EnergyManagement(float DeltaTime, FVector& currentVelocity) {
+void AGameCharacter::EnergyManagement(const float DeltaTime, FVector& currentVelocity) {
 	float newEnergy = actualEnergy + energyRegeneration * DeltaTime;
 	float restMult = 1.f;
 
-	if (isHugging || (FMath::Abs(currentVelocity.X) < restVelocity && FMath::Abs(currentVelocity.Y) < restVelocity && FMath::Abs(currentVelocity.Z) < restVelocity)) {
+	if (bIsHugging || (FMath::Abs(currentVelocity.X) < restVelocity && FMath::Abs(currentVelocity.Y) < restVelocity && FMath::Abs(currentVelocity.Z) < restVelocity)) {
 		restMult = restingMultiplier;
 	}
 
@@ -763,6 +789,7 @@ void AGameCharacter::EnergyManagement(float DeltaTime, FVector& currentVelocity)
 lerping camera between two spring arm lengths
 */
 void AGameCharacter::CameraManagement() {
+
 	float currentTimeForSpringArm = GetWorld()->GetTimeSeconds() - startTimeForSpringArm;
 	currentTimeForSpringArm *= springArmLengthSpeed;
 	if (currentTimeForSpringArm > globalSettings->FullPercent)
@@ -775,10 +802,11 @@ void AGameCharacter::CameraManagement() {
 when player sword (tongue) and boss enemy overlaps with each other, we find the intersecting points and placing spark particle to there
 */
 void AGameCharacter::MetalScratchManagement() {
+
 	FVector Actor1ClosestPoint, Actor2ClosestPoint, OverlapPoint;
 	bool bOverlap = false;
 
-	if (bossEnemy != nullptr) {
+	if (bossEnemy) {
 
 		FVector TempActor1ClosestPoint, TempActor2ClosestPoint;
 		bool checkMe = GetOverlapInfluenceSphere(Tongue, Actor1ClosestPoint, Actor2ClosestPoint);
@@ -887,27 +915,6 @@ void AGameCharacter::PlayCameraShake() {
 	}
 }
 
-/*
-subscribing to controls
-*/
-void AGameCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
-	PlayerInputComponent->BindAxis(TEXT("RotateLR"), this, &AGameCharacter::RotateLR);
-
-	PlayerInputComponent->BindAction(TEXT("WingBeat"), IE_Pressed, this, &AGameCharacter::WingBeat);
-
-	PlayerInputComponent->BindAction(TEXT("HugCreature"), IE_Pressed, this, &AGameCharacter::HugCreature);
-
-	PlayerInputComponent->BindAction(TEXT("Attack"), IE_Pressed, this, &AGameCharacter::Attack);
-
-	PlayerInputComponent->BindAction(TEXT("Dash"), IE_Pressed, this, &AGameCharacter::Dash);
-
-	FInputActionBinding& toggle = PlayerInputComponent->BindAction(TEXT("Pause"), IE_Pressed, this, &AGameCharacter::Pause);
-	toggle.bExecuteWhenPaused = true;
-}
-
 USkeletalMeshComponent* AGameCharacter::GetSkeletalMeshComponent() const {
 	return skeletal;
 }
@@ -943,7 +950,7 @@ FVector AGameCharacter::GetCameraLocation() const {
 }
 
 bool AGameCharacter::IsHugging() const {
-	return isHugging;
+	return bIsHugging;
 }
 
 FVector AGameCharacter::GetBackBeforeDashLocation() const {

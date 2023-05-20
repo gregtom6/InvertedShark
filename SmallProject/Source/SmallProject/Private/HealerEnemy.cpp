@@ -18,17 +18,19 @@ AHealerEnemy::AHealerEnemy(const FObjectInitializer& ObjectInitializer) :Super(O
 void AHealerEnemy::BeginPlay() {
 	Super::BeginPlay();
 
-	MaterialInstance = GetCurrentBodyMesh()->CreateDynamicMaterialInstance(0);
+	UStaticMeshComponent* bodyMesh = GetCurrentBodyMesh();
+
+	MaterialInstance = bodyMesh->CreateDynamicMaterialInstance(0);
 
 	FHashedMaterialParameterInfo ParameterInfo("Color");
 	MaterialInstance->GetVectorParameterValue(ParameterInfo, defaultColor);
 
-	GetCurrentBodyMesh()->SetRelativeScale3D(defaultBodyScale);
+	bodyMesh->SetRelativeScale3D(defaultBodyScale);
 
 	originalHealingSphereScale = SwallowSphere->GetRelativeScale3D();
 
-	GetCurrentBodyMesh()->OnComponentBeginOverlap.AddUniqueDynamic(this, &AHealerEnemy::TriggerEnter);
-	GetCurrentBodyMesh()->OnComponentEndOverlap.AddUniqueDynamic(this, &AHealerEnemy::TriggerExit);
+	bodyMesh->OnComponentBeginOverlap.AddUniqueDynamic(this, &AHealerEnemy::TriggerEnter);
+	bodyMesh->OnComponentEndOverlap.AddUniqueDynamic(this, &AHealerEnemy::TriggerExit);
 }
 
 void AHealerEnemy::EndPlay(const EEndPlayReason::Type EndPlayReason) {
@@ -42,7 +44,7 @@ void AHealerEnemy::TriggerEnter(class UPrimitiveComponent* HitComp, class AActor
 
 	overlappingGameCharacter = Cast<AGameCharacter>(OtherActor);
 
-	if (canHealingStarted && actualStatus != EEnemyStatus::Healing && actualStatus != EEnemyStatus::SpecialDying && overlappingGameCharacter != nullptr && overlappingGameCharacter->GetStatus() == EGameCharacterStatus::DownDash) {
+	if (bCanHealingStarted && actualStatus != EEnemyStatus::Healing && actualStatus != EEnemyStatus::SpecialDying && overlappingGameCharacter && overlappingGameCharacter->GetStatus() == EGameCharacterStatus::DownDash) {
 		actualStatus = EEnemyStatus::Healing;
 		startTime = GetWorld()->GetTimeSeconds();
 		startScale = GetCurrentBodyMesh()->GetRelativeScale3D();
@@ -54,7 +56,7 @@ void AHealerEnemy::TriggerEnter(class UPrimitiveComponent* HitComp, class AActor
 		overlappingGameCharacter->SlowdownTime();
 		overlappingGameCharacter->PlayCameraShake();
 
-		canHealingStarted = false;
+		bCanHealingStarted = false;
 	}
 }
 
@@ -64,7 +66,7 @@ void AHealerEnemy::TriggerExit(class UPrimitiveComponent* HitComp, class AActor*
 
 			overlappingGameCharacter = nullptr;
 
-			canPlayerDamageMe = false;
+			bCanPlayerDamageMe = false;
 		}
 	}
 }
@@ -113,6 +115,7 @@ void AHealerEnemy::HealingSphereManagement() {
 }
 
 void AHealerEnemy::BodyManagement() {
+
 	currentTime = GetWorld()->GetTimeSeconds() - startTime;
 
 	currentTime /= timeForHeal;
@@ -124,7 +127,8 @@ void AHealerEnemy::BodyManagement() {
 }
 
 void AHealerEnemy::TimeManagement() {
-	if (gameCharacter == nullptr) { return; }
+
+	if (!gameCharacter) { return; }
 
 	DeflateAudioComp->SetPitchMultiplier(gameCharacter->GetCurrentSoundPitchMultiplier());
 }

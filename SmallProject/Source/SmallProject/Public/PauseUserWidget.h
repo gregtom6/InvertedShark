@@ -17,7 +17,8 @@ class SMALLPROJECT_API UPauseUserWidget : public UUserWidget
 {
 	GENERATED_BODY()
 
-		UPROPERTY()
+private:
+	UPROPERTY()
 		AGameCharacter* gameChar;
 protected:
 	virtual void NativeDestruct() override;

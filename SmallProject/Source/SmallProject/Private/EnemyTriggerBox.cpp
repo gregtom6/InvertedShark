@@ -38,7 +38,8 @@ void AEnemyTriggerBox::Event(class AActor* overlappedActor, class AActor* otherA
 		if (otherActor->IsA(AEnemy::StaticClass())) {
 			AEnemy* arrivedEnemy = Cast<AEnemy>(otherActor);
 			UE_LOG(LogTemp, Warning, TEXT("eves elotti"));
-			if (arrivedEnemy != nullptr) {
+
+			if (arrivedEnemy) {
 				UE_LOG(LogTemp, Warning, TEXT("eves"));
 
 				if (!arrivedEnemy->IsA(ASniperEnemy::StaticClass())) {
@@ -50,10 +51,10 @@ void AEnemyTriggerBox::Event(class AActor* overlappedActor, class AActor* otherA
 	}
 }
 
-bool AEnemyTriggerBox::AreAllEnemiesDefeated() {
+bool AEnemyTriggerBox::AreAllEnemiesDefeated() const {
 	for (int i = 0; i < enemiesToCome.Num(); i++) {
 		
-		if (enemiesToCome[i] != nullptr && !enemiesToCome[i]->IsPendingKill()) {
+		if (enemiesToCome[i] && IsValid(enemiesToCome[i])) {
 			return false;
 		}
 	}

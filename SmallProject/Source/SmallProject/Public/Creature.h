@@ -6,6 +6,8 @@
 #include "GameFramework/Actor.h"
 #include "Creature.generated.h"
 
+#pragma region Forward Declarations
+
 class AHealerEnemy;
 class UStaticMeshComponent;
 class UAudioComponent;
@@ -19,6 +21,8 @@ class UCreatureUserWidget;
 class UProjectileCompPositioner;
 class UResourceDataAsset;
 class AEnemyTriggerBox;
+
+#pragma endregion
 
 DECLARE_DELEGATE_OneParam(FBigDeltaDamageHappened, float);
 
@@ -40,7 +44,7 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
-	bool isCharInFur;
+	bool bIsCharInFur;
 
 	void StepTargetIndex();
 
@@ -77,7 +81,7 @@ protected:
 	FVector actualStartPosition;
 	FVector actualEndPosition;
 
-	double startTime;
+	float startTime;
 	float actualTime;
 
 	float Health;
@@ -87,7 +91,7 @@ protected:
 	float originalLifeBeforeAttack;
 
 
-	int actualTargetIndex = 0;
+	int32 actualTargetIndex = 0;
 
 
 	UFUNCTION()
@@ -179,7 +183,7 @@ public:
 	void HealingStarted();
 	EStatus GetStatus() const;
 
-	void SetupProjectile(FRotator rotator, FVector scale, UStaticMesh* mesh, UMaterialInterface* material, FVector offset);
+	void SetupProjectile(const FRotator rotator, const FVector scale, UStaticMesh* mesh, UMaterialInterface* material, const FVector offset);
 
 	void DoAfterGettingHitFromProjectile();
 

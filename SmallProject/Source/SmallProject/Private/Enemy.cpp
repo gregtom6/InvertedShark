@@ -102,7 +102,7 @@ void AEnemy::SetSpline() {
 /*
 this method creates spline between the enemy and the creature. Spline is to show the blood transfusion between the enemy and the fur creature.
 */
-void AEnemy::SetSplineMeshComponent(class USplineMeshComponent* splineMeshComp, FVector startPoint, FVector startTangent, FVector endPoint, FVector endTangent) {
+void AEnemy::SetSplineMeshComponent(class USplineMeshComponent* splineMeshComp, const FVector startPoint, const FVector startTangent, const FVector endPoint, const FVector endTangent) {
 	splineMeshComp->SetStartAndEnd(startPoint, startTangent, endPoint, endTangent, true);
 
 	splineMeshComp->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
@@ -115,7 +115,7 @@ void AEnemy::SetSplineMeshComponent(class USplineMeshComponent* splineMeshComp, 
 /*
 setting up the Moving state
 */
-void AEnemy::MoveToCreature(float timeToStart) {
+void AEnemy::MoveToCreature(const float timeToStart) {
 	timeBeforeActualMoving = timeToStart;
 	startTime = GetWorld()->GetTimeSeconds();
 	actualStartPosition = GetActorLocation();
@@ -134,33 +134,34 @@ void AEnemy::StartEating() {
 	actualStatus = EEnemyStatus::StartEating;
 
 	FTransform transform = splineComponent->GetTransformAtSplinePoint(1, ESplineCoordinateSpace::World);
-	if (transform.GetLocation() != lastCurveEndPosition) {
-		TArray<FVector> points;
 
-		points.Add(GetActorLocation());
+	if (transform.GetLocation() == lastCurveEndPosition) { return; }
 
-		FVector direction = creature->GetActorLocation() - GetActorLocation();
-		direction.Normalize();
-		float dist = FVector::Distance(creature->GetActorLocation(), GetActorLocation());
-		float oneUnit = dist / (float)countOfInnerPointsInSpline;
-		for (int i = 0; i < countOfInnerPointsInSpline; i++) {
-			FVector point = GetActorLocation() + direction * oneUnit * (i + 1);
-			point.Z = point.Z + FMath::FRandRange(-innerSplinePointRangeBorderZ, innerSplinePointRangeBorderZ);
-			point.X = point.X + FMath::FRandRange(-innerSplinePointRangeBorderXY, innerSplinePointRangeBorderXY);
-			point.Y = point.Y + FMath::FRandRange(-innerSplinePointRangeBorderXY, innerSplinePointRangeBorderXY);
-			points.Add(point);
-		}
+	TArray<FVector> points;
 
-		points.Add(creature->GetActorLocation());
+	points.Add(GetActorLocation());
 
-		splineComponent->SetSplinePoints(points, ESplineCoordinateSpace::World, true);
-
-		UE_LOG(LogTemp, Warning, TEXT("spline uploaded"));
-
-		lastCurveEndPosition = creature->GetActorLocation();
-
-		startTime = GetWorld()->GetTimeSeconds();
+	FVector direction = creature->GetActorLocation() - GetActorLocation();
+	direction.Normalize();
+	float dist = FVector::Distance(creature->GetActorLocation(), GetActorLocation());
+	float oneUnit = dist / (float)countOfInnerPointsInSpline;
+	for (int i = 0; i < countOfInnerPointsInSpline; i++) {
+		FVector point = GetActorLocation() + direction * oneUnit * (i + 1);
+		point.Z = point.Z + FMath::FRandRange(-innerSplinePointRangeBorderZ, innerSplinePointRangeBorderZ);
+		point.X = point.X + FMath::FRandRange(-innerSplinePointRangeBorderXY, innerSplinePointRangeBorderXY);
+		point.Y = point.Y + FMath::FRandRange(-innerSplinePointRangeBorderXY, innerSplinePointRangeBorderXY);
+		points.Add(point);
 	}
+
+	points.Add(creature->GetActorLocation());
+
+	splineComponent->SetSplinePoints(points, ESplineCoordinateSpace::World, true);
+
+	UE_LOG(LogTemp, Warning, TEXT("spline uploaded"));
+
+	lastCurveEndPosition = creature->GetActorLocation();
+
+	startTime = GetWorld()->GetTimeSeconds();
 }
 
 void AEnemy::StartActualEating() {
@@ -243,26 +244,24 @@ Removes widgets from viewport.
 */
 void AEnemy::StateManagement() {
 
-	if (actualStatus == EEnemyStatus::WaitBeforeMoving && creature != nullptr) {
+	if (actualStatus == EEnemyStatus::WaitBeforeMoving && creature) {
 
 		currentTime = GetWorld()->GetTimeSeconds() - startTime;
 		if (currentTime >= timeBeforeActualMoving) {
 			startTime = GetWorld()->GetTimeSeconds();
 			actualStatus = EEnemyStatus::Moving;
 
-			if (EyePivot2 != nullptr) {
+			if (EyePivot2) {
 				FVector Direction = creature->GetActorLocation() - EyePivot2->GetComponentLocation();
 				Direction.Normalize();
 				FRotator targetRotation = Direction.Rotation();
 				targetRotation.Yaw -= 90.f;
 				EyePivot2->SetRelativeRotation(targetRotation);
 			}
-
 		}
-
 	}
 
-	else if (actualStatus == EEnemyStatus::Moving && creature != nullptr) {
+	else if (actualStatus == EEnemyStatus::Moving && creature) {
 		currentTime = GetWorld()->GetTimeSeconds() - startTime;
 
 		currentTime *= movementSpeed;
@@ -283,12 +282,12 @@ void AEnemy::StateManagement() {
 		if (currentTime >= globalSettings->FullPercent)
 			startTime = GetWorld()->GetTimeSeconds();
 
-		float SplineLength = splineComponent->GetSplineLength();
-		float SplineDistance = SplineLength * (globalSettings->FullPercent - currentTime);
-		FVector Position = splineComponent->GetLocationAtDistanceAlongSpline(SplineDistance, ESplineCoordinateSpace::World);
-
-		if (SwallowSphere != nullptr)
+		if (SwallowSphere) {
+			float SplineLength = splineComponent->GetSplineLength();
+			float SplineDistance = SplineLength * (globalSettings->FullPercent - currentTime);
+			FVector Position = splineComponent->GetLocationAtDistanceAlongSpline(SplineDistance, ESplineCoordinateSpace::World);
 			SwallowSphere->SetWorldLocation(Position);
+		}
 	}
 
 	else if (actualStatus == EEnemyStatus::SpecialDying) {
@@ -323,25 +322,25 @@ void AEnemy::MovingToCreatureEnded() {
 manages life decrease when getting attacked by player, for both the enemy and the bossenemy.
 */
 void AEnemy::LifeManagement() {
-	if (overlappingGameCharacter != nullptr) {
 
-		if (overlappingGameCharacter->GetStatus() == EGameCharacterStatus::Attack && overlappingGameCharacter->GetPrevStatus() == EGameCharacterStatus::Calm) {
-			canPlayerDamageMe = true;
-			overlappingGameCharacter->SetPrevStatusToActualStatus();
-		}
-
-		if (overlappingGameCharacter->GetStatus() == EGameCharacterStatus::Attack && canPlayerDamageMe) {
-			DecreaseLife();
-			canPlayerDamageMe = false;
-		}
+	if (!overlappingGameCharacter) {
+		bCanPlayerDamageMe = false;
+		return;
 	}
-	else {
-		canPlayerDamageMe = false;
+
+	if (overlappingGameCharacter->GetStatus() == EGameCharacterStatus::Attack && overlappingGameCharacter->GetPrevStatus() == EGameCharacterStatus::Calm) {
+		bCanPlayerDamageMe = true;
+		overlappingGameCharacter->SetPrevStatusToActualStatus();
+	}
+
+	if (overlappingGameCharacter->GetStatus() == EGameCharacterStatus::Attack && bCanPlayerDamageMe) {
+		DecreaseLife();
+		bCanPlayerDamageMe = false;
 	}
 }
 
 void AEnemy::TimeManagement() {
-	if (gameCharacter == nullptr) { return; }
+	if (!gameCharacter) { return; }
 
 	PopAudioComp->SetPitchMultiplier(gameCharacter->GetCurrentSoundPitchMultiplier());
 	SlurpAudioComp->SetPitchMultiplier(gameCharacter->GetCurrentSoundPitchMultiplier());
@@ -412,7 +411,7 @@ void AEnemy::EnterEvent(class AActor* overlappedActor, class AActor* otherActor)
 
 			gameCharacter = Cast<AGameCharacter>(otherActor);
 
-			canPlayerDamageMe = true;
+			bCanPlayerDamageMe = true;
 		}
 	}
 }
@@ -423,7 +422,7 @@ void AEnemy::ExitEvent(class AActor* overlappedActor, class AActor* otherActor) 
 
 			overlappingGameCharacter = nullptr;
 
-			canPlayerDamageMe = false;
+			bCanPlayerDamageMe = false;
 		}
 	}
 }
@@ -450,7 +449,7 @@ void AEnemy::DecreaseLife() {
 		RemoveEnemy();
 	}
 
-	canPlayerDamageMe = false;
+	bCanPlayerDamageMe = false;
 }
 
 /*
@@ -459,7 +458,7 @@ stopping audios, saving values for lerps
 */
 void AEnemy::RemoveEnemy() {
 
-	if (SwallowSphere != nullptr)
+	if (SwallowSphere)
 		SwallowSphere->DestroyComponent();
 
 	//TODO: body1 es mas komponensek
@@ -477,7 +476,7 @@ void AEnemy::RemoveEnemy() {
 	}
 
 
-	if (EyePivot2 != nullptr)
+	if (EyePivot2)
 		EyePivot2->SetSimulatePhysics(true);
 
 
@@ -489,7 +488,7 @@ void AEnemy::RemoveEnemy() {
 	SlurpAudioComp->Stop();
 	PopAudioComp->Play(0.f);
 
-	if (gameCharacter != nullptr) {
+	if (gameCharacter) {
 		gameCharacter->SlowdownTime();
 		gameCharacter->PlayCameraShake();
 	}
@@ -528,6 +527,6 @@ void AEnemy::DestroySpline() {
 destroying certain components upon death
 */
 void AEnemy::DestroySplineMeshComp(class USplineMeshComponent* splineMeshComp) {
-	if (splineMeshComp != nullptr)
+	if (splineMeshComp)
 		splineMeshComp->DestroyComponent();
 }

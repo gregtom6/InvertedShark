@@ -6,12 +6,16 @@
 #include "GameFramework/Actor.h"
 #include "Projectile.generated.h"
 
+#pragma region Forward Declarations
+
 class UStaticMeshComponent;
 class UNiagaraComponent;
 class UAudioComponent;
 class UMaterialInterface;
 class AGameCharacter;
 class UResourceDataAsset;
+
+#pragma endregion
 
 // projectile fired by the SniperEnemy
 
@@ -31,7 +35,7 @@ protected:
 
 	void TimeManagement();
 
-	void CheckOverlappingComponents(AActor* currentlyTargetedActor, FVector direction, FRotator sum);
+	void CheckOverlappingComponents(AActor* currentlyTargetedActor, const FVector direction, const FRotator sum);
 
 	FVector SettingUpScale(AActor* currentTargetedActor);
 
@@ -76,7 +80,7 @@ protected:
 
 	FVector directionVector;
 
-	bool isActivated;
+	bool bIsActivated;
 
 	UPROPERTY()
 		AActor* targetedActor;

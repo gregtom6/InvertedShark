@@ -117,7 +117,7 @@ protected:
 
 	FLinearColor defaultColor;
 
-	bool soundAlreadyStartedPlaying;
+	bool bSoundAlreadyStartedPlaying;
 
 	void CreateProjectile();
 

@@ -11,7 +11,7 @@
 pause management methods
 */
 void UPauseUserWidget::OnResumeClick() {
-	if (gameChar != nullptr) {
+	if (gameChar) {
 		UE_LOG(LogTemp, Warning, TEXT("pause hivas"));
 		gameChar->Pause();
 	}

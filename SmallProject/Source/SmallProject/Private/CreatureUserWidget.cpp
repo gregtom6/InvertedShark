@@ -14,7 +14,7 @@ void UCreatureUserWidget::NativeConstruct() {
 
 	DecreaseDeltaBar->SetPercent(0.f);
 
-	if (creature != nullptr)
+	if (creature)
 		creature->bigDeltaDamageHappenedDelegate.BindUObject(this, &UCreatureUserWidget::BigDeltaDamageHappened);
 }
 
@@ -25,7 +25,7 @@ void UCreatureUserWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaT
 {
 	Super::NativeTick(MyGeometry, InDeltaTime);
 
-	if (creature == nullptr) { return; }
+	if (!creature) { return; }
 
 	float currentLifePercentage = creature->GetHealth() / creature->GetMaxHealth();
 

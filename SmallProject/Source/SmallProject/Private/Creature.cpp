@@ -119,7 +119,7 @@ void ACreature::StepTargetIndex() {
 	}
 }
 
-void ACreature::SetupProjectile(FRotator rotator, FVector scale, UStaticMesh* mesh, UMaterialInterface* material, FVector offset) {
+void ACreature::SetupProjectile(const FRotator rotator, const FVector scale, UStaticMesh* mesh, UMaterialInterface* material, const FVector offset) {
 
 	projectilePositioner->SetupProjectile(rotator, scale, mesh, material, offset);
 }
@@ -241,7 +241,7 @@ void ACreature::HeadStateManagement() {
 	APawn* pawn = OurPlayerController->GetPawn();
 
 	AGameCharacter* gameCharacter = Cast<AGameCharacter, APawn>(pawn);
-	if (gameCharacter != nullptr && prevHeadState == headState) {
+	if (gameCharacter && prevHeadState == headState) {
 
 		FVector forwardVector = GetActorForwardVector();
 		forwardVector.Normalize();
@@ -306,13 +306,13 @@ void ACreature::HeadStateManagement() {
 /*
 creature health management. Decrease depends on the currently attacking enemy count. Restarting level, when creature died.
 */
-void ACreature::HealthManagement(float DeltaTime) {
+void ACreature::HealthManagement(const float DeltaTime) {
 
 	if (actualStatus == EStatus::UnderAttack) {
 		originalLifeBeforeAttack = Health;
 		Health = Health > 0 ? Health - (deltaDamage * DeltaTime * enemiesActuallyAttacking.Num()) : 0;
 	}
-	else if (actualStatus == EStatus::Healing && attackingHealer != nullptr) {
+	else if (actualStatus == EStatus::Healing && attackingHealer) {
 
 		deltaHeal = MaxHealth * attackingHealer->GetPercentageOfMaxLifeToHealBack();
 
@@ -384,7 +384,7 @@ void ACreature::ExitEvent(class AActor* overlappedActor, class AActor* otherActo
 
 void ACreature::SwitchingToWaitBeforeMoveFastWhenEnemiesCleared() {
 	if (actualStatus == EStatus::UnderAttack && enemiesActuallyAttacking.Num() == 0 &&
-		currentEnemyTriggerBox != nullptr && currentEnemyTriggerBox->AreAllEnemiesDefeated()) {
+		currentEnemyTriggerBox && currentEnemyTriggerBox->AreAllEnemiesDefeated()) {
 
 		WhaleAudioComp->Play(0.f);
 		startTime = GetWorld()->GetTimeSeconds();
@@ -406,7 +406,7 @@ void ACreature::TriggerEnter(class UPrimitiveComponent* HitComp, class AActor* O
 		}
 		else if (OtherActor->IsA(AGameCharacter::StaticClass())) {
 			UE_LOG(LogTemp, Warning, TEXT("getting inside fur4"));
-			isCharInFur = true;
+			bIsCharInFur = true;
 		}
 	}
 }
@@ -420,7 +420,7 @@ void ACreature::TriggerExit(class UPrimitiveComponent* HitComp, class AActor* Ot
 		}
 		else if (OtherActor->IsA(AGameCharacter::StaticClass())) {
 			UE_LOG(LogTemp, Warning, TEXT("away from fur4"));
-			isCharInFur = false;
+			bIsCharInFur = false;
 		}
 	}
 }
@@ -457,7 +457,7 @@ isCharInFur state can be asked from creature
 */
 
 bool ACreature::IsCharacterInFur() const {
-	return isCharInFur;
+	return bIsCharInFur;
 }
 
 EStatus ACreature::GetStatus() const {

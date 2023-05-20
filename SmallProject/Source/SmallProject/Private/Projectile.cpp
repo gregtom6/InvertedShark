@@ -83,7 +83,7 @@ void AProjectile::Tick(float DeltaTime)
 		float currentTime = GetWorld()->GetTimeSeconds() - startTime;
 		currentTime /= timeUntilDestroy;
 		if (currentTime >= globalSettings->FullPercent) {
-			isActivated = false;
+			bIsActivated = false;
 			status = EProjectileStatus::Initial;
 			SetActorLocation(shooterActor->GetActorLocation());
 			staticMesh->SetMaterial(0, invisibleMaterial);
@@ -102,14 +102,14 @@ void AProjectile::Tick(float DeltaTime)
 }
 
 void AProjectile::TimeManagement() {
-	if (gameChar == nullptr) { return; }
+	if (!gameChar) { return; }
 
 	projectileHittedTargetAudioComp->SetPitchMultiplier(gameChar->GetCurrentSoundPitchMultiplier());
 }
 
 void AProjectile::Event(class AActor* overlappedActor, class AActor* otherActor) {
 
-	if (status != EProjectileStatus::FlyToTarget || !isActivated) { return; }
+	if (status != EProjectileStatus::FlyToTarget || !bIsActivated) { return; }
 
 	if (otherActor && otherActor != this) {
 		if (otherActor->IsA(ACreature::StaticClass()) || otherActor->IsA(AGameCharacter::StaticClass())) {
@@ -117,7 +117,7 @@ void AProjectile::Event(class AActor* overlappedActor, class AActor* otherActor)
 
 			targetedActor = otherActor;
 
-			if (targetedActor != nullptr && shooterActor != nullptr) {
+			if (targetedActor && shooterActor) {
 				FRotator targetRotation = UKismetMathLibrary::FindLookAtRotation(targetedActor->GetActorLocation(), shooterActor->GetActorLocation());
 				FRotator actorRotation = targetedActor->GetActorRotation();
 				FRotator sum = targetRotation - actorRotation;
@@ -145,7 +145,8 @@ void AProjectile::Event(class AActor* overlappedActor, class AActor* otherActor)
 	}
 }
 
-void AProjectile::CheckOverlappingComponents(AActor* currentlyTargetedActor, FVector direction, FRotator sum) {
+void AProjectile::CheckOverlappingComponents(AActor* currentlyTargetedActor, const FVector direction, const FRotator sum) {
+	
 	TArray<UPrimitiveComponent*> OverlappingComponents;
 	staticMesh->GetOverlappingComponents(OverlappingComponents);
 
@@ -192,6 +193,7 @@ void AProjectile::CheckOverlappingComponents(AActor* currentlyTargetedActor, FVe
 }
 
 FVector AProjectile::SettingUpScale(AActor* currentTargetedActor) {
+
 	if (currentTargetedActor->IsA(AGameCharacter::StaticClass())) {
 		AGameCharacter* gameCharacter = Cast<AGameCharacter>(currentTargetedActor);
 		UStaticMeshComponent* gameCharacterStaticMesh = gameCharacter->GetStaticMeshComponent();
@@ -207,7 +209,7 @@ FVector AProjectile::SettingUpScale(AActor* currentTargetedActor) {
 
 void AProjectile::SetTarget(AActor* tar, AActor* origin) {
 
-	if (tar == nullptr) { return; }
+	if (!tar) { return; }
 
 	float offset = offsetForHittingTarget;
 
@@ -236,7 +238,7 @@ void AProjectile::SetTarget(AActor* tar, AActor* origin) {
 	directionVector = target - GetActorLocation();
 	directionVector.Normalize();
 
-	isActivated = true;
+	bIsActivated = true;
 
 	staticMesh->SetMaterial(0, originalMaterial);
 }

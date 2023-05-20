@@ -6,6 +6,8 @@
 #include "GameFramework/Pawn.h"
 #include "GameCharacter.generated.h"
 
+#pragma region Forward Declarations
+
 class UStaticMeshComponent;
 class USkeletalMeshComponent;
 class UStaticMesh;
@@ -25,6 +27,8 @@ class UProjectileCompPositioner;
 class UResourceDataAsset;
 class UCameraShakeBase;
 
+#pragma endregion
+
 DECLARE_DELEGATE(FOnDieHappenedSignature);
 
 //this is the player character
@@ -39,7 +43,7 @@ private:
 
 	void WingBeat();
 
-	void RotateLR(float rotateDelta);
+	void RotateLR(const float rotateDelta);
 
 	void HugCreature();
 
@@ -57,7 +61,7 @@ private:
 
 	void StateManagement();
 
-	void EnergyManagement(float DeltaTime, FVector& currentVelocity);
+	void EnergyManagement(const float DeltaTime, FVector& currentVelocity);
 
 	void VelocityManagement(FVector& currentVelocity);
 
@@ -71,7 +75,7 @@ private:
 
 	void TimeManagement();
 
-	void SetRotationLocks(bool X, bool Y, bool Z);
+	void SetRotationLocks(const bool X, const bool Y, const bool Z);
 
 	void InitializePause();
 
@@ -81,7 +85,7 @@ private:
 
 	float time;
 
-	bool isHugging;
+	bool bIsHugging;
 
 	UPROPERTY()
 		ACreature* creature;
@@ -308,16 +312,16 @@ public:
 
 	void Pause();
 
-	void SetupProjectile(FRotator rotator, FVector scale, UStaticMesh* mesh, UMaterialInterface* material, FVector offset);
+	void SetupProjectile(const FRotator rotator, const FVector scale, UStaticMesh* mesh, UMaterialInterface* material, const FVector offset);
 
-	void DoAfterGettingHitFromProjectile(FVector direction);
+	void DoAfterGettingHitFromProjectile(const FVector direction);
 
 	FOnDieHappenedSignature OnDieHappenedDelegate;
 
 	USkeletalMeshComponent* GetSkeletalMeshComponent() const;
 	UStaticMeshComponent* GetStaticMeshComponent() const;
 
-	void NotifyTargeting(bool iAmTargeted);
+	void NotifyTargeting(const bool iAmTargeted);
 
 	FVector GetBackBeforeDashLocation() const;
 

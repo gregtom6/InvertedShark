@@ -25,7 +25,7 @@ void UProjectileCompPositioner::BeginPlay()
 }
 
 
-void UProjectileCompPositioner::SetupProjectile(FRotator rotator, FVector scale, UStaticMesh* mesh, UMaterialInterface* material, FVector offset) {
+void UProjectileCompPositioner::SetupProjectile(const FRotator rotator, const FVector scale, UStaticMesh* mesh, UMaterialInterface* material, const FVector offset) {
 
 	if (projectileShotThroughMeCacheIndex >= projectilesShotThroughMe.Num()) {
 		UE_LOG(LogTemp, Warning, TEXT("no cached projectile elements in me"));

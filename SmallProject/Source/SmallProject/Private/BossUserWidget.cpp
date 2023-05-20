@@ -22,7 +22,7 @@ void UBossUserWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 {
 	Super::NativeTick(MyGeometry, InDeltaTime);
 
-	if (boss == nullptr) { return; }
+	if (!boss) { return; }
 
 	float currentLifePercentage = boss->GetLife() / boss->GetMaxLife();
 	float deltaLifePercentage = boss->GetOriginalLifeBeforeAttack() / boss->GetMaxLife();

@@ -18,6 +18,8 @@ ABossEnemy::ABossEnemy(const FObjectInitializer& ObjectInitializer)
 void ABossEnemy::BeginPlay() {
 	Super::BeginPlay();
 
+	ensure(widgetclass);
+
 	OnActorBeginOverlap.AddUniqueDynamic(this, &AEnemy::EnterEvent);
 	OnActorEndOverlap.AddUniqueDynamic(this, &AEnemy::ExitEvent);
 }
@@ -45,7 +47,7 @@ void ABossEnemy::MoveToCreature(float timeToStart) {
 		UE_LOG(LogTemp, Warning, TEXT("bossenemy2"));
 		bossuserwidget = Cast<UBossUserWidget>(CreateWidget(GetWorld(), widgetclass));
 
-		if (bossuserwidget != nullptr) {
+		if (bossuserwidget) {
 
 			bossuserwidget->boss = this;
 
@@ -67,9 +69,7 @@ FVector ABossEnemy::GetEndPosition() const {
 }
 
 FVector ABossEnemy::GetPositionOfBodyMesh() {
-	if (bodyMesh != nullptr)
-		return bodyMesh->GetComponentLocation();
-	else return FVector::ZeroVector;
+	return bodyMesh ? bodyMesh->GetComponentLocation() : FVector::ZeroVector;
 }
 
 float ABossEnemy::GetBodyMeshRadius() {
