@@ -36,7 +36,7 @@ void ABossEnemy::EndPlay(const EEndPlayReason::Type EndPlayReason)
 overriding MoveToCreature(), because we need to setup values to step into Moving state (that happens in the parent), but we also need to add boss lifebar widget to viewport (the boss is coming and fight gets started)
 */
 
-void ABossEnemy::MoveToCreature(float timeToStart) {
+void ABossEnemy::MoveToCreature(const float timeToStart) {
 
 	Super::MoveToCreature(timeToStart);
 

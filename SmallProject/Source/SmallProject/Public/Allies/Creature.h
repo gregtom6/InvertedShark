@@ -54,7 +54,7 @@ protected:
 
 	void HeadStateManagement();
 
-	void HealthManagement(float DeltaTime);
+	void HealthManagement(const float DeltaTime);
 
 	void StateManagement();
 
@@ -183,7 +183,7 @@ public:
 	void HealingStarted();
 	EStatus GetStatus() const;
 
-	void SetupProjectile(const FRotator rotator, const FVector scale, UStaticMesh* mesh, UMaterialInterface* material, const FVector offset);
+	void SetupProjectile(const FRotator rotator, const FVector scale, UStaticMesh* const& mesh, UMaterialInterface* const& material, const FVector offset);
 
 	void DoAfterGettingHitFromProjectile();
 

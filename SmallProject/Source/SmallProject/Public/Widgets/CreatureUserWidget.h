@@ -20,7 +20,7 @@ protected:
 	virtual void NativeConstruct() override;
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 
-	void BigDeltaDamageHappened(float originalLifeBeforeAttack);
+	void BigDeltaDamageHappened(const float originalLifeBeforeAttack);
 
 	UPROPERTY(meta = (BindWidget))
 		UProgressBar* HealthBar;

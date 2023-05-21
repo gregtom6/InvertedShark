@@ -300,7 +300,7 @@ void AGameCharacter::LeftDash() {
 
 	CameraMesh->AddImpulse(impulseDirection);
 
-	if (!amITargeted) {
+	if (!bAmITargeted) {
 
 		actualEnergy -= energyDecreaseAfterDash;
 		if (actualEnergy < 0.f)
@@ -328,7 +328,7 @@ void AGameCharacter::RightDash() {
 
 	CameraMesh->AddImpulse(impulseDirection);
 
-	if (!amITargeted) {
+	if (!bAmITargeted) {
 
 		actualEnergy -= energyDecreaseAfterDash;
 		if (actualEnergy < 0.f)
@@ -391,8 +391,8 @@ void AGameCharacter::UpDash() {
 	rightNoseSneezeNiagara->Activate(true);
 }
 
-void AGameCharacter::NotifyTargeting(const bool iAmTargeted) {
-	amITargeted = iAmTargeted;
+void AGameCharacter::NotifyTargeting(const bool bIAmTargeted) {
+	bAmITargeted = bIAmTargeted;
 }
 
 
@@ -591,7 +591,7 @@ void AGameCharacter::Tick(float DeltaTime)
 	TimeManagement();
 }
 
-void AGameCharacter::SetupProjectile(const FRotator rotator, const FVector scale, UStaticMesh* mesh, UMaterialInterface* material, const FVector offset) {
+void AGameCharacter::SetupProjectile(const FRotator rotator, const FVector scale, UStaticMesh* const& mesh, UMaterialInterface* const& material, const FVector offset) {
 
 	ProjectilePositioner->SetupProjectile(rotator, scale, mesh, material, offset);
 }
@@ -771,7 +771,7 @@ void AGameCharacter::StateManagement() {
 /*
 energy management of player, based on current restmultiplier
 */
-void AGameCharacter::EnergyManagement(const float DeltaTime, FVector& currentVelocity) {
+void AGameCharacter::EnergyManagement(const float DeltaTime, FVector const& currentVelocity) {
 	float newEnergy = actualEnergy + energyRegeneration * DeltaTime;
 	float restMult = 1.f;
 
@@ -867,7 +867,7 @@ void AGameCharacter::MetalScratchManagement() {
 /*
 helper function for detecting the closest intersecting point between the closest static mesh components of two actors
 */
-bool AGameCharacter::GetOverlapInfluenceSphere(UStaticMeshComponent* StaticMeshComponent, FVector& OutActor1ClosestPoint, FVector& OutActor2ClosestPoint)
+bool AGameCharacter::GetOverlapInfluenceSphere(UStaticMeshComponent* const& StaticMeshComponent, FVector& OutActor1ClosestPoint, FVector& OutActor2ClosestPoint)
 {
 	FTransform TransformA = StaticMeshComponent->GetComponentTransform();
 

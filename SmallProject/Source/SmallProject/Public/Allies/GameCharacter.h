@@ -61,7 +61,7 @@ private:
 
 	void StateManagement();
 
-	void EnergyManagement(const float DeltaTime, FVector& currentVelocity);
+	void EnergyManagement(const float DeltaTime, FVector const& currentVelocity);
 
 	void VelocityManagement(FVector& currentVelocity);
 
@@ -112,7 +112,7 @@ private:
 	float slowdownStartTime;
 	bool canSlowdownTimeStarted;
 
-	bool amITargeted;
+	bool bAmITargeted;
 
 	FVector positionBeforeDash;
 
@@ -286,7 +286,7 @@ protected:
 		UNiagaraComponent* DownDashNiagara;
 
 	UFUNCTION()
-		bool GetOverlapInfluenceSphere(UStaticMeshComponent* StaticMeshComponent, FVector& Actor1ClosestPoint, FVector& Actor2ClosestPoint);
+		bool GetOverlapInfluenceSphere(UStaticMeshComponent* const& StaticMeshComponent, FVector& Actor1ClosestPoint, FVector& Actor2ClosestPoint);
 
 	UFUNCTION()
 		void SneezeBlinkEnded();
@@ -312,7 +312,7 @@ public:
 
 	void Pause();
 
-	void SetupProjectile(const FRotator rotator, const FVector scale, UStaticMesh* mesh, UMaterialInterface* material, const FVector offset);
+	void SetupProjectile(const FRotator rotator, const FVector scale, UStaticMesh* const& mesh, UMaterialInterface* const& material, const FVector offset);
 
 	void DoAfterGettingHitFromProjectile(const FVector direction);
 
@@ -321,7 +321,7 @@ public:
 	USkeletalMeshComponent* GetSkeletalMeshComponent() const;
 	UStaticMeshComponent* GetStaticMeshComponent() const;
 
-	void NotifyTargeting(const bool iAmTargeted);
+	void NotifyTargeting(const bool bIAmTargeted);
 
 	FVector GetBackBeforeDashLocation() const;
 

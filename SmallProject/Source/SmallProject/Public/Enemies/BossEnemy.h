@@ -43,7 +43,7 @@ protected:
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 public:
 
-	virtual void MoveToCreature(float timeToStart) override;
+	virtual void MoveToCreature(const float timeToStart) override;
 
 
 	float GetLife() const;

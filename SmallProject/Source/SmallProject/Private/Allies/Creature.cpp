@@ -119,7 +119,7 @@ void ACreature::StepTargetIndex() {
 	}
 }
 
-void ACreature::SetupProjectile(const FRotator rotator, const FVector scale, UStaticMesh* mesh, UMaterialInterface* material, const FVector offset) {
+void ACreature::SetupProjectile(const FRotator rotator, const FVector scale, UStaticMesh* const& mesh, UMaterialInterface* const& material, const FVector offset) {
 
 	projectilePositioner->SetupProjectile(rotator, scale, mesh, material, offset);
 }
