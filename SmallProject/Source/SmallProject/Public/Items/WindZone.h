@@ -31,10 +31,7 @@ protected:
 		FVector direction;
 
 	UPROPERTY(EditAnywhere)
-		float minWindStrength;
-
-	UPROPERTY(EditAnywhere)
-		float maxWindStrength;
+		FFloatInterval WindStrength;
 
 	UPROPERTY(EditAnywhere)
 		float dieTime;

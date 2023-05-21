@@ -46,11 +46,11 @@ public:
 	virtual void MoveToCreature(float timeToStart) override;
 
 
-	float GetLife();
+	float GetLife() const;
 
-	float GetMaxLife();
+	float GetMaxLife() const;
 
-	FVector GetPositionOfBodyMesh();
+	FVector GetPositionOfBodyMesh() const;
 
-	float GetBodyMeshRadius();
+	float GetBodyMeshRadius() const;
 };

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Engine/TriggerBox.h"
+#include "Math/Interval.h"
 #include "EnemyTriggerBox.generated.h"
 
 class AEnemy;
@@ -25,10 +26,8 @@ protected:
 		TArray<AEnemy*> enemiesToCome;
 
 	UPROPERTY(EditAnywhere)
-		float minMoveTime = 3.f;
+		FFloatInterval moveTime;
 
-	UPROPERTY(EditAnywhere)
-		float maxMoveTime = 5.f;
 public:
 
 	UFUNCTION()

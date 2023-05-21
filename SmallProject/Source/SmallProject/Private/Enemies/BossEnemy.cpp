@@ -68,11 +68,11 @@ FVector ABossEnemy::GetEndPosition() const {
 	return vec;
 }
 
-FVector ABossEnemy::GetPositionOfBodyMesh() {
+FVector ABossEnemy::GetPositionOfBodyMesh() const {
 	return bodyMesh ? bodyMesh->GetComponentLocation() : FVector::ZeroVector;
 }
 
-float ABossEnemy::GetBodyMeshRadius() {
+float ABossEnemy::GetBodyMeshRadius() const {
 	FCollisionShape shape = bodyMesh->GetCollisionShape();
 	return shape.GetSphereRadius();
 }
@@ -81,11 +81,11 @@ float ABossEnemy::GetBodyMeshRadius() {
 extra methods for boss life bar
 */
 
-float ABossEnemy::GetLife() {
+float ABossEnemy::GetLife() const {
 	return actualLife;
 }
 
-float ABossEnemy::GetMaxLife() {
+float ABossEnemy::GetMaxLife() const {
 	return maxLife;
 }
 
