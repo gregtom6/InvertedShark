@@ -34,7 +34,7 @@ void UCreatureUserWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaT
 	if (creature->GetStatus() == EStatus::Healing) {
 		IncreaseDeltaBar->SetPercent(creature->GetDeltaIncreaseHealth());
 	}
-	else if (IncreaseDeltaBar->GetPercent() != 0.f) {
+	else if (!FMath::IsNearlyEqual(IncreaseDeltaBar->GetPercent(), 0.f)) {
 		IncreaseDeltaBar->SetPercent(0.f);
 	}
 
@@ -63,7 +63,7 @@ void UCreatureUserWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaT
 
 void UCreatureUserWidget::BigDeltaDamageHappened(float originalLifeBeforeAttack) {
 	if (creatureLifeStatus != ECreatureLifeStatus::Normal) { return; }
-	
+
 	deltaLifePercentage = originalLifeBeforeAttack / creature->GetMaxHealth();
 
 	creatureLifeStatus = ECreatureLifeStatus::WaitUntilDecrease;
