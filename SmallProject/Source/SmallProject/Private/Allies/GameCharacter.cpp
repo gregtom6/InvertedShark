@@ -1,21 +1,21 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "GameCharacter.h"
+#include "Allies/GameCharacter.h"
 #include <Kismet/GameplayStatics.h>
-#include <GameCharacterUserWidget.h>
+#include <Widgets/GameCharacterUserWidget.h>
 #include "Components/AudioComponent.h"
-#include "Enemy.h"
-#include "BossEnemy.h"
+#include "Enemies/Enemy.h"
+#include "Enemies/BossEnemy.h"
 #include "GameFramework/Actor.h"
 #include "Kismet/KismetStringLibrary.h"
 #include "Camera/CameraComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "PhysicsEngine/PhysicsConstraintComponent.h"
-#include "Creature.h"
+#include "Allies/Creature.h"
 #include <Sound/SoundCue.h >
-#include <PauseUserWidget.h>
+#include <Widgets/PauseUserWidget.h>
 #include "NiagaraFunctionLibrary.h"
 #include "NiagaraComponent.h"
 #include "ActorSequenceComponent.h"
@@ -23,8 +23,8 @@
 #include "GameFramework/PlayerController.h"
 #include "Materials/MaterialInterface.h"
 #include <Kismet/KismetMathLibrary.h>
-#include "ProjectileCompPositioner.h"
-#include "ResourceDataAsset.h"
+#include "Components/ProjectileCompPositioner.h"
+#include "DataAssets/ResourceDataAsset.h"
 #include "Camera/CameraShakeBase.h"
 
 // Sets default values

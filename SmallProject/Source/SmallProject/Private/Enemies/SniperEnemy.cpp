@@ -1,21 +1,21 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "SniperEnemy.h"
-#include <Creature.h>
-#include <Projectile.h>
+#include "Enemies/SniperEnemy.h"
+#include <Allies/Creature.h>
+#include <Items/Projectile.h>
 #include "Materials/MaterialInterface.h"
 #include "Materials/MaterialInstanceDynamic.h"
 #include "NiagaraFunctionLibrary.h"
 #include "NiagaraComponent.h"
 #include "Components/AudioComponent.h"
 #include <Kismet/GameplayStatics.h>
-#include "GameCharacter.h"
+#include "Allies/GameCharacter.h"
 #include <Kismet/KismetMathLibrary.h>
 #include "ActorSequenceComponent.h"
 #include "ActorSequencePlayer.h"
-#include <WindZone.h>
-#include "ResourceDataAsset.h"
+#include <Items/WindZone.h>
+#include "DataAssets/ResourceDataAsset.h"
 
 
 ASniperEnemy::ASniperEnemy(const FObjectInitializer& ObjectInitializer) 

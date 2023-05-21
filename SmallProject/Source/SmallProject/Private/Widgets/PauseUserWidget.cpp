@@ -1,9 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "PauseUserWidget.h"
+#include "Widgets/PauseUserWidget.h"
 #include "UMG/Public/Components/Button.h"
-#include "GameCharacter.h"
+#include "Allies/GameCharacter.h"
 #include <Kismet/GameplayStatics.h>
 #include <Blueprint/WidgetLayoutLibrary.h>
 

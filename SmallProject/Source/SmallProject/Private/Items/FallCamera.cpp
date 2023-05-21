@@ -1,14 +1,14 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "FallCamera.h"
+#include "Items/FallCamera.h"
 #include <Kismet/GameplayStatics.h>
 #include <Blueprint/WidgetLayoutLibrary.h>
 #include "Camera/CameraComponent.h"
-#include <GameCharacter.h>
-#include "DeadUserWidget.h"
+#include <Allies/GameCharacter.h>
+#include "Widgets/DeadUserWidget.h"
 #include <Kismet/KismetMathLibrary.h>
-#include "ResourceDataAsset.h"
+#include "DataAssets/ResourceDataAsset.h"
 
 // Sets default values
 AFallCamera::AFallCamera(const FObjectInitializer& ObjectInitializer):Super(ObjectInitializer)

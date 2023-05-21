@@ -1,16 +1,16 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Enemy.h"
+#include "Enemies/Enemy.h"
 #include <Kismet/GameplayStatics.h>
 #include "Components/AudioComponent.h"
 #include "Math/UnrealMathUtility.h"
 #include "Components/SplineComponent.h"
-#include "Creature.h"
-#include "GameCharacter.h"
+#include "Allies/Creature.h"
+#include "Allies/GameCharacter.h"
 #include <Sound/SoundCue.h >
 #include "NiagaraComponent.h"
-#include "ResourceDataAsset.h"
+#include "DataAssets/ResourceDataAsset.h"
 
 AEnemy::AEnemy() {}
 

@@ -1,11 +1,11 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "BossEnemy.h"
-#include "BossUserWidget.h"
+#include "Enemies/BossEnemy.h"
+#include "Widgets/BossUserWidget.h"
 #include <Kismet/GameplayStatics.h>
 #include <Blueprint/WidgetLayoutLibrary.h>
-#include "Creature.h"
+#include "Allies/Creature.h"
 #include "Components/SplineComponent.h"
 
 ABossEnemy::ABossEnemy(const FObjectInitializer& ObjectInitializer)

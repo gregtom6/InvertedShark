@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "DeadUserWidget.h"
+#include "Widgets/DeadUserWidget.h"
 #include <Kismet/GameplayStatics.h>
 #include "Components/Button.h"
 

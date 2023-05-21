@@ -1,9 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "WindZone.h"
-#include "GameCharacter.h"
-#include "ResourceDataAsset.h"
+#include "Items/WindZone.h"
+#include "Allies/GameCharacter.h"
+#include "DataAssets/ResourceDataAsset.h"
 
 AWindZone::AWindZone(const FObjectInitializer& ObjectInitializer) :Super(ObjectInitializer) {
 	PrimaryActorTick.bCanEverTick = true;

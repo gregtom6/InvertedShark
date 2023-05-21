@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "VictoryScreenUserWidget.h"
+#include "Widgets/VictoryScreenUserWidget.h"
 #include "UMG/Public/Components/Button.h"
 #include <Kismet/GameplayStatics.h>
 

@@ -1,11 +1,11 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "EnemyTriggerBox.h"
-#include "GameCharacter.h"
-#include <Enemy.h>
-#include <Creature.h>
+#include "Items/EnemyTriggerBox.h"
+#include "Allies/GameCharacter.h"
+#include <Enemies/Enemy.h>
+#include <Allies/Creature.h>
 #include "GameFramework/Actor.h"
-#include <SniperEnemy.h>
+#include <Enemies/SniperEnemy.h>
 
 void AEnemyTriggerBox::BeginPlay() {
 	Super::BeginPlay();

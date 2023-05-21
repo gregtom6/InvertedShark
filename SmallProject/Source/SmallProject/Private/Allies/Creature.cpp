@@ -1,22 +1,22 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Creature.h"
+#include "Allies/Creature.h"
 #include "Components/WidgetComponent.h"
 #include "Blueprint/UserWidget.h"
-#include "CreatureUserWidget.h"
+#include "Widgets/CreatureUserWidget.h"
 #include <Kismet/GameplayStatics.h>
 #include "Components/AudioComponent.h"
 #include "Components/BoxComponent.h"
-#include "Enemy.h"
-#include "HealerEnemy.h"
-#include "GameCharacter.h"
+#include "Enemies/Enemy.h"
+#include "Enemies/HealerEnemy.h"
+#include "Allies/GameCharacter.h"
 #include <Sound/SoundCue.h >
 #include <Kismet/KismetMathLibrary.h>
-#include "SniperEnemy.h"
-#include "ProjectileCompPositioner.h"
-#include "ResourceDataAsset.h"
-#include "EnemyTriggerBox.h"
+#include "Enemies/SniperEnemy.h"
+#include "Components/ProjectileCompPositioner.h"
+#include "DataAssets/ResourceDataAsset.h"
+#include "Items/EnemyTriggerBox.h"
 
 ACreature::ACreature(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)

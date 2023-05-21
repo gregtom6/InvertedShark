@@ -1,14 +1,14 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "HealerEnemy.h"
-#include "GameCharacter.h"
+#include "Enemies/HealerEnemy.h"
+#include "Allies/GameCharacter.h"
 #include "Components/SplineComponent.h"
 #include "Components/AudioComponent.h"
 #include <Sound/SoundCue.h>
-#include "Creature.h"
+#include "Allies/Creature.h"
 #include "Materials/MaterialInterface.h"
-#include "ResourceDataAsset.h"
+#include "DataAssets/ResourceDataAsset.h"
 
 AHealerEnemy::AHealerEnemy(const FObjectInitializer& ObjectInitializer) :Super(ObjectInitializer) {
 	DeflateAudioComp = CreateDefaultSubobject<UAudioComponent>(TEXT("DeflateAudioComp"));

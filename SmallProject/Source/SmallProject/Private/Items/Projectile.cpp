@@ -1,16 +1,16 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Projectile.h"
-#include "Creature.h"
+#include "Items/Projectile.h"
+#include "Allies/Creature.h"
 #include "Components/AudioComponent.h"
 #include "NiagaraFunctionLibrary.h"
 #include "NiagaraComponent.h"
 #include <Kismet/KismetMathLibrary.h>
-#include "GameCharacter.h"
+#include "Allies/GameCharacter.h"
 #include "Materials/MaterialInterface.h"
 #include <Kismet/GameplayStatics.h>
-#include "ResourceDataAsset.h"
+#include "DataAssets/ResourceDataAsset.h"
 
 // Sets default values
 AProjectile::AProjectile(const FObjectInitializer& ObjectInitializer) :Super(ObjectInitializer)

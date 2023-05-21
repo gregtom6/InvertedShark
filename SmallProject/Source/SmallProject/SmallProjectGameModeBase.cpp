@@ -2,7 +2,7 @@
 
 
 #include "SmallProjectGameModeBase.h"
-#include "Public/GameCharacter.h"
+#include "Public/Allies/GameCharacter.h"
 
 ASmallProjectGameModeBase::ASmallProjectGameModeBase() {
 	DefaultPawnClass = AGameCharacter::StaticClass();
