@@ -308,7 +308,7 @@ creature health management. Decrease depends on the currently attacking enemy co
 */
 void ACreature::HealthManagement(const float DeltaTime) {
 
-	if (actualStatus == EStatus::Healing && healthComponent->GetHealth() == healthComponent->GetMaxHealth() && enemiesActuallyAttacking.Num() > 0) {
+	if (actualStatus == EStatus::Healing && healthComponent->GetHealth() >= healthComponent->GetMaxHealth() && enemiesActuallyAttacking.Num() > 0) {
 		actualStatus = EStatus::UnderAttack;
 	}
 

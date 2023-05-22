@@ -42,7 +42,7 @@ void UCreatureUserWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaT
 	if (creature->GetStatus() == EStatus::Healing) {
 		IncreaseDeltaBar->SetPercent(creatureHealthComp->GetDeltaIncreaseHealth());
 	}
-	else if (FMath::IsNearlyEqual(IncreaseDeltaBar->GetPercent(), 1.f)) {
+	else if (IncreaseDeltaBar->GetPercent() >= 1.f) {
 		IncreaseDeltaBar->SetPercent(0.f);
 	}
 
