@@ -26,6 +26,8 @@
 #include "Components/ProjectileCompPositioner.h"
 #include "DataAssets/ResourceDataAsset.h"
 #include "Camera/CameraShakeBase.h"
+#include "ProjectileDamageType.h"
+#include "Components/HealthComponent.h"
 
 // Sets default values
 AGameCharacter::AGameCharacter(const FObjectInitializer& ObjectInitializer)
@@ -61,6 +63,8 @@ AGameCharacter::AGameCharacter(const FObjectInitializer& ObjectInitializer)
 	DownDashNiagara = CreateDefaultSubobject<UNiagaraComponent>(TEXT("DownDashNiagara"));
 
 	ProjectilePositioner = CreateDefaultSubobject<UProjectileCompPositioner>(TEXT("ProjectilePositioner"));
+
+	healthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("healthComponent"));
 
 	globalSettings = NewObject<UResourceDataAsset>(GetTransientPackage(), FName("globalSettings"));
 
@@ -896,7 +900,6 @@ bool AGameCharacter::GetOverlapInfluenceSphere(UStaticMeshComponent* const& Stat
 
 	return false;
 }
-
 
 void AGameCharacter::SetPrevStatusToActualStatus() {
 	prevStatus = actualStatus;

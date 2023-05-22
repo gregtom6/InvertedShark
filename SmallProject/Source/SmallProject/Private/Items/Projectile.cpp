@@ -174,7 +174,14 @@ void AProjectile::CheckOverlappingComponents(AActor* currentlyTargetedActor, con
 
 					AGameCharacter* gameCharacter = Cast<AGameCharacter>(currentlyTargetedActor);
 					gameCharacter->SetupProjectile(sum, scale, staticMesh->GetStaticMesh(), staticMesh->GetMaterial(0), target);
-					gameCharacter->DoAfterGettingHitFromProjectile(direction);
+
+					FHitResult HitOut;
+
+					UGameplayStatics::ApplyPointDamage(gameCharacter, damageCaused, direction, HitOut, GetInstigatorController(), this, projectileDamageType);
+
+					staticMesh->SetMaterial(0, invisibleMaterial);
+
+					break;
 				}
 				else if (currentlyTargetedActor->IsA(ACreature::StaticClass())) {
 
@@ -185,10 +192,10 @@ void AProjectile::CheckOverlappingComponents(AActor* currentlyTargetedActor, con
 
 					UGameplayStatics::ApplyPointDamage(creature, damageCaused, direction, HitOut, GetInstigatorController(), this, projectileDamageType);
 
+					staticMesh->SetMaterial(0, invisibleMaterial);
+
 					break;
 				}
-				
-				staticMesh->SetMaterial(0, invisibleMaterial);
 			}
 			else {
 				UE_LOG(LogTemp, Log, TEXT("overlapping comp internal volt"));

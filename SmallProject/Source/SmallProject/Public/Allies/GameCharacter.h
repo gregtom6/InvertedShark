@@ -26,6 +26,7 @@ class ACreature;
 class UProjectileCompPositioner;
 class UResourceDataAsset;
 class UCameraShakeBase;
+class UHealthComponent;
 
 #pragma endregion
 
@@ -284,6 +285,9 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 		UNiagaraComponent* DownDashNiagara;
+
+	UPROPERTY(EditAnywhere)
+		UHealthComponent* healthComponent;
 
 	UFUNCTION()
 		bool GetOverlapInfluenceSphere(UStaticMeshComponent* const& StaticMeshComponent, FVector& Actor1ClosestPoint, FVector& Actor2ClosestPoint);

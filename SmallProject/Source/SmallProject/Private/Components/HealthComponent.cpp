@@ -3,13 +3,15 @@
 
 #include "Components/HealthComponent.h"
 #include "HealDamageType.h"
+#include "Allies/GameCharacter.h"
+#include "ProjectileDamageType.h"
 
 // Sets default values for this component's properties
 UHealthComponent::UHealthComponent()
 {
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
-	PrimaryComponentTick.bCanEverTick = true;
+	PrimaryComponentTick.bCanEverTick = false;
 }
 
 
@@ -41,7 +43,6 @@ void UHealthComponent::OnTakePointDamage(AActor* DamagedActor, float Damage, ACo
 
 	if (!GetOwner()->CanBeDamaged()) { return; }
 
-
 	if (DamageType->IsA(UHealDamageType::StaticClass())) {
 		//healing
 		Health = Health < MaxHealth ? actualHealthWhenStartedHealing + Damage : MaxHealth;
@@ -50,13 +51,15 @@ void UHealthComponent::OnTakePointDamage(AActor* DamagedActor, float Damage, ACo
 		originalLifeBeforeAttack = Health;
 		//making damage
 		Health = Health - Damage > 0 ? Health - Damage : 0;
+
+		if (Health <= 0.f) {
+			if (GetOwner()->IsA(AGameCharacter::StaticClass()) && DamageType->IsA(UProjectileDamageType::StaticClass())) {
+				AGameCharacter* gameCharacter = Cast<AGameCharacter>(GetOwner());
+
+				gameCharacter->DoAfterGettingHitFromProjectile(ShotFromDirection);
+			}
+		}
 	}
-
-}
-
-void UHealthComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) {
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
 
 }
 
