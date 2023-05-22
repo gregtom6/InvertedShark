@@ -184,6 +184,8 @@ void AProjectile::CheckOverlappingComponents(AActor* currentlyTargetedActor, con
 					FHitResult HitOut;
 
 					UGameplayStatics::ApplyPointDamage(creature, damageCaused, direction, HitOut, GetInstigatorController(), this, projectileDamageType);
+
+					break;
 				}
 				
 				staticMesh->SetMaterial(0, invisibleMaterial);

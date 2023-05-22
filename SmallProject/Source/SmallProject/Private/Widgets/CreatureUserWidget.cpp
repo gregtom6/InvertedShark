@@ -5,6 +5,7 @@
 #include "Components/ProgressBar.h"
 #include "Components/HealthComponent.h"
 #include "Allies/Creature.h"
+#include "ProjectileDamageType.h"
 
 void UCreatureUserWidget::NativeConstruct() {
 	Super::NativeConstruct();
@@ -74,8 +75,9 @@ void UCreatureUserWidget::TakePointDamage(AActor* DamagedActor, float Damage, AC
 	FVector ShotFromDirection, const UDamageType* DamageType,
 	AActor* DamageCauser) {
 
-
 	if (creatureLifeStatus != ECreatureLifeStatus::Normal) { return; }
+
+	if (!DamageType->IsA(UProjectileDamageType::StaticClass())) { return; }
 
 	deltaLifePercentage = creatureHealthComp->GetOriginalLifeBeforeAttack() / creatureHealthComp->GetMaxHealth();
 
