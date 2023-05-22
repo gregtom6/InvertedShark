@@ -3,6 +3,7 @@
 
 #include "Widgets/CreatureUserWidget.h"
 #include "Components/ProgressBar.h"
+#include "Components/HealthComponent.h"
 #include "Allies/Creature.h"
 
 void UCreatureUserWidget::NativeConstruct() {
@@ -15,7 +16,14 @@ void UCreatureUserWidget::NativeConstruct() {
 	DecreaseDeltaBar->SetPercent(0.f);
 
 	if (creature)
-		creature->bigDeltaDamageHappenedDelegate.BindUObject(this, &UCreatureUserWidget::BigDeltaDamageHappened);
+		creature->OnTakePointDamage.AddUniqueDynamic(this, &UCreatureUserWidget::TakePointDamage);
+}
+
+void UCreatureUserWidget::NativeDestruct() {
+	Super::NativeDestruct();
+
+	if (creature)
+		creature->OnTakePointDamage.RemoveDynamic(this, &UCreatureUserWidget::TakePointDamage);
 }
 
 /*
@@ -25,16 +33,16 @@ void UCreatureUserWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaT
 {
 	Super::NativeTick(MyGeometry, InDeltaTime);
 
-	if (!creature) { return; }
+	if (!creatureHealthComp) { return; }
 
-	float currentLifePercentage = creature->GetHealth() / creature->GetMaxHealth();
+	float currentLifePercentage = creatureHealthComp->GetHealth() / creatureHealthComp->GetMaxHealth();
 
-	HealthBar->SetPercent(creature->GetHealth() / creature->GetMaxHealth());
+	HealthBar->SetPercent(currentLifePercentage);
 
 	if (creature->GetStatus() == EStatus::Healing) {
-		IncreaseDeltaBar->SetPercent(creature->GetDeltaIncreaseHealth());
+		IncreaseDeltaBar->SetPercent(creatureHealthComp->GetDeltaIncreaseHealth());
 	}
-	else if (!FMath::IsNearlyEqual(IncreaseDeltaBar->GetPercent(), 0.f)) {
+	else if (FMath::IsNearlyEqual(IncreaseDeltaBar->GetPercent(), 1.f)) {
 		IncreaseDeltaBar->SetPercent(0.f);
 	}
 
@@ -56,17 +64,23 @@ void UCreatureUserWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaT
 		if (currentTime >= timeForDisappear) {
 			creatureLifeStatus = ECreatureLifeStatus::Normal;
 			DecreaseDeltaBar->SetPercent(0.f);
-			creature->OriginalLifeRepresentationEnded();
+			creatureHealthComp->OriginalLifeRepresentationEnded();
 		}
 	}
 }
 
-void UCreatureUserWidget::BigDeltaDamageHappened(const float originalLifeBeforeAttack) {
+void UCreatureUserWidget::TakePointDamage(AActor* DamagedActor, float Damage, AController* InstigatedBy,
+	FVector HitLocation, UPrimitiveComponent* FHitComponent, FName BoneName,
+	FVector ShotFromDirection, const UDamageType* DamageType,
+	AActor* DamageCauser) {
+
+
 	if (creatureLifeStatus != ECreatureLifeStatus::Normal) { return; }
 
-	deltaLifePercentage = originalLifeBeforeAttack / creature->GetMaxHealth();
+	deltaLifePercentage = creatureHealthComp->GetOriginalLifeBeforeAttack() / creatureHealthComp->GetMaxHealth();
 
 	creatureLifeStatus = ECreatureLifeStatus::WaitUntilDecrease;
 	DecreaseDeltaBar->SetPercent(deltaLifePercentage);
 	startTime = GetWorld()->GetTimeSeconds();
+
 }

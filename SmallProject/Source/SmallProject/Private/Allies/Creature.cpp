@@ -17,6 +17,8 @@
 #include "Components/ProjectileCompPositioner.h"
 #include "DataAssets/ResourceDataAsset.h"
 #include "Items/EnemyTriggerBox.h"
+#include "Components/HealthComponent.h"
+#include "ProjectileDamageType.h"
 
 ACreature::ACreature(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -41,6 +43,8 @@ ACreature::ACreature(const FObjectInitializer& ObjectInitializer)
 
 	projectilePositioner = CreateDefaultSubobject<UProjectileCompPositioner>(TEXT("projectilePositioner"));
 
+	healthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("healthComponent"));
+
 	globalSettings = NewObject<UResourceDataAsset>(GetTransientPackage(), FName("globalSettings"));
 }
 
@@ -55,10 +59,6 @@ void ACreature::BeginPlay()
 {
 	Super::BeginPlay();
 
-	Health = MaxHealth;
-
-	originalLifeBeforeAttack = Health;
-
 	WhaleAudioComp->Play(0.f);
 
 	if (IsValid(widgetclass)) {
@@ -69,6 +69,7 @@ void ACreature::BeginPlay()
 		if (creatureuserwidget != nullptr) {
 
 			creatureuserwidget->creature = this;
+			creatureuserwidget->creatureHealthComp = healthComponent;
 
 			UE_LOG(LogTemp, Warning, TEXT("creature2"));
 			creatureuserwidget->AddToViewport(0);
@@ -91,6 +92,8 @@ void ACreature::BeginPlay()
 	OnActorBeginOverlap.AddUniqueDynamic(this, &ACreature::EnterEvent);
 	OnActorEndOverlap.AddUniqueDynamic(this, &ACreature::ExitEvent);
 
+	OnTakePointDamage.AddUniqueDynamic(this, &ACreature::TakePointDamage);
+
 	huggableComp->OnComponentBeginOverlap.AddUniqueDynamic(this, &ACreature::TriggerEnter);
 	huggableComp->OnComponentEndOverlap.AddUniqueDynamic(this, &ACreature::TriggerExit);
 }
@@ -101,6 +104,8 @@ void ACreature::EndPlay(const EEndPlayReason::Type EndPlayReason)
 
 	OnActorBeginOverlap.RemoveDynamic(this, &ACreature::EnterEvent);
 	OnActorEndOverlap.RemoveDynamic(this, &ACreature::ExitEvent);
+
+	OnTakePointDamage.RemoveDynamic(this, &ACreature::TakePointDamage);
 
 	huggableComp->OnComponentBeginOverlap.RemoveDynamic(this, &ACreature::TriggerEnter);
 	huggableComp->OnComponentEndOverlap.RemoveDynamic(this, &ACreature::TriggerExit);
@@ -124,22 +129,17 @@ void ACreature::SetupProjectile(const FRotator rotator, const FVector scale, USt
 	projectilePositioner->SetupProjectile(rotator, scale, mesh, material, offset);
 }
 
-void ACreature::DoAfterGettingHitFromProjectile() {
-	originalLifeBeforeAttack = Health;
-	Health = Health > 0 ? Health - damageAfterSting : 0;
-	bigDeltaDamageHappenedDelegate.ExecuteIfBound(originalLifeBeforeAttack);
+void ACreature::TakePointDamage(AActor* DamagedActor, float Damage, AController* InstigatedBy,
+	FVector HitLocation, UPrimitiveComponent* FHitComponent, FName BoneName,
+	FVector ShotFromDirection, const UDamageType* DamageType,
+	AActor* DamageCauser) {
+
+	if (DamagedActor != this) { return; }
+
+	if (!DamageType->IsA(UProjectileDamageType::StaticClass())) { return; }
 
 	WhaleCryAudio->Play();
 }
-
-float ACreature::GetOriginalLifeBeforeAttack() const {
-	return originalLifeBeforeAttack;
-}
-
-void ACreature::OriginalLifeRepresentationEnded() {
-	originalLifeBeforeAttack = Health;
-}
-
 
 void ACreature::Tick(float DeltaTime)
 {
@@ -308,30 +308,11 @@ creature health management. Decrease depends on the currently attacking enemy co
 */
 void ACreature::HealthManagement(const float DeltaTime) {
 
-	if (actualStatus == EStatus::UnderAttack) {
-		originalLifeBeforeAttack = Health;
-		Health = Health > 0 ? Health - (deltaDamage * DeltaTime * enemiesActuallyAttacking.Num()) : 0;
-	}
-	else if (actualStatus == EStatus::Healing && attackingHealer) {
-
-		deltaHeal = MaxHealth * attackingHealer->GetPercentageOfMaxLifeToHealBack();
-
-		float t = GetWorld()->GetTimeSeconds() - startTime;
-
-		actualTime = t / attackingHealer->GetTimeForHeal();
-
-		if (actualHealthWhenStartedHealing + deltaHeal > MaxHealth) {
-			deltaHeal = MaxHealth - actualHealthWhenStartedHealing;
-		}
-
-		Health = Health < MaxHealth ? actualHealthWhenStartedHealing + (deltaHeal * actualTime) : MaxHealth;
-	}
-
-	if (actualStatus == EStatus::Healing && Health == MaxHealth && enemiesActuallyAttacking.Num() > 0) {
+	if (actualStatus == EStatus::Healing && healthComponent->GetHealth() == healthComponent->GetMaxHealth() && enemiesActuallyAttacking.Num() > 0) {
 		actualStatus = EStatus::UnderAttack;
 	}
 
-	if (Health <= 0) {
+	if (healthComponent->GetHealth() <= 0) {
 		UGameplayStatics::OpenLevel(this, FName(*GetWorld()->GetName()), false);
 	}
 }
@@ -426,9 +407,10 @@ void ACreature::TriggerExit(class UPrimitiveComponent* HitComp, class AActor* Ot
 }
 
 void ACreature::HealingStarted() {
+
+	healthComponent->HealingStarted();
+
 	actualStatus = EStatus::Healing;
-	startTime = GetWorld()->GetTimeSeconds();
-	actualHealthWhenStartedHealing = Health;
 }
 
 /*
@@ -462,4 +444,12 @@ bool ACreature::IsCharacterInFur() const {
 
 EStatus ACreature::GetStatus() const {
 	return actualStatus;
+}
+
+float ACreature::GetMaxHealth() {
+	return healthComponent->GetMaxHealth();
+}
+
+float ACreature::GetActualHealthWhenStartedHealing() {
+	return healthComponent->GetActualHealthWhenStartedHealing();
 }

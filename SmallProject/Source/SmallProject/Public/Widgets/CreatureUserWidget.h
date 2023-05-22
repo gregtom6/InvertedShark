@@ -8,6 +8,7 @@
 
 class UProgressBar;
 class ACreature;
+class UHealthComponent;
 
 //shows the life of the Creature, which player needs to defend constantly
 
@@ -18,9 +19,13 @@ class SMALLPROJECT_API UCreatureUserWidget : public UUserWidget
 
 protected:
 	virtual void NativeConstruct() override;
+	virtual void NativeDestruct() override;
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 
-	void BigDeltaDamageHappened(const float originalLifeBeforeAttack);
+	UFUNCTION()
+		void TakePointDamage(AActor* DamagedActor, float Damage, AController* InstigatedBy, FVector HitLocation,
+			UPrimitiveComponent* FHitComponent, FName BoneName, FVector ShotFromDirection,
+			const UDamageType* DamageType, AActor* DamageCauser);
 
 	UPROPERTY(meta = (BindWidget))
 		UProgressBar* HealthBar;
@@ -43,8 +48,10 @@ protected:
 
 public:
 	UPROPERTY()
-		ACreature* creature;
+		UHealthComponent* creatureHealthComp;
 
+	UPROPERTY()
+		ACreature* creature;
 };
 
 

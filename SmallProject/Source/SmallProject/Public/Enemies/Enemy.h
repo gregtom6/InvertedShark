@@ -42,8 +42,7 @@ protected:
 
 	void SetSplineMeshComponent(USplineMeshComponent* splineMeshComp, const FVector startPoint, const FVector startTangent, const FVector endPoint, const FVector endTangent);
 
-
-	void StateManagement();
+	void StateManagement(const float DeltaTime);
 
 	void LifeManagement();
 
@@ -169,6 +168,9 @@ protected:
 		UResourceDataAsset* globalSettings;
 
 	UPROPERTY(EditAnywhere)
+		TSubclassOf<UDamageType> continuousDamageType;
+
+	UPROPERTY(EditAnywhere)
 		float movementSpeed;
 
 	UPROPERTY(EditAnywhere)
@@ -191,6 +193,9 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 		float innerSplinePointRangeBorderXY = 50.f;
+
+	UPROPERTY(EditAnywhere)
+		float damageToCreature;
 
 public:
 	UFUNCTION()

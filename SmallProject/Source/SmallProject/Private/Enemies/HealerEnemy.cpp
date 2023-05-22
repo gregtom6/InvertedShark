@@ -9,6 +9,7 @@
 #include "Allies/Creature.h"
 #include "Materials/MaterialInterface.h"
 #include "DataAssets/ResourceDataAsset.h"
+#include <Kismet/GameplayStatics.h>
 
 AHealerEnemy::AHealerEnemy(const FObjectInitializer& ObjectInitializer) :Super(ObjectInitializer) {
 	DeflateAudioComp = CreateDefaultSubobject<UAudioComponent>(TEXT("DeflateAudioComp"));
@@ -93,6 +94,24 @@ void AHealerEnemy::Tick(float DeltaTime) {
 			GetCurrentBodyMesh()->SetRelativeScale3D(endScale);
 			MaterialInstance->SetVectorParameterValue("Color", targetColor);
 		}
+
+
+		float deltaHeal = creature->GetMaxHealth() * percentageOfMaxLifeToHealBack;
+
+		float t = GetWorld()->GetTimeSeconds() - startTime;
+
+		float actualTime = t / timeForHeal;
+
+		if (creature->GetActualHealthWhenStartedHealing() + deltaHeal > creature->GetMaxHealth()) {
+			deltaHeal = creature->GetMaxHealth() - creature->GetActualHealthWhenStartedHealing();
+		}
+
+		float DamageAmount = deltaHeal * actualTime;
+
+		FHitResult HitOut;
+
+		UGameplayStatics::ApplyPointDamage(creature, DamageAmount, FVector::OneVector, HitOut, GetInstigatorController(), this, healDamageType);
+	
 	}
 
 	TimeManagement();

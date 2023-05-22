@@ -224,7 +224,7 @@ void AEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	StateManagement();
+	StateManagement(DeltaTime);
 
 	LifeManagement();
 
@@ -242,7 +242,7 @@ eating state: managing swallow sphere to create an illusion of eating
 dying state : for enemies, it will mean only to scale down the actor. For the bossenemy, the functionality gets extended.
 Removes widgets from viewport.
 */
-void AEnemy::StateManagement() {
+void AEnemy::StateManagement(const float DeltaTime) {
 
 	if (actualStatus == EEnemyStatus::WaitBeforeMoving && creature) {
 
@@ -288,6 +288,10 @@ void AEnemy::StateManagement() {
 			FVector Position = splineComponent->GetLocationAtDistanceAlongSpline(SplineDistance, ESplineCoordinateSpace::World);
 			SwallowSphere->SetWorldLocation(Position);
 		}
+
+		FHitResult HitOut;
+
+		UGameplayStatics::ApplyPointDamage(creature, damageToCreature*DeltaTime, FVector::OneVector, HitOut, GetInstigatorController(), this, continuousDamageType);
 	}
 
 	else if (actualStatus == EEnemyStatus::SpecialDying) {

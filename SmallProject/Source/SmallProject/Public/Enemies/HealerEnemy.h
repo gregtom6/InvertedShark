@@ -47,6 +47,9 @@ protected:
 		UAudioComponent* DeflateAudioComp;
 
 	UPROPERTY(EditAnywhere)
+		TSubclassOf<UDamageType> healDamageType;
+
+	UPROPERTY(EditAnywhere)
 		FVector defaultBodyScale;
 
 	UPROPERTY(EditAnywhere)

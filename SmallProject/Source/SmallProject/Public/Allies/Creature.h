@@ -21,10 +21,9 @@ class UCreatureUserWidget;
 class UProjectileCompPositioner;
 class UResourceDataAsset;
 class AEnemyTriggerBox;
+class UHealthComponent;
 
 #pragma endregion
-
-DECLARE_DELEGATE_OneParam(FBigDeltaDamageHappened, float);
 
 //player needs to defent this Creature constantly
 
@@ -64,8 +63,6 @@ protected:
 	UPROPERTY()
 		AEnemyTriggerBox* currentEnemyTriggerBox;
 
-	float actualHealthWhenStartedHealing;
-
 	FRotator startHeadRotation;
 	FRotator targetHeadRotation;
 
@@ -84,12 +81,7 @@ protected:
 	float startTime;
 	float actualTime;
 
-	float Health;
-
 	float deltaHeal;
-
-	float originalLifeBeforeAttack;
-
 
 	int32 actualTargetIndex = 0;
 
@@ -106,6 +98,11 @@ protected:
 	UFUNCTION()
 		void TriggerExit(class UPrimitiveComponent* HitComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
+	UFUNCTION()
+		void TakePointDamage(AActor* DamagedActor, float Damage, AController* InstigatedBy, FVector HitLocation,
+			UPrimitiveComponent* FHitComponent, FName BoneName, FVector ShotFromDirection,
+			const UDamageType* DamageType, AActor* DamageCauser);
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		UAudioComponent* WhaleAudioComp;
 
@@ -115,17 +112,11 @@ protected:
 	UPROPERTY(EditAnywhere)
 		TSubclassOf<UUserWidget> widgetclass;
 
+	UPROPERTY(EditAnywhere)
+		TSubclassOf<UDamageType> suckDamageType;
+
 	UPROPERTY(VisibleInstanceOnly)
 		UCreatureUserWidget* creatureuserwidget;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "settings")
-		float deltaDamage;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "settings")
-		float damageAfterSting;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "settings")
-		float MaxHealth = 120.f;
 
 	UPROPERTY(EditAnywhere)
 		TArray<AActor*> positionsToMove;
@@ -152,6 +143,9 @@ protected:
 		UResourceDataAsset* globalSettings;
 
 	UPROPERTY(EditAnywhere)
+		UHealthComponent* healthComponent;
+
+	UPROPERTY(EditAnywhere)
 		float movementSpeed;
 
 	UPROPERTY(EditAnywhere)
@@ -173,25 +167,17 @@ public:
 	UPROPERTY(EditAnywhere)
 		TArray<AActor*> enemiesActuallyAttacking;
 
-
-	float GetHealth() const { return Health; }
-	float GetMaxHealth() const { return MaxHealth; }
-	float GetDeltaIncreaseHealth() const { return actualHealthWhenStartedHealing + (deltaHeal * actualTime); }
 	FVector GetLocation() const { return GetActorLocation(); }
 	bool IsCharacterInFur() const;
 	void GetHugged();
 	void HealingStarted();
 	EStatus GetStatus() const;
 
+	float GetMaxHealth();
+
+	float GetActualHealthWhenStartedHealing();
+
 	void SetupProjectile(const FRotator rotator, const FVector scale, UStaticMesh* const& mesh, UMaterialInterface* const& material, const FVector offset);
-
-	void DoAfterGettingHitFromProjectile();
-
-	float GetOriginalLifeBeforeAttack() const;
-
-	void OriginalLifeRepresentationEnded();
-
-	FBigDeltaDamageHappened bigDeltaDamageHappenedDelegate;
 };
 
 UENUM()

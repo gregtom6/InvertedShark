@@ -180,7 +180,10 @@ void AProjectile::CheckOverlappingComponents(AActor* currentlyTargetedActor, con
 
 					ACreature* creature = Cast<ACreature>(currentlyTargetedActor);
 					creature->SetupProjectile(sum, scale, staticMesh->GetStaticMesh(), staticMesh->GetMaterial(0), target);
-					creature->DoAfterGettingHitFromProjectile();
+
+					FHitResult HitOut;
+
+					UGameplayStatics::ApplyPointDamage(creature, damageCaused, direction, HitOut, GetInstigatorController(), this, projectileDamageType);
 				}
 				
 				staticMesh->SetMaterial(0, invisibleMaterial);

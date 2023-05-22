@@ -55,6 +55,9 @@ protected:
 		float timeUntilDestroy;
 
 	UPROPERTY(EditAnywhere)
+		float damageCaused;
+
+	UPROPERTY(EditAnywhere)
 		UStaticMeshComponent* staticMesh;
 
 	UPROPERTY(EditAnywhere)
@@ -71,6 +74,9 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 		UResourceDataAsset* globalSettings;
+
+	UPROPERTY(EditAnywhere)
+		TSubclassOf<UDamageType> projectileDamageType;
 
 	EProjectileStatus status;
 
