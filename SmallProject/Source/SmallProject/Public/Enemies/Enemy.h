@@ -17,6 +17,7 @@ class UNiagaraComponent;
 class ACreature;
 class UAudioComponent;
 class UResourceDataAsset;
+class UHealthComponent;
 
 #pragma endregion
 
@@ -44,13 +45,9 @@ protected:
 
 	void StateManagement(const float DeltaTime);
 
-	void LifeManagement();
-
 	void TimeManagement();
 
 	void DecreaseLife();
-
-	virtual void RemoveEnemy();
 
 	void SplineManagement();
 
@@ -72,10 +69,6 @@ protected:
 
 	virtual void MovingToCreatureEnded();
 
-	float actualLife;
-
-	float originalLifeBeforeAttack;
-
 	USplineMeshComponent* prevSplineMeshComp;
 
 	float currentTime;
@@ -84,10 +77,6 @@ protected:
 
 	float timeBeforeActualMoving;
 
-	bool bCanPlayerDamageMe = true;
-
-	UPROPERTY()
-		AGameCharacter* overlappingGameCharacter;
 	UPROPERTY()
 		AGameCharacter* gameCharacter;
 
@@ -171,13 +160,10 @@ protected:
 		TSubclassOf<UDamageType> continuousDamageType;
 
 	UPROPERTY(EditAnywhere)
+		UHealthComponent* healthComponent;
+
+	UPROPERTY(EditAnywhere)
 		float movementSpeed;
-
-	UPROPERTY(EditAnywhere)
-		float maxLife;
-
-	UPROPERTY(EditAnywhere)
-		float lifeDecreaseAfterAttack;
 
 	UPROPERTY(EditAnywhere)
 		float dyingTime;
@@ -212,6 +198,12 @@ public:
 	float GetOriginalLifeBeforeAttack() const;
 
 	void OriginalLifeRepresentationEnded();
+
+	virtual void RemoveEnemy();
+
+	EEnemyStatus GetActualStatus() const;
+
+	float GetCurrentLife() const;
 };
 
 UENUM()

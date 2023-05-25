@@ -61,6 +61,9 @@ protected:
 	UPROPERTY(EditAnywhere)
 		FLinearColor targetColor;
 
+	UPROPERTY()
+		AGameCharacter* overlappingGameCharacter;
+
 	FLinearColor defaultColor;
 
 	float startTimeForHealingSphere;

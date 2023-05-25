@@ -112,9 +112,6 @@ protected:
 	UPROPERTY(EditAnywhere)
 		TSubclassOf<UUserWidget> widgetclass;
 
-	UPROPERTY(EditAnywhere)
-		TSubclassOf<UDamageType> suckDamageType;
-
 	UPROPERTY(VisibleInstanceOnly)
 		UCreatureUserWidget* creatureuserwidget;
 

@@ -28,6 +28,7 @@
 #include "Camera/CameraShakeBase.h"
 #include "ProjectileDamageType.h"
 #include "Components/HealthComponent.h"
+#include "Enemies/SniperEnemy.h"
 
 // Sets default values
 AGameCharacter::AGameCharacter(const FObjectInitializer& ObjectInitializer)
@@ -239,7 +240,7 @@ attack ability
 */
 void AGameCharacter::Attack() {
 
-	if (actualStatus == EGameCharacterStatus::Attack || bIsHugging || actualStatus == EGameCharacterStatus::Dead || actualStatus == EGameCharacterStatus::UpDash) { return; }
+	if (actualStatus == EGameCharacterStatus::Attack || actualStatus == EGameCharacterStatus::AttackAlreadyHittedEnemy || bIsHugging || actualStatus == EGameCharacterStatus::Dead || actualStatus == EGameCharacterStatus::UpDash) { return; }
 
 	UE_LOG(LogTemp, Warning, TEXT("attack happened"));
 
@@ -249,13 +250,15 @@ void AGameCharacter::Attack() {
 	actualStatus = EGameCharacterStatus::Attack;
 
 	TongueAudio->Play(0.f);
+
+	DecreaseOverlappingEnemyLife();
 }
 
 /*
 dash ability
 */
 void AGameCharacter::Dash() {
-	if (bIsHugging || actualStatus == EGameCharacterStatus::Dead || actualStatus == EGameCharacterStatus::UpDash || actualStatus == EGameCharacterStatus::Attack) { return; }
+	if (bIsHugging || actualStatus == EGameCharacterStatus::Dead || actualStatus == EGameCharacterStatus::UpDash || actualStatus == EGameCharacterStatus::Attack || actualStatus == EGameCharacterStatus::AttackAlreadyHittedEnemy) { return; }
 
 
 	APlayerController* thisCont = GetWorld()->GetFirstPlayerController();
@@ -559,6 +562,16 @@ void AGameCharacter::BeginPlay()
 			rightNoseSneezeNiagara = niagaraComponents[i];
 		}
 	}
+
+	OnActorBeginOverlap.AddUniqueDynamic(this, &AGameCharacter::EnterEvent);
+	OnActorEndOverlap.AddUniqueDynamic(this, &AGameCharacter::ExitEvent);
+}
+
+void AGameCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason) {
+	Super::EndPlay(EndPlayReason);
+
+	OnActorBeginOverlap.RemoveDynamic(this, &AGameCharacter::EnterEvent);
+	OnActorEndOverlap.RemoveDynamic(this, &AGameCharacter::ExitEvent);
 }
 
 void AGameCharacter::SneezeBlinkEnded() {
@@ -710,7 +723,8 @@ calm: when player is just flying around
 dash: when player dashes upwards
 */
 void AGameCharacter::StateManagement() {
-	if (actualStatus == EGameCharacterStatus::Attack) {
+	if (actualStatus == EGameCharacterStatus::Attack ||
+		actualStatus == EGameCharacterStatus::AttackAlreadyHittedEnemy) {
 
 		float currentTime = GetWorld()->GetTimeSeconds() - startTime;
 
@@ -899,6 +913,49 @@ bool AGameCharacter::GetOverlapInfluenceSphere(UStaticMeshComponent* const& Stat
 	}
 
 	return false;
+}
+
+
+
+void AGameCharacter::EnterEvent(class AActor* overlappedActor, class AActor* otherActor) {
+	if (otherActor && otherActor != this) {
+		if (otherActor->IsA(AEnemy::StaticClass())) {
+
+			overlappingEnemy = Cast<AEnemy>(otherActor);
+
+			if (actualStatus == EGameCharacterStatus::Attack) {
+
+				DecreaseOverlappingEnemyLife();
+			}
+		}
+	}
+}
+
+void AGameCharacter::ExitEvent(class AActor* overlappedActor, class AActor* otherActor) {
+	if (otherActor && otherActor != this) {
+		if (otherActor->IsA(AEnemy::StaticClass())) {
+
+			overlappingEnemy = nullptr;
+		}
+	}
+}
+
+void AGameCharacter::DecreaseOverlappingEnemyLife() {
+
+	if (!overlappingEnemy) { return; }
+
+	FHitResult HitOut;
+
+	UGameplayStatics::ApplyPointDamage(overlappingEnemy, damageToEnemies, FVector::OneVector, HitOut, GetInstigatorController(), this, swordDamageType);
+
+	actualStatus = EGameCharacterStatus::AttackAlreadyHittedEnemy;
+
+
+	if (overlappingEnemy && !overlappingEnemy->IsA(ASniperEnemy::StaticClass()) && overlappingEnemy->GetCurrentLife() <= 0.f) {
+		SlowdownTime();
+
+		PlayCameraShake();
+	}
 }
 
 void AGameCharacter::SetPrevStatusToActualStatus() {

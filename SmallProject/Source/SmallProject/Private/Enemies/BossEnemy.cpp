@@ -50,6 +50,7 @@ void ABossEnemy::MoveToCreature(const float timeToStart) {
 		if (bossuserwidget) {
 
 			bossuserwidget->boss = this;
+			bossuserwidget->bossHealthComp = healthComponent;
 
 			UE_LOG(LogTemp, Warning, TEXT("bossenemy3"));
 			bossuserwidget->AddToViewport(0);
@@ -75,18 +76,6 @@ FVector ABossEnemy::GetPositionOfBodyMesh() const {
 float ABossEnemy::GetBodyMeshRadius() const {
 	FCollisionShape shape = bodyMesh->GetCollisionShape();
 	return shape.GetSphereRadius();
-}
-
-/*
-extra methods for boss life bar
-*/
-
-float ABossEnemy::GetLife() const {
-	return actualLife;
-}
-
-float ABossEnemy::GetMaxLife() const {
-	return maxLife;
 }
 
 UStaticMeshComponent* ABossEnemy::GetCurrentBodyMesh() const {

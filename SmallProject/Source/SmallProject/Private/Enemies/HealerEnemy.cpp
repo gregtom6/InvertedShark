@@ -66,8 +66,6 @@ void AHealerEnemy::TriggerExit(class UPrimitiveComponent* HitComp, class AActor*
 		if (OtherActor->IsA(AGameCharacter::StaticClass())) {
 
 			overlappingGameCharacter = nullptr;
-
-			bCanPlayerDamageMe = false;
 		}
 	}
 }

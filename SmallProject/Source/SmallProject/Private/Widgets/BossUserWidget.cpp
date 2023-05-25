@@ -4,6 +4,7 @@
 #include "Widgets/BossUserWidget.h"
 #include "Enemies/BossEnemy.h"
 #include "Components/ProgressBar.h"
+#include "Components/HealthComponent.h"
 
 void UBossUserWidget::NativeConstruct()
 {
@@ -24,8 +25,8 @@ void UBossUserWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 
 	if (!boss) { return; }
 
-	float currentLifePercentage = boss->GetLife() / boss->GetMaxLife();
-	float deltaLifePercentage = boss->GetOriginalLifeBeforeAttack() / boss->GetMaxLife();
+	float currentLifePercentage = bossHealthComp->GetHealth() / bossHealthComp->GetMaxHealth();
+	float deltaLifePercentage = bossHealthComp->GetOriginalLifeBeforeAttack() / bossHealthComp->GetMaxHealth();
 
 	bosslifebar->SetPercent(currentLifePercentage);
 
@@ -53,7 +54,7 @@ void UBossUserWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 		if (currentTime >= timeForDisappear) {
 			bossLifeStatus = EBossLifeStatus::Normal;
 			bossdeltadecrease->SetPercent(currentLifePercentage);
-			boss->OriginalLifeRepresentationEnded();
+			bossHealthComp->OriginalLifeRepresentationEnded();
 		}
 	}
 }

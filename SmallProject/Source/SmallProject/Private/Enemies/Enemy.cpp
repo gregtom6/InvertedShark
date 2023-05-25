@@ -11,6 +11,7 @@
 #include <Sound/SoundCue.h >
 #include "NiagaraComponent.h"
 #include "DataAssets/ResourceDataAsset.h"
+#include "Components/HealthComponent.h"
 
 AEnemy::AEnemy() {}
 
@@ -80,6 +81,8 @@ AEnemy::AEnemy(const FObjectInitializer& ObjectInitializer)
 	RightEyeLid12->AttachToComponent(RightEyeWhite2, FAttachmentTransformRules::KeepRelativeTransform);
 
 	globalSettings = NewObject<UResourceDataAsset>(GetTransientPackage(), FName("globalSettings"));
+
+	healthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("healthComponent"));
 }
 
 /*
@@ -181,10 +184,6 @@ void AEnemy::BeginPlay()
 		SplineMeshCompAttach(SMeshComps[i]);
 	}
 
-	actualLife = maxLife;
-
-	originalLifeBeforeAttack = actualLife;
-
 	for (int i = 0; i < SMeshComps.Num(); i++) {
 		SMeshComps[i]->AttachToComponent(SMeshContainers[i], FAttachmentTransformRules::KeepRelativeTransform);
 	}
@@ -225,8 +224,6 @@ void AEnemy::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	StateManagement(DeltaTime);
-
-	LifeManagement();
 
 	TimeManagement();
 
@@ -322,27 +319,6 @@ void AEnemy::MovingToCreatureEnded() {
 	//child classes overriding this
 }
 
-/*
-manages life decrease when getting attacked by player, for both the enemy and the bossenemy.
-*/
-void AEnemy::LifeManagement() {
-
-	if (!overlappingGameCharacter) {
-		bCanPlayerDamageMe = false;
-		return;
-	}
-
-	if (overlappingGameCharacter->GetStatus() == EGameCharacterStatus::Attack && overlappingGameCharacter->GetPrevStatus() == EGameCharacterStatus::Calm) {
-		bCanPlayerDamageMe = true;
-		overlappingGameCharacter->SetPrevStatusToActualStatus();
-	}
-
-	if (overlappingGameCharacter->GetStatus() == EGameCharacterStatus::Attack && bCanPlayerDamageMe) {
-		DecreaseLife();
-		bCanPlayerDamageMe = false;
-	}
-}
-
 void AEnemy::TimeManagement() {
 	if (!gameCharacter) { return; }
 
@@ -411,11 +387,7 @@ void AEnemy::EnterEvent(class AActor* overlappedActor, class AActor* otherActor)
 	if (otherActor && otherActor != this) {
 		if (otherActor->IsA(AGameCharacter::StaticClass())) {
 
-			overlappingGameCharacter = Cast<AGameCharacter>(otherActor);
-
 			gameCharacter = Cast<AGameCharacter>(otherActor);
-
-			bCanPlayerDamageMe = true;
 		}
 	}
 }
@@ -424,9 +396,6 @@ void AEnemy::ExitEvent(class AActor* overlappedActor, class AActor* otherActor) 
 	if (otherActor && otherActor != this) {
 		if (otherActor->IsA(AGameCharacter::StaticClass())) {
 
-			overlappingGameCharacter = nullptr;
-
-			bCanPlayerDamageMe = false;
 		}
 	}
 }
@@ -445,15 +414,6 @@ managing life decrease for both enemy and bossenemy.
 */
 void AEnemy::DecreaseLife() {
 
-	if (actualStatus == EEnemyStatus::SpecialDying) { return; }
-
-	actualLife -= lifeDecreaseAfterAttack;
-
-	if (actualLife <= 0) {
-		RemoveEnemy();
-	}
-
-	bCanPlayerDamageMe = false;
 }
 
 /*
@@ -491,11 +451,6 @@ void AEnemy::RemoveEnemy() {
 
 	SlurpAudioComp->Stop();
 	PopAudioComp->Play(0.f);
-
-	if (gameCharacter) {
-		gameCharacter->SlowdownTime();
-		gameCharacter->PlayCameraShake();
-	}
 }
 
 UStaticMeshComponent* AEnemy::GetCurrentBodyMesh() const {
@@ -507,14 +462,6 @@ normal enemies just get destroyed, this is overriden in the bossenemy
 */
 void AEnemy::DoAfterDead() {
 	Destroy();
-}
-
-float AEnemy::GetOriginalLifeBeforeAttack() const {
-	return originalLifeBeforeAttack;
-}
-
-void AEnemy::OriginalLifeRepresentationEnded() {
-	originalLifeBeforeAttack = actualLife;
 }
 
 /*
@@ -533,4 +480,13 @@ destroying certain components upon death
 void AEnemy::DestroySplineMeshComp(class USplineMeshComponent* splineMeshComp) {
 	if (splineMeshComp)
 		splineMeshComp->DestroyComponent();
+}
+
+EEnemyStatus AEnemy::GetActualStatus() const {
+	return actualStatus;
+}
+
+float AEnemy::GetCurrentLife() const {
+	if (!healthComponent) { return 0.f; }
+	return healthComponent->GetHealth();
 }

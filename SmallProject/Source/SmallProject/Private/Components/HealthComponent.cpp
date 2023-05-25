@@ -4,6 +4,7 @@
 #include "Components/HealthComponent.h"
 #include "HealDamageType.h"
 #include "Allies/GameCharacter.h"
+#include "Enemies/Enemy.h"
 #include "ProjectileDamageType.h"
 
 // Sets default values for this component's properties
@@ -57,6 +58,13 @@ void UHealthComponent::OnTakePointDamage(AActor* DamagedActor, float Damage, ACo
 				AGameCharacter* gameCharacter = Cast<AGameCharacter>(GetOwner());
 
 				gameCharacter->DoAfterGettingHitFromProjectile(ShotFromDirection);
+			}
+			else if (GetOwner()->IsA(AEnemy::StaticClass())) {
+				AEnemy* enemy = Cast<AEnemy>(GetOwner());
+
+				if (enemy->GetActualStatus() == EEnemyStatus::SpecialDying) { return; }
+
+				enemy->RemoveEnemy();
 			}
 		}
 	}

@@ -8,6 +8,7 @@
 
 class UProgressBar;
 class ABossEnemy;
+class UHealthComponent;
 
 //shows the life of the boss enemy
 //only appears, when player (and creature) reaches the last area
@@ -37,6 +38,10 @@ protected:
 	float startTime;
 
 public:
+
+	UPROPERTY()
+		UHealthComponent* bossHealthComp;
+
 	UPROPERTY()
 		ABossEnemy* boss;
 };

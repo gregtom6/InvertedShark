@@ -27,6 +27,7 @@ class UProjectileCompPositioner;
 class UResourceDataAsset;
 class UCameraShakeBase;
 class UHealthComponent;
+class AEnemy;
 
 #pragma endregion
 
@@ -81,6 +82,7 @@ private:
 	void InitializePause();
 
 	virtual void BeginPlay() override;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 	FVector startPos;
 
@@ -92,6 +94,9 @@ private:
 		ACreature* creature;
 	UPROPERTY()
 		AActor* bossEnemy;
+
+	UPROPERTY()
+		AEnemy* overlappingEnemy;
 
 	EGameCharacterStatus actualStatus;
 	EGameCharacterStatus prevStatus;
@@ -224,6 +229,9 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "character settings")
 		float timeOfTimeRestore;
 
+	UPROPERTY(EditAnywhere, Category = "character settings")
+		float damageToEnemies;
+
 	UPROPERTY(EditAnywhere)
 		USkeletalMeshComponent* skeletal;
 
@@ -256,6 +264,9 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 		TSubclassOf<UPauseUserWidget> widgetPauseMenu;
+
+	UPROPERTY(EditAnywhere)
+		TSubclassOf<UDamageType> swordDamageType;
 
 	UPROPERTY()
 		UNiagaraComponent* leftNoseSneezeNiagara;
@@ -295,12 +306,15 @@ protected:
 	UFUNCTION()
 		void SneezeBlinkEnded();
 
+	void DecreaseOverlappingEnemyLife();
+
 public:
-	UFUNCTION()
-		void SlowdownTime();
 
 	UFUNCTION()
-		void PlayCameraShake();
+		virtual void EnterEvent(AActor* overlappedActor, AActor* otherActor);
+
+	UFUNCTION()
+		virtual void ExitEvent(AActor* overlappedActor, AActor* otherActor);
 
 	EGameCharacterStatus GetStatus() const;
 
@@ -331,6 +345,12 @@ public:
 
 	FVector GetCameraLocation() const;
 
+	UFUNCTION()
+		void SlowdownTime();
+
+	UFUNCTION()
+		void PlayCameraShake();
+
 	bool IsHugging() const;
 };
 
@@ -344,6 +364,7 @@ enum class EGameCharacterStatus : uint8
 	Dead,
 	LeftDash,
 	RightDash,
+	AttackAlreadyHittedEnemy,
 };
 
 UENUM()
