@@ -826,28 +826,7 @@ void AGameCharacter::MetalScratchManagement() {
 
 	if (bossEnemy) {
 
-		FVector TempActor1ClosestPoint, TempActor2ClosestPoint;
-		bool checkMe = GetOverlapInfluenceSphere(Tongue, Actor1ClosestPoint, Actor2ClosestPoint);
-		if (checkMe)
-		{
-			if (!bOverlap)
-			{
-				Actor1ClosestPoint = TempActor1ClosestPoint;
-				Actor2ClosestPoint = TempActor2ClosestPoint;
-				bOverlap = true;
-			}
-			else
-			{
-				FVector TempOverlapPoint = (TempActor1ClosestPoint + TempActor2ClosestPoint) / 2.0f;
-				FVector CurrentOverlapPoint = (Actor1ClosestPoint + Actor2ClosestPoint) / 2.0f;
-				if (FVector::DistSquared(TempOverlapPoint, GetActorLocation()) <
-					FVector::DistSquared(CurrentOverlapPoint, bossEnemy->GetActorLocation()))
-				{
-					Actor1ClosestPoint = TempActor1ClosestPoint;
-					Actor2ClosestPoint = TempActor2ClosestPoint;
-				}
-			}
-		}
+		bOverlap = GetOverlapInfluenceSphere(Tongue, Actor1ClosestPoint, Actor2ClosestPoint);
 	}
 
 	if (bOverlap && Tongue->GetVisibleFlag())
@@ -863,7 +842,7 @@ void AGameCharacter::MetalScratchManagement() {
 
 		OverlapPoint = (Actor1ClosestPoint + Actor2ClosestPoint) / 2.0f;
 
-		Spark->SetWorldLocation(Actor1ClosestPoint);
+		Spark->SetWorldLocation(OverlapPoint);
 		Spark->Activate();
 
 		if (MetalScratchAudio && !MetalScratchAudio->IsPlaying()) {
@@ -903,7 +882,7 @@ bool AGameCharacter::GetOverlapInfluenceSphere(UStaticMeshComponent* const& Stat
 
 	if (Distance <= SphereRadiusA + radius)
 	{
-		FVector ClosestPointOnSphereA = SphereLocationA + Difference.GetSafeNormal() * SphereRadiusA;
+ 		FVector ClosestPointOnSphereA = SphereLocationA + Difference.GetSafeNormal() * SphereRadiusA;
 		FVector ClosestPointOnSphereB = position - Difference.GetSafeNormal() * radius;
 
 		OutActor1ClosestPoint = ClosestPointOnSphereA;
