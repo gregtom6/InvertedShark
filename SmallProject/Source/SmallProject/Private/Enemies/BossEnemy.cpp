@@ -11,8 +11,6 @@
 ABossEnemy::ABossEnemy(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
-	bodyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("bodyMesh"));
-	bodyMesh->SetupAttachment(splineComponent);
 }
 
 void ABossEnemy::BeginPlay() {
@@ -70,16 +68,12 @@ FVector ABossEnemy::GetEndPosition() const {
 }
 
 FVector ABossEnemy::GetPositionOfBodyMesh() const {
-	return bodyMesh ? bodyMesh->GetComponentLocation() : FVector::ZeroVector;
+	return Body12 ? Body12->GetComponentLocation() : FVector::ZeroVector;
 }
 
 float ABossEnemy::GetBodyMeshRadius() const {
-	FCollisionShape shape = bodyMesh->GetCollisionShape();
+	FCollisionShape shape = Body12->GetCollisionShape();
 	return shape.GetSphereRadius();
-}
-
-UStaticMeshComponent* ABossEnemy::GetCurrentBodyMesh() const {
-	return bodyMesh;
 }
 
 /*

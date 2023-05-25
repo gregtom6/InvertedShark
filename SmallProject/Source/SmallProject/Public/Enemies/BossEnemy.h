@@ -31,12 +31,8 @@ protected:
 		UBossUserWidget* bossuserwidget;
 
 	UPROPERTY(EditAnywhere)
-		UStaticMeshComponent* bodyMesh;
-
-	UPROPERTY(EditAnywhere)
 		FName levelToLoadAfterDefeat;
 
-	virtual UStaticMeshComponent* GetCurrentBodyMesh() const override;
 	virtual FVector GetEndPosition() const override;
 	virtual void DoAfterDead() override;
 	virtual void BeginPlay() override;
@@ -44,11 +40,6 @@ protected:
 public:
 
 	virtual void MoveToCreature(const float timeToStart) override;
-
-
-	float GetLife() const;
-
-	float GetMaxLife() const;
 
 	FVector GetPositionOfBodyMesh() const;
 
