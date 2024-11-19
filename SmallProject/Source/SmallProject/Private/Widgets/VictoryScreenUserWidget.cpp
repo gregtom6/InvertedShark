@@ -2,7 +2,7 @@
 
 
 #include "Widgets/VictoryScreenUserWidget.h"
-#include "UMG/Public/Components/Button.h"
+#include "Components/Button.h"
 #include <Kismet/GameplayStatics.h>
 
 void UVictoryScreenUserWidget::NativeConstruct() {

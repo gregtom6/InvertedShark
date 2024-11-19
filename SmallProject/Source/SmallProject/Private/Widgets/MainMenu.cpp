@@ -2,8 +2,8 @@
 
 
 #include "Widgets/MainMenu.h"
-#include "UMG/Public/Components/Button.h"
-#include "UMG/Public/Components/WidgetSwitcher.h"
+#include "Components/Button.h"
+#include "Components/WidgetSwitcher.h"
 #include <Kismet/KismetSystemLibrary.h>
 #include <Kismet/GameplayStatics.h>
 #include <Sound/SoundCue.h>

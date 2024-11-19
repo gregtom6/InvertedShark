@@ -2,7 +2,7 @@
 
 
 #include "Widgets/PauseUserWidget.h"
-#include "UMG/Public/Components/Button.h"
+#include "Components/Button.h"
 #include "Allies/GameCharacter.h"
 #include <Kismet/GameplayStatics.h>
 #include <Blueprint/WidgetLayoutLibrary.h>
